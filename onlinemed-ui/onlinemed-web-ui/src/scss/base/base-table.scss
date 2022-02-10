@@ -1,0 +1,88 @@
+.base-table {
+  @extend .table;
+
+  &__sm {
+    @extend .table-sm;
+  }
+
+  &__striped {
+    @extend .table-striped;
+  }
+  &__row-on-hover {
+
+  }
+
+  &__table-data {
+    vertical-align: middle !important;
+    display: table-cell;
+  }
+  &__justify {
+    @extend .justify-content-center;
+  }
+  &__block {
+    @extend .d-block;
+  }
+  &__pagination {
+    @extend .pagination;
+  }
+  &__page-item {
+    @extend .page-item;
+  }
+  &__page-link {
+    @extend .page-link;
+    cursor: pointer;
+
+  }
+  &__inline {
+    @extend .d-inline;
+    @extend .m-r-20 !optional;
+  }
+  &__col {
+    @extend .col;
+  }
+  &__flex {
+    @extend .d-flex;
+  }
+  &__header-text {
+    color: #212529;
+  }
+  &__header-background {
+    background-color: var(--sidebar-color-bv);
+
+    & #select{
+      padding-left: 0;
+      padding-right: 0;
+    }
+  }
+  &__items-align {
+    @extend .mb-3;
+    @extend .p-7 !optional;
+    @extend .align-items-center;
+  }
+  &__selected-item {
+    background-color: #1fb6ff;
+  }
+  &__editCol {
+    width:10vw
+  }
+  &__edit-button{
+    @extend .btn;
+    @extend .mr-10 !optional;
+    @extend .mb-6 !optional;
+    background-color: #157847;
+    color: white;
+    font-weight: 600;
+  }
+  &__cancel-button{
+    @extend .btn;
+    @extend .mr-10 !optional;
+    @extend .mb-6!optional;
+    background-color: #a20404;
+    color: white;
+    font-weight: 600;
+  }
+  &__icon-spacing{
+    @extend .ml-4 !optional;
+    cursor: pointer;
+  }
+}

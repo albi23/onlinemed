@@ -1,0 +1,1 @@
+INSERT INTO public.security (id, timestamp, version, hash, securitytoken, token) VALUES ('34ce3152-50dc-4ba4-8322-9655c3c9dff4', '2020-12-03 11:17:07.566247', 0, '$argon2id$v=19$m=4096,t=3,p=1$AyZFdLfEKxNB+nqK6IvZBw$8xP6aNIbXgTOzss9g/eq6+0Pg3P9Pe85sFyutR1jYsI', null, null);

@@ -1,0 +1,217 @@
+<div #register class="login-container-fluid">
+  <app-notification-box></app-notification-box>
+  <app-spinner [isActive]="spinnerStatus"></app-spinner>
+  <div class="login-container-fluid__section-start">
+    <div id="login-content">
+      <div class="login-container-fluid__centered-row">
+        <h1 class="login-container-fluid__header" style="text-transform: uppercase">User registration</h1>
+      </div>
+      <div class="row d-flex justify-content-center">
+        <div class="col-11" *ngIf="currentStep===1; else step2">
+          <form class="m-3">
+            <div class="form-group mt-3">
+              <div class="input-group">
+                  <span class="login-container-fluid__icon-span">
+                    <i class="fa fa-user login-container-fluid__icon"></i></span>
+                <input class="form-control left-border-none login-container-fluid__input-field"
+                       [(ngModel)]="usernameField" placeholder="username*"
+                       type="text" name="username" minlength="6">
+              </div>
+            </div>
+          </form>
+          <form class="m-3">
+            <div class="form-group mt-3">
+              <div class="input-group">
+                  <span class="login-container-fluid__icon-span">
+                    <i class="fas fa-user-tag login-container-fluid__icon"></i></span>
+                <input class="form-control left-border-none login-container-fluid__input-field"
+                       placeholder="name*" [(ngModel)]="nameField"
+                       type="text" name="name" minlength="6">
+              </div>
+            </div>
+          </form>
+          <form class="m-3">
+            <div class="form-group mt-3">
+              <div class="input-group">
+                  <span class="login-container-fluid__icon-span">
+                    <i class="fas fa-user-circle login-container-fluid__icon"></i></span>
+                <input class="form-control left-border-none login-container-fluid__input-field"
+                       placeholder="surname*" [(ngModel)]="surnameField"
+                       type="text" name="username" minlength="6">
+              </div>
+            </div>
+          </form>
+          <form class="m-3">
+            <div class="form-group mt-1">
+              <div class="input-group">
+                  <span class="login-container-fluid__icon-span">
+                    <i class="fas fa-envelope login-container-fluid__icon"></i></span>
+                <input class="form-control left-border-none login-container-fluid__input-field"
+                       placeholder="email*" [(ngModel)]="emailField"
+                       type="email" name="email" minlength="6">
+              </div>
+            </div>
+          </form>
+          <form class="m-3">
+            <div class="form-group mt-1">
+              <div class="input-group">
+                  <span class="login-container-fluid__icon-span">
+                    <i class="fa fa-lock login-container-fluid__icon"></i></span>
+                <input class="form-control left-border-none login-container-fluid__input-field"
+                       placeholder="*****" type="password"
+                       [(ngModel)]="passwordField"
+                       name="username" minlength="8">
+              </div>
+            </div>
+            <div class="form-check ml-3 pb-2">
+              <input type="checkbox" class="form-check-input" id="materialUnchecked">
+              <label class="form-check-label" for="materialUnchecked">{{'common.show-password' | translate}}</label>
+            </div>
+          </form>
+        </div>
+      </div>
+      <a role="button" aria-pressed="true">
+        <div class="row">
+          <div class="login-wrapper">
+            <div class="glow2">&nbsp;</div>
+            <div *ngIf="!isDoctorRegistration || currentStep === 3; else nextStep">
+              <div (click)="onClickRegister()" class="login-front" style="text-transform: uppercase">Register</div>
+            </div>
+            <div class="login-edge-bottomright"></div>
+            <div class="login-edge-bottomleft"></div>
+          </div>
+        </div>
+      </a>
+      <div class="login-container-fluid__remind-block">
+        <a role="button" aria-pressed="true" (click)="onClickSignIn()">
+          <h4 class="login-container-fluid__reminder">Do you have an account? Sign In</h4>
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<ng-template #step2>
+  <div class="col-11" *ngIf="currentStep === 2">
+    <form class="m-3">
+      <div class="form-group mt-3">
+        <div class="input-group">
+                  <span class="login-container-fluid__icon-span">
+                    <i class="fas fa-user-md login-container-fluid__icon"></i></span>
+          <input class="form-control left-border-none login-container-fluid__input-field"
+                 placeholder="Doctor Type*" [(ngModel)]="doctorTypeField"
+                 type="text" name="username" minlength="6">
+        </div>
+      </div>
+    </form>
+    <form class="m-3">
+      <div class="form-group mt-3">
+        <div class="input-group">
+                  <span class="login-container-fluid__icon-span">
+                    <i class="fas fa-syringe login-container-fluid__icon"></i></span>
+          <input class="form-control left-border-none login-container-fluid__input-field"
+                 placeholder="Specialisation*" [(ngModel)]="specialisationField"
+                 type="text" name="username" minlength="6">
+        </div>
+      </div>
+    </form>
+    <form class="m-3">
+      <div class="form-group mt-3">
+        <div class="input-group">
+                  <span class="login-container-fluid__icon-span">
+                    <i class="fas fa-phone-alt login-container-fluid__icon"></i></span>
+          <input class="form-control left-border-none login-container-fluid__input-field"
+                 placeholder="Phone" [(ngModel)]="phoneField"
+                 type="text" name="username" minlength="6">
+        </div>
+      </div>
+    </form>
+
+  </div>
+  <div class="col-11" *ngIf="currentStep === 3">
+    <form class="m-3">
+      <div class="form-group mt-3">
+        <div class="input-group">
+                  <span class="login-container-fluid__icon-span">
+                    <i class="fas fa-map-marker-alt login-container-fluid__icon"></i></span>
+          <input class="form-control left-border-none login-container-fluid__input-field"
+                 placeholder="Facility Location*" [(ngModel)]="facilityPlaceField"
+                 type="text" name="username" minlength="6">
+        </div>
+      </div>
+    </form>
+    <form class="m-3">
+      <div class="form-group mt-3">
+        <div class="input-group">
+           <span class="login-container-fluid__icon-span" style="margin-left: -8px">
+                    <i class="fas fa-file-signature login-container-fluid__icon"></i></span>
+          <input class="form-control left-border-none login-container-fluid__input-field"
+                 placeholder="Facility Name*" [(ngModel)]="facilityNameField"
+                 type="text" name="username" minlength="6">
+        </div>
+      </div>
+    </form>
+    <form>
+      <div class="row ml-2">
+        <span class="mr-1 login-container-fluid__icon-span">
+          <i class="fas fa-book-medical login-container-fluid__icon"></i>
+        </span>
+        <h2 class="font-size: xx-large;">Services</h2>
+      </div>
+      <div class="form-group mt-3">
+        <div class="input-group" *ngFor="let drService of doctorServices;  let i = index ">
+          <input class="form-control left-border-none login-container-fluid__input-field"
+                 value="{{drService.name}}" [(ngModel)]="drService.name"
+                 placeholder="Service Name" type="text" name="Service Name*">
+          <input class="form-control left-border-none login-container-fluid__input-field ml-2"
+                 value="{{drService.price}}" [(ngModel)]="drService.price"
+                 placeholder="Price*" type="text" name="username">
+          <button class="dr-buttons" (click)="onRemoveDoctorService(i)">X</button>
+        </div>
+        <button (click)="addNewMedicalLocalisation()"
+                class="dr-buttons mt-3 mb-2" style="float: left">Add new localisation
+        </button>
+        <button (click)="onAddService()"
+                class="dr-buttons mt-3 mb-2" style="float: right">Add new service
+        </button>
+      </div>
+    </form>
+  </div>
+  <div class="col-11" *ngIf="currentStep === 4">
+    <form class="m-3">
+      <div class="row ml-3">
+        <span class="mr-1 login-container-fluid__icon-span">
+          <i class="fas fa-book-medical login-container-fluid__icon"></i>
+        </span>
+        <h2 class="font-size: xx-large;">Services</h2>
+      </div>
+      <div class="form-group mt-3">
+        <div class="input-group" *ngFor="let drService of doctorServices;  let i = index ">
+          <input class="form-control left-border-none login-container-fluid__input-field"
+                 value="{{drService.name}}" [(ngModel)]="drService.name"
+                 placeholder="Service Name" type="text" name="Service Name">
+          <input class="form-control left-border-none login-container-fluid__input-field ml-2"
+                 value="{{drService.price}}" [(ngModel)]="drService.price"
+                 placeholder="Price" type="text" name="username">
+          <button class="dr-buttons" (click)="onRemoveDoctorService(i)">X</button>
+        </div>
+        <button (click)="onAddService()"
+                class="dr-buttons mt-3 mb-2" style="float: right">Add new service
+        </button>
+      </div>
+    </form>
+  </div>
+
+
+</ng-template>
+
+<ng-template #nextStep>
+  <div>
+    <div class="login-front" style="text-transform: uppercase" (click)="validateNextStep()">
+      Next Step
+      <span class="ml-1">
+      <i class="fas fa-angle-double-right"></i>
+    </span>
+    </div>
+  </div>
+</ng-template>

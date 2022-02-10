@@ -1,0 +1,1 @@
+INSERT INTO public.doctor_info (id, timestamp, version, doctortype, phonenumber, specialization) VALUES ('539f03e8-c9a6-4730-9d57-111054771a6d', '2020-12-03 11:17:07.675433', 1, 'Anesthesiologist', '458689325', 'Specialization 18');

@@ -1,0 +1,121 @@
+<div class="drug-equivalents-container">
+  <div class="search-container">
+    <div class="Card">
+      <div class="result-container">
+        <h5 *ngIf="notifications.isEmpty()">NO MESSAGES</h5>
+        <div class="items">
+          <div class="items-body">
+            <div *ngFor="let not of notifications; let i = index">
+              <div *ngIf="isEmailMessage(not.notificationType)">
+                <div class="items-body-content">
+                  <span>{{not.name}} {{not.surname}} send you message. Check your mail</span>
+                  <i (click)="onClickRemove(not.id)" class="fas fa-trash" aria-placeholder="Click to delete"></i>
+                </div>
+              </div>
+              <div *ngIf="isVisitAcceptMessage(not.notificationType)">
+
+                <div *ngIf="isDoctorSideView(not)" class="items-body-content"
+                     (click)="onSetActive(i)" [ngClass]="{'open': i === openIndex}">
+                  <span>You accepted visit from  {{not.name}} {{not.surname}} user. Click here to see details.</span>
+                  <span><i class="fas fa-angle-down"></i></span>
+                  <div class="col" *ngIf=" i === openIndex">
+                    <ng-container *ngTemplateOutlet="tableData; context:{visit: not.visit}"></ng-container>
+                    <div *ngIf="not.visit!!.optionalMessage">
+                      <pre>{{not.visit!!.optionalMessage}}</pre>
+                    </div>
+                    <div class="new-visit-body mt-2">
+                      <button (click)="onCancelVisit(not)" class="ml-2 dr-buttons">Cancel the visit</button>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- User Site Accept Site-->
+                <div *ngIf="!isDoctorSideView(not)" class="items-body-content">
+                  <span>{{not.name}} {{not.surname}} Accepted your visit</span>
+                  <i (click)="onSetActive(i)" class="fa fa-angle-down"></i>
+                </div>
+
+              </div>
+              <div *ngIf="isVisitCanceledMessage(not.notificationType)">
+                <div class="items-body-content">
+                  <span>{{not.name}} {{not.surname}} cancel visit Check your mail</span>
+                  <i (click)="onSetActive(i)" class="fa fa-angle-right"></i>
+                </div>
+              </div>
+              <div *ngIf="isVisitRejectedMessage(not.notificationType)">
+                <div class="items-body-content">
+                  <span>{{not.name}} {{not.surname}} reject visit Check your mail</span>
+                  <i class="fa fa-angle-right"></i>
+                </div>
+              </div>
+              <div *ngIf="isNewVisitRequestMessage(not.notificationType)">
+                <div class="items-body-content" [ngClass]="{'open': i === openIndex}">
+                  <span>{{not.name}} {{not.surname}} Send new visit request</span>
+                  <span (click)="onSetActive(i)"><i class="fas fa-angle-down"></i></span>
+                  <div class="col" *ngIf=" i === openIndex">
+                    <ng-container *ngTemplateOutlet="tableData; context:{visit: not.visit}"></ng-container>
+                    <div *ngIf="not.visit!!.optionalMessage">
+                      <pre>{{not.visit!!.optionalMessage}}</pre>
+                    </div>
+                    <div class="new-visit-body mt-2">
+                      <button *ngIf="!isAlreadyInCalendar(not)"
+                              (click)="onClickAddToCalendar(not)" class="dr-buttons">Add to calendar
+                      </button>
+                      <button (click)="onClickAccept(not)" class="ml-2 dr-buttons">Accept</button>
+                      <button (click)="onDecline(not)" class="ml-2 dr-buttons">Decline</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<ng-template #tableData let-visit="visit">
+  <table class="table profile__table mb-0">
+    <tbody style="font-size: 16px; color: black">
+    <tr>
+      <th><strong><i class="far fa-hospital mr-2" style="min-width: 16px;"></i>Visit Location</strong>
+      </th>
+      <td>{{visit.localisation}}</td>
+    </tr>
+    <tr>
+      <th><strong><i class="fas fa-stethoscope mr-2"></i>Visit Type</strong></th>
+      <td>{{visit.visitType}}</td>
+    </tr>
+    <tr>
+      <th><i class="far fa-calendar-plus mr-2"></i><strong>Visit Date</strong></th>
+      <td>{{getDate(visit.visitDate)}}</td>
+    </tr>
+    </tbody>
+  </table>
+</ng-template>
+
+<div class="overlay-container" [ngStyle]="{'display': showTimetable ? 'block': 'none'}">
+  <div class="overlay-button" (click)="onCloseTimeTable()"><i class="fas fa-times"></i></div>
+  <div class="overlay-content">
+    <app-calendar #calendarComponent
+                  [isEditable]="true"
+                  [calEvents]="calendarEvents"
+                  (saveCalendarEvent)="onSaveEmit($event)"
+    ></app-calendar>
+  </div>
+</div>
+
+<div *ngIf="isSendMessageFrameOpen" class="message-overlay-container">
+  <div class="dr-overlay-button" (click)="onCloseMessageWindow()"><i class="fas fa-times"></i></div>
+  <div class="dr-overlay-content">
+    <app-message-sender
+      [nonEditableSubject]="subjectTemplate"
+      [setMessageTemplate]="messageTemplate"
+      (closeEvt)="onCloseMessageWindow()"
+      (onSendEvt)="onSubmitRejectMessage($event)">
+    </app-message-sender>
+  </div>
+</div>

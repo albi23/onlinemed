@@ -1,0 +1,13 @@
+.active-page {
+  background: #0088ffd1 !important;
+  color: white !important;
+
+  &:focus {
+    background: #0088ffd1 !important;
+    outline: none;
+  }
+}
+
+.pointer-cursor {
+  cursor: pointer;
+}

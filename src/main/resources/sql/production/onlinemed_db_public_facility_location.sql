@@ -1,0 +1,1 @@
+INSERT INTO public.facility_location (id, timestamp, version, facilityaddress, facilityname, doctorinfo_id) VALUES ('f042a3cb-3790-424b-9adb-e0d13ae1da2c', '2020-12-03 11:17:07.682574', 1, 'Some Street 25, Some City55', 'Doctors Clinic nr. 17', '539f03e8-c9a6-4730-9d57-111054771a6d');

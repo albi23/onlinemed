@@ -1,0 +1,122 @@
+.message-container {
+  height: 90%;
+  &__row {
+    @extend .row;
+    @extend .m-0;
+    min-height: 90%
+  }
+
+  &__col {
+    @extend .col-12;
+    @extend .mb-0;
+    margin: auto;
+    padding: 10px 10px;
+    border: 3px solid #2196f3;
+    border-radius: 10px;
+  }
+}
+
+
+.group {
+  position: relative;
+  margin: 45px 0;
+}
+.bar {
+  position: relative;
+  display: block;
+  width: 100px;
+  &:before{
+    content: '';
+    height: 2px;
+    width: 0;
+    bottom: 0px;
+    position: absolute;
+    background: #2196F3;
+    -webkit-transition: 300ms ease all;
+    transition: 300ms ease all;
+    left: 0%;
+    box-sizing: border-box;
+  }
+  &:after{
+    box-sizing: border-box;
+  }
+}
+
+
+form {
+  width: 100%;
+  margin: 45px auto;
+}
+
+.group {
+  position: relative;
+  margin: 45px 0;
+}
+
+.group textarea {
+  resize: none;
+}
+
+.group input,
+.group textarea {
+  background: none;
+  color: #756f6f;
+  font-size: 18px;
+  padding: 10px 10px 10px 5px;
+  display: block;
+  width: 100%;
+  border: none;
+  border-radius: 0;
+  border-bottom: 1px solid #c6c6c6;
+}
+.group input:focus,
+.group textarea:focus {
+  outline: none;
+}
+.group input:focus ~ .ms-label, .group input:valid ~ .ms-label,
+.group input:disabled ~ .ms-label,
+.group textarea:focus ~ .ms-label,
+.group textarea:valid ~ .ms-label {
+  top: -14px;
+  font-size: 12px;
+  color: #2196F3;
+}
+.group input:focus ~ .bar:before,
+.group textarea:focus ~ .bar:before {
+  width: 100%;
+}
+
+.ms-label {
+  color: #c6c6c6;
+  font-size: 16px;
+  font-weight: normal;
+  position: absolute;
+  pointer-events: none;
+  left: 5px;
+  top: 10px;
+  -webkit-transition: 300ms ease all;
+  transition: 300ms ease all;
+}
+
+.bar {
+  position: relative;
+  display: block;
+  width: 100%;
+}
+.bar:before {
+  content: '';
+  height: 2px;
+  width: 0;
+  bottom: 0px;
+  position: absolute;
+  background: #2196F3;
+  -webkit-transition: 300ms ease all;
+  transition: 300ms ease all;
+  left: 0%;
+}
+
+
+.btn-box {
+  text-align: center;
+  margin: 50px 0;
+}

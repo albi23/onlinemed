@@ -1,0 +1,10 @@
+<div class="all-post-container">
+  <div *ngFor="let pageTopic of forumTopicsPage">
+    <app-single-topic-view
+      [isLiked]="isCurrentPersonLikeTopic(pageTopic.favorites)"
+      [isUpdated]="isTopicInUpdateProcess(pageTopic.id)"
+      [topic]="pageTopic"
+      (topicEvent)="onTopicEvent($event)"></app-single-topic-view>
+  </div>
+</div>
+

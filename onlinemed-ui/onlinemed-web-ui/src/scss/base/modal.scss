@@ -1,0 +1,137 @@
+@import 'https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,600';
+@import "animations";
+
+$font: 'Source Sans Pro', sans-serif;
+$primary: #FF0072;
+$secondary: #435973;
+$text: #5579a0;
+$green: #00c06d;
+
+.blur {
+  -webkit-filter: blur(5px);
+  -moz-filter: blur(5px);
+  -o-filter: blur(5px);
+  -ms-filter: blur(5px);
+  filter: blur(5px);
+}
+
+.flex {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.modalcontainer {
+  z-index: 2501;
+  display: none;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+
+  &.active {
+    display: block;
+    opacity: 1;
+    animation: fadein 1s;
+  }
+}
+
+.modal {
+  display: block;
+  opacity: 0;
+  position: absolute;
+  top: calc(50% - 15vw);
+  left: calc(50% - 20vw);
+  width: 40vw;
+  min-height: 15vw;
+  height: fit-content;
+  background-color: #FFF;
+
+  &.active {
+    display: block;
+    opacity: 1;
+    animation: fadein 1s;
+  }
+
+  .content {
+    padding: 30px;
+
+    & h2 {
+      color: $secondary;
+      font-size: 2.2rem;
+    }
+
+    & p {
+      color: $text;
+      font-size: 1.5rem;
+      line-height: 24px;
+      padding-bottom: 1vw;
+    }
+  }
+
+  .close {
+    font-family: $font;
+    cursor: pointer;
+    width: 40px;
+    height: 40px;
+    text-align: center;
+    line-height: 40px;
+    position: absolute;
+    right: 0;
+    color: #3a3939;
+    font-size: 40px;
+
+    span {
+      transform: rotate(45deg);
+      display: block;
+      background: #a29d9d;
+      border-radius: 25px;
+
+      &:hover{
+        color: #bb2e2e;
+      }
+    }
+  }
+
+  .buttons {
+    width: 100%;
+    position: absolute;
+    bottom: 0;
+    height: 50px;
+    background-color: #FFF;
+    display: flex;
+
+    a {
+      width: 100%;
+      height: 50px;
+      line-height: 50px;
+      text-align: center;
+      float: left;
+      background-color: #b6b4b4;
+      color: $secondary;
+      transition: 0.3s;
+      text-transform: uppercase;
+      font-weight: bold;
+
+      &:hover {
+        background-color: #bb2e2e;
+        color: #FFF;
+      }
+
+      &:nth-of-type(2) {
+        float: right;
+        color: #FFF;
+        background-color: $green;
+
+        &:hover {
+          background-color: darken($green, 5%);
+        }
+      }
+    }
+  }
+}
+
+

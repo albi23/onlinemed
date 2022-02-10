@@ -1,0 +1,26 @@
+<div class="drug-equivalents-container" #drugEquivalentsContainer>
+  <app-spinner [isActive]="isActiveSpinner"></app-spinner>
+  <div class="search-container">
+    <div class="Card">
+      <div class="CardInner">
+        <label>{{'drug-equivalents.search-for' | translate}}</label>
+        <div class="container">
+          <div class="Icon" (click)="onClickSearch()">
+            <span><i class="fas fa-search"></i></span>
+          </div>
+          <div class="input-container">
+            <input [placeholder]="getPlaceHolder()" #input/>
+          </div>
+        </div>
+      </div>
+      <div *ngIf="resultDrugHints">
+        <app-drug-hints [drugHints]="resultDrugHints" (selectOptionEvent)="onSelectHint($event)"></app-drug-hints>
+      </div>
+      <div *ngIf="isDrugInfoTableActive" class="drug-info-table-container">
+        <app-drug-info-table #drugInfoTable [setPageItems]="drugInfoDTOS" (linkEmitter)="onLinkEmit($event)">
+        </app-drug-info-table>
+      </div>
+    </div>
+  </div>
+</div>
+

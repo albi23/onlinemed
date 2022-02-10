@@ -1,0 +1,18 @@
+.generation-box {
+  width: 100%;
+  min-height: 100px;
+  border: solid 2px #4768de;
+  border-radius: 20px;
+  padding: 10px 10px;
+  margin-bottom: 10px;
+
+  &__select_roles span.dropdown-btn {
+    border-color: #ced4da !important;
+
+    &:hover, &:active {
+      border-color: #80bdff !important;
+      outline: 0;
+      box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+    }
+  }
+}

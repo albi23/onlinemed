@@ -1,0 +1,58 @@
+<div #loginContainer class="login-container-fluid">
+  <app-notification-box></app-notification-box>
+  <app-spinner [isActive]="spinnerStatus"></app-spinner>
+  <div class="login-container-fluid__section-start">
+    <div id="login-content">
+      <div class="login-container-fluid__centered-row">
+        <h1 class="login-container-fluid__header">{{'common.user-login' | translate }}</h1>
+      </div>
+      <div class="row d-flex justify-content-center">
+        <div class="col-11">
+          <form>
+            <div class="form-group mt-3">
+              <div class="input-group">
+                  <span class="login-container-fluid__icon-span">
+                    <i class="fa fa-user login-container-fluid__icon"></i></span>
+                <input class="form-control left-border-none login-container-fluid__input-field"
+                       [placeholder]="getPlaceHolder('common.username')"
+                       [(ngModel)]="usernameField"
+                       type="text" name="username" minlength="6">
+              </div>
+            </div>
+          </form>
+          <form>
+            <div class="form-group mt-3">
+              <div class="input-group">
+                  <span class="login-container-fluid__icon-span">
+                    <i class="fa fa-lock login-container-fluid__icon"></i></span>
+                <input class="form-control left-border-none login-container-fluid__input-field"
+                       placeholder="*****"
+                       [type]="passwordInputType" [(ngModel)]="passwordField"
+                       type="text" name="username" minlength="8">
+              </div>
+            </div>
+            <div class="form-check ml-3 pb-2">
+              <input type="checkbox" class="form-check-input" id="materialUnchecked" (click)="onClickCheckBox()">
+              <label class="form-check-label" for="materialUnchecked">{{'common.show-password' | translate}}</label>
+            </div>
+          </form>
+        </div>
+      </div>
+      <a (click)="onLogin()" role="button" aria-pressed="true">
+        <div class="row">
+          <div class="login-wrapper">
+            <div class="glow2">&nbsp;</div>
+            <div class="login-front">{{'common.login' | translate}}</div>
+            <div class="login-edge-bottomright"></div>
+            <div class="login-edge-bottomleft"></div>
+          </div>
+        </div>
+      </a>
+      <div class="login-container-fluid__remind-block">
+        <a role="button" aria-pressed="true" (click)="onResetPassword()">
+          <h4 class="login-container-fluid__reminder">{{'common.forgot-password' | translate}}</h4>
+        </a>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,9 @@
+<div class="container-fluid p-0" id="notification-box">
+  <div class="position-static table-bottom "
+       *ngFor="let key of getAlertListKey()">
+    <app-notification
+      [alert]="getAlert(key)"
+      [key]="key">
+    </app-notification>
+  </div>
+</div>

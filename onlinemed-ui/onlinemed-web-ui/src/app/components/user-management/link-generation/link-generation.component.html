@@ -1,0 +1,54 @@
+<div class="user-management-container__table">
+  <div class="generation-box">
+    <div class="col">
+      <h3 class="mt-2 mb-2">{{'user-management.registration-link-generator' | translate}}</h3>
+      <table class="table profile__table mb-0">
+        <tbody style="font-size: 16px; color: black;">
+        <tr>
+          <th><strong><i class="fas fa-user-tag mr-2" style="min-width: 16px;"></i>{{'user-management.roles' | translate}}</strong></th>
+          <td>
+            <ng-multiselect-dropdown class="generation-box__select_roles"
+              [settings]="getDropDownSettings()"
+              [data]="dropdownList"
+              [placeholder]="getPlaceholder()"
+              (onDeSelect)="onItemDeSelect($event)"
+              (onSelect)="onItemSelect($event)"
+              [(ngModel)]="selectedItems">
+            </ng-multiselect-dropdown>
+          </td>
+        </tr>
+        <tr>
+          <th><strong><i class="fas fa-sort-numeric-up-alt mr-2"></i>{{'user-management.amount' | translate}}</strong></th>
+          <td>
+            <div class="form-group mb-0">
+              <input #amount type="number" placeholder="links amount" [min]="0" [max]="20" class="form-control">
+            </div>
+          </td>
+        </tr>
+        <tr>
+          <th><strong><i class="far fa-clock mr-2" style="min-width: 16px;"></i>
+            {{'user-management.expiration-time' | translate}}</strong>
+          </th>
+          <td>
+            <div class="w-100">
+              <label for="localisation" class="w-100">
+                <select id="localisation" class="form-control"
+                        [(ngModel)]="selectedExpirationTimeIndex">
+                  <option value="-1" disabled selected>{{'user-management.expiration-link-time' | translate}}</option>
+                  <option *ngFor="let exp of expirationTime; let i = index" [selected]="i === selectedExpirationTimeIndex"
+                          [value]="i"
+                          [label]="exp.label">
+                  </option>
+                </select>
+              </label>
+            </div>
+          </td>
+        </tr>
+        </tbody>
+      </table>
+      <div class="new-visit-body mt-2">
+        <button (click)="onClickGenerate()" class="dr-buttons"> {{'user-management.generate-links' | translate}}</button>
+      </div>
+    </div>
+  </div>
+</div>

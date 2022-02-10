@@ -1,0 +1,26 @@
+<div class="message-container">
+  <div class="message-container__row">
+    <div class="message-container__col">
+      <form>
+        <div class="group">
+          <input #subject type="text" required="required" [disabled]="subjectTemplate">
+          <span class="highlight"></span>
+          <span class="bar"></span>
+          <label class="ms-label">{{'common.subject' | translate}}</label>
+        </div>
+        <div class="group">
+          <textarea #message type="textarea" rows="8" required="required"></textarea>
+          <span class="highlight"></span>
+          <span class="bar"></span>
+          <label class="ms-label">{{'common.message' | translate}}</label>
+        </div>
+        <div class="btn-box">
+          <button class="mt-btn btn-submit" type="submit" (click)="onClickSubmit()">{{'common.submit' | translate}}</button>
+          <button class="mt-btn btn-cancel" type="button" (click)="onClickCancel()">{{'common.cancel' | translate}}
+          </button>
+        </div>
+      </form>
+
+    </div>
+  </div>
+</div>

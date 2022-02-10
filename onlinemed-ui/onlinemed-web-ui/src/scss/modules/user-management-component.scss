@@ -1,0 +1,32 @@
+.user-management-container {
+  @extend .col-12;
+  @extend .pt-4;
+  background: #92b6d278;
+  width: 100%;
+  min-width: 100%;
+  height: -webkit-fill-available;
+
+  &__table-container {
+    @extend .row;
+    @extend .d-flex;
+    @extend .justify-content-center;
+    background-color: #2e507b;
+    color: white;
+    margin-left: 0;
+    border-top-left-radius: 4vw;
+    border-top-right-radius: 4vw;
+    width: 100%
+  }
+
+  &__table {
+    @extend .row;
+    display: table;
+    width: 100%;
+    background: azure;
+    margin-left: 0;
+  }
+
+  &__title {
+    padding: 1vw;
+  }
+}

@@ -1,0 +1,36 @@
+<div class="all-post-container__content-row">
+  <div class="col-12">
+    <div class="all-post-container__post-card">
+      <div class="f-row">
+        <div class="f-auto-col">
+          <img src="assets/male.png" width="80" class="user-img rounded-circle mr-2">
+        </div>
+        <div class="f-column">
+          <div class="all-post-container__flex_content_center">
+            <div class="d-flex flex-row align-items-center">
+              <span (click)="onClickTopic(topic.id)" class="all-post-container__post-title">{{topic.title}}</span>
+            </div>
+            <p>{{getTimeAgoString(topic.timestamp)}}</p>
+          </div>
+          <div class="all-post-container__post-owner">
+            <span><p>{{topic.creatorUserName}}</p></span>
+          </div>
+          <div class="mt-2 all-post-container__flex_content_center">
+            <div class="all-post-container__hasztags-content">
+              <ul>
+                <li *ngFor="let hasz of extractsHasztags(topic)"> {{hasz}} </li>
+              </ul>
+            </div>
+            <div class="icons align-items-center">
+              <button (click)="onClickHearth(topic)" [disabled]="isUpdated"
+                      class="btn btn-sm btn-outline-primary">{{topic.favorites.length || 0}}
+                <i class="fas fa-heart ml-0" [ngClass]="{'red-heart': isLiked}" ></i>
+              </button>
+              <i class="fas fa-check-circle check-icon text-primary"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

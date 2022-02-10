@@ -1,0 +1,202 @@
+@import "../vars";
+
+.login-container-fluid {
+  @extend .container-fluid;
+  background-color: #7599b3;
+  min-height: 100%;
+
+  &__section-start {
+    @extend .row;
+    @extend .d-flex;
+    @extend .justify-content-center;
+    padding-top: 5%;
+  }
+
+  .center-row {
+    @extend .row;
+    @extend .d-flex;
+    @extend .justify-content-center;
+  }
+
+  &__centered-row {
+    @extend .center-row;
+    background-color: $global-login-color;
+    font-family: 'Courier New', Courier, monospace;
+    letter-spacing: 0.3em;
+  }
+
+  &__header {
+    color: white;
+    padding: 1.7rem;
+    margin-bottom: 0;
+  }
+
+  &__icon-span {
+    @extend .mr-2;
+    margin-bottom: auto;
+    margin-top: auto;
+    height: auto;
+  }
+
+  &__icon {
+    font-size: xxx-large;
+    margin-top: auto;
+    margin-bottom: auto;
+  }
+
+  &__input-field {
+    font-size: xx-large;
+    border-left: none;
+    border-right: none;
+    border-top: none;
+  }
+
+  &__remind-block {
+    @extend .center-row;
+    padding: 1.7rem;
+  }
+
+  &__reminder {
+    color: #a5aac7;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+}
+
+#login-content {
+  @extend .col-5;
+  background-color: white;
+  box-shadow: 0 2.8px 2.2px rgba(0, 0, 0, 0.034),
+  0 6.7px 5.3px rgba(0, 0, 0, 0.048),
+  0 12.5px 10px rgba(0, 0, 0, 0.06),
+  0 22.3px 17.9px rgba(0, 0, 0, 0.072),
+  0 41.8px 33.4px rgba(0, 0, 0, 0.086),
+  0 100px 80px rgba(0, 0, 0, 0.12);
+}
+
+.login-wrapper {
+  position: relative;
+  z-index: 998;
+  width: 100%;
+}
+
+.login-front {
+  background-color: $global-login-color;
+  padding: 1rem;
+  width: calc(100% + 4vw);
+  position: relative;
+  left: -2vw;
+  z-index: 2;
+  font: 20px/50px bold Verdana, Geneva, sans-serif;
+  color: #f8f8f8;
+  text-align: center;
+  text-shadow: 0 1px 2px #6b97d5;
+}
+
+.login-front,
+.login-back-left,
+.login-back-right {
+  -moz-box-shadow: 0 0 4px rgba(0, 0, 0, 0.55);
+  -khtml-box-shadow: 0 0 4px rgba(0, 0, 0, 0.55);
+  -webkit-box-shadow: 0 0 4px rgba(0, 0, 0, 0.55);
+  -o-box-shadow: 0 0 4px rgba(0, 0, 0, 0.55);
+}
+
+.login-edge-bottomleft,
+.login-edge-bottomright {
+  position: absolute;
+  z-index: 1;
+  border-style: solid;
+  height: 0;
+  width: 0;
+}
+
+
+.login-edge-bottomleft {
+  left: -2vw;
+  border-color: transparent #263a53 transparent transparent;
+}
+
+.login-edge-bottomleft {
+  border-width: 0 2vw 2vw 0;
+}
+
+.login-edge-bottomright {
+  left: 100%;
+  border-color: transparent transparent transparent #263a53;
+}
+
+.login-edge-bottomright {
+  border-width: 0 0 2vw 2vw;
+}
+
+.glow2 {
+  background: rgb(255, 255, 255);
+  width: 40px;
+  height: 100%;
+  z-index: 999;
+  position: absolute;
+  -webkit-animation: flow 1.5s linear infinite;
+  -moz-animation: flow 1.5s linear infinite;
+  -webkit-transform: skew(20deg);
+  -moz-transform: skew(20deg);
+  -o-transform: skew(20deg);
+  background: -moz-linear-gradient(left, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0) 1%, rgba(255, 255, 255, 1) 100%); /* FF3.6+ */
+  background: -webkit-gradient(linear, left top, right top, color-stop(0%, rgba(255, 255, 255, 0)), color-stop(1%, rgba(255, 255, 255, 0)), color-stop(100%, rgba(255, 255, 255, 1))); /* Chrome,Safari4+ */
+  background: -webkit-linear-gradient(left, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0) 1%, rgba(255, 255, 255, 1) 100%); /* Chrome10+,Safari5.1+ */
+  background: -o-linear-gradient(left, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0) 1%, rgba(255, 255, 255, 1) 100%); /* Opera 11.10+ */
+  background: -ms-linear-gradient(left, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0) 1%, rgba(255, 255, 255, 1) 100%); /* IE10+ */
+  background: linear-gradient(to right, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0) 1%, rgba(255, 255, 255, 1) 100%); /* W3C */
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#00ffffff', endColorstr='#ffffff', GradientType=1); /* IE6-9 */
+  border-left: 1px solid #fff;
+}
+
+.form-check{
+  input[type=checkbox] {
+    transform: scale(1.5);
+  }
+}
+@-webkit-keyframes flow {
+  0% {
+    left: -20px;
+    opacity: 0;
+  }
+  50% {
+    left: 30%;
+    opacity: 0.3;
+  }
+  100% {
+    left: 80%;
+    opacity: 0;
+  }
+}
+
+@keyframes flow {
+  0% {
+    left: -20px;
+    opacity: 0;
+  }
+  50% {
+    left: 30%;
+    opacity: 0.3;
+  }
+  100% {
+    left: 80%;
+    opacity: 0;
+  }
+}
+
+@media only screen and (max-width: 768px) {
+  #login-content {
+    -ms-flex: 0 0 91.666667%;
+    flex: 0 0 91.666667%;
+    max-width: 91.666667%;
+  }
+  .login-container-fluid__header {
+    padding: 1.1rem;
+  }
+}
+
+

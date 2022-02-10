@@ -1,0 +1,11 @@
+<div *ngIf="allRoles && nextItem" class="ume-dropdown-container" >
+  <ng-multiselect-dropdown
+    [settings]="getDropDownSettings()"
+    [data]="dropdownList"
+    [placeholder]="'Select Roles'"
+    (onDeSelect)="onItemDeSelect($event)"
+    (onSelect)="onItemSelect($event)"
+    [(ngModel)]="selectedItems"
+  >
+  </ng-multiselect-dropdown>
+</div>

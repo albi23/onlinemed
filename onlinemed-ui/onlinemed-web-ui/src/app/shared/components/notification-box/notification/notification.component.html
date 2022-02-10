@@ -1,0 +1,14 @@
+<div class="notification-container">
+  <div class="{{divClass}}"
+       (mouseenter)="onMouseEnter()"
+       (mouseleave)="onMouseLeave()">
+    <div class="{{alert.getClassOfAlert()}}">
+      <div class="notification-container__message-container">
+        <div class="notification-container__message">{{alert.message | translate}}</div>
+        <div class="notification-container__close_btn" (click)="deleteNotification()">
+          <i class="fa fa-times"></i>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

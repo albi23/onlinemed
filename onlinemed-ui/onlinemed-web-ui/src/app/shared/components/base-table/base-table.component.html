@@ -1,0 +1,170 @@
+<ng-template #baseTableBigTemplate>
+  <div class="container-fluid" [ngClass]="getAdditionalCSSClass()">
+    <table class="base-table base-table__striped pointer">
+      <thead class="base-table__header-background base-table__header-text">
+      <th *ngIf="checkBoxMandatory" id="select">
+        <!-- <input type="checkbox" [(ngModel)]="changeSelection" (change)="changeSelectionAction()">-->
+        <span>{{ 'common.select'| translate }}</span>
+      </th>
+      <th *ngFor="let column of getColumns()" (click)="sortByChanged(column)"
+          [ngClass]="isSortableColumn(column) ? 'pointer' : ''"
+          [innerHTML]="getColumnLabel(column)">
+      </th>
+      </thead>
+      <tbody>
+      <tr *ngFor="let nextItem of getCurrentPage(); let i = index"
+          [ngClass]="checkBoxMandatory? '': getAdditionalRowClass(nextItem)"
+          class="base-table__row-on-hover">
+
+        <td *ngIf="checkBoxMandatory" (click)="handleRowClick(nextItem)" class="base-table__table-data">
+          <input type="checkbox" [ngModel]="selectedItems[nextItem.id]">
+        </td>
+
+        <td *ngFor="let column of getColumns()" class="base-table__table-data">
+          <div *ngIf="column['id']; else thumbnailDiv">
+            {{ getValueFromItem(nextItem, column) }}
+          </div>
+          <ng-template #thumbnailDiv>
+            <div *ngIf="column === 'thumbnail'; else actionDiv"
+                 id="{{'thumbnail_' + i}}"
+              class="base-table__justify base-table__block">
+              <!-- TODO thumbnail implementation
+               <img [src]="" alt="thumbnail" class="thumbnail">-->
+            </div>
+          </ng-template>
+
+          <ng-template #actionDiv>
+            <div *ngIf="column == 'action' else specificEditDiv">
+              <div
+                *ngIf="editDisabled === true ||  (editDisabled === false && (!editedItem) || (editedItem && nextItem.id !== editedItem.id)); else editButtons">
+                <div style="display: inline-block; cursor: pointer" data-tooltip="Edit item">
+                  <i (click)="editItem(nextItem)" class="fas fa-user-edit" aria-hidden="true"></i>
+                </div>
+                <div style="display: inline-block" data-tooltip="Remove item">
+                  <i (click)="deleteItemAction(nextItem)"
+                     class="fas fa-trash fa_size base-table__icon-spacing" aria-hidden="true"></i>
+                </div>
+              </div>
+              <ng-template #editButtons>
+                <div *ngIf="(editedItem && nextItem.id === editedItem.id)">
+                  <button class="base-table__edit-button" [disabled]="editDisabled"
+                          (click)="updateItem(editedItem)">{{'common.update' | translate}}
+                  </button>
+                  <button class="base-table__cancel-button" [disabled]="editDisabled"
+                          (click)="cancelEdition()">{{"common.cancel" | translate}}
+                  </button>
+                </div>
+              </ng-template>
+            </div>
+          </ng-template>
+
+          <ng-template #specificEditDiv> <!-- && (editedItem && nextItem.id === editedItem.id)-->
+            <div *ngIf="column == specificColumnName && defineExtraCondition(nextItem)  else defaultDiv">
+              <ng-container *ngComponentOutlet="currentComponent; injector: currentInjector"></ng-container>
+            </div>
+          </ng-template>
+
+          <ng-template #defaultDiv>
+            <input *ngIf="(editedItem && nextItem.id === editedItem.id)" type="text" class="form-control"
+                   [disabled]="editDisabled" [ngModel]="getValueFromItem(nextItem, column)"
+                   (ngModelChange)="updateValues(nextItem, column, $event)">
+            <div *ngIf="(!editedItem) || (editedItem && nextItem.id !== editedItem.id)">
+              {{ getValueFromItem(nextItem, column) }}
+            </div>
+          </ng-template>
+        </td>
+      </tr>
+      <ng-container *ngIf="checkBoxMandatory">
+        <tr *ngFor="let row of getPadding()">
+          <td class="base-table__table-data">
+            <input type="checkbox" disabled>
+          </td>
+          <td *ngFor="let column of getColumns()">
+          </td>
+        </tr>
+      </ng-container>
+      </tbody>
+    </table>
+    <div class="divider"></div>
+    <nav id="paginator-container" *ngIf="pagination">
+      <ul class="base-table__pagination base-table__justify" #pageButtons>
+        <li  class="base-table__page-item" data-tooltip=""
+            [ngClass]="{'disabled':(isFirstPage() || isEmpty())}">
+          <a class="base-table__page-link " (click)="goToFirstPage()"><i class="fas fa-angle-double-left fa-lg"></i></a>
+        </li>
+        <li class="base-table__page-item" [ngClass]="{'disabled':(isFirstPage() || isEmpty())}">
+          <a class="base-table__page-link " (click)="previousPage()"><i class="fas fa-angle-left fa-lg"></i></a></li>
+        <li class="base-table__page-item disabled">
+          <a class="base-table__page-link">{{getPageDescription()}}</a>
+        </li>
+        <li class="base-table__page-item" [ngClass]="{'disabled':(isLastPage() || isEmpty())}">
+          <a class="base-table__page-link " (click)="nextPage()"><i class="fas fa-angle-right fa-lg"></i></a>
+        </li>
+        <li class="base-table__page-item" [ngClass]="{'disabled':(isLastPage() || isEmpty())}">
+          <a class="base-table__page-link " (click)="goToLastPage()"><i class="fas fa-angle-double-right fa-lg"></i></a>
+        </li>
+      </ul>
+    </nav>
+    <div class="divider"></div>
+  </div>
+</ng-template>
+
+<ng-template #baseTableSmallTemplate>
+  <div id="small-table" class="container-fluid">
+    <div class="btn-group pb-2">
+      <button type="button" class="btn button__standard dropdown-toggle" data-toggle="dropdown" aria-haspopup="true"
+              aria-expanded="false" [innerHTML]="getColumnLabel(sortByColumn)"></button>
+      <div class="dropdown-menu">
+        <div class="m-1">
+          <div class="dropdown-item btn button__standard button__outline-secondary " *ngFor="let column of getColumns()"
+               (click)="sortByChanged(column)"
+               [innerHTML]="getColumnLabel(column)"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="base-table">
+      <div *ngFor="let nextItem of getCurrentPage(); let i = index" (click)="changeOneSelectionAction(nextItem)"
+           class="{{selectedItems[nextItem.id] ? 'base-table__flex base-table__items-align base-table__selected-item': 'base-table__flex base-table__items-align'}}">
+        <div *ngIf="getColumns().indexOf('thumbnail') > -1"
+             id="{{'thumbnail_' + i}}"
+             class="base-table__justify base-table__inline">
+        </div>
+        <div>
+          <div *ngFor="let column of getColumns()">
+            <div *ngIf="column['id']  else defaultDiv">
+              {{ getValueFromItem(nextItem, column) }}
+            </div>
+            <ng-template #defaultDiv>
+              <div
+                *ngIf="column !== 'thumbnail'">
+                <strong>{{ getColumnTranslation(column) }}:</strong> {{ getValueFromItem(nextItem, column) }}
+              </div>
+            </ng-template>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="divider"></div>
+    <nav>
+      <ul class="base-table__pagination base-table__justify">
+        <li class="base-table__page-item" [ngClass]="{'disabled':(isFirstPage() || isEmpty())}">
+          <a class="base-table__page-link" (click)="goToFirstPage()">&#60;&#60;</a>
+        </li>
+        <li class="base-table__page-item" [ngClass]="{'disabled':(isFirstPage() || isEmpty())}">
+          <a class="base-table__page-link" (click)="previousPage()">&#60;</a></li>
+        <li class="base-table__page-item disabled">
+          <a class="base-table__page-link">{{getPageDescription()}}</a>
+        </li>
+        <li class="base-table__page-item" [ngClass]="{'disabled':(isLastPage() || isEmpty())}">
+          <a class="base-table__page-link" (click)="nextPage()">&#62;</a>
+        </li>
+        <li class="base-table__page-item" [ngClass]="{'disabled':(isLastPage() || isEmpty())}">
+          <a class="base-table__page-link" (click)="goToLastPage()">&#62;&#62;</a>
+        </li>
+      </ul>
+    </nav>
+    <div class="divider"></div>
+  </div>
+</ng-template>
+<div *ngIf="checkScreenSize(); then baseTableSmallTemplate else baseTableBigTemplate"></div>

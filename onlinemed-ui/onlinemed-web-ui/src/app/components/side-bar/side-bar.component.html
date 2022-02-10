@@ -1,0 +1,37 @@
+<nav id="sidebar" class="sidebar-container" [ngClass]="{'active': status}">
+  <div class="sidebar-container__menu">
+    <button type="button" id="sidebarCollapse" (click)="onClickMenuIcon()"
+            class="btn btn-primary">
+      <i class="fa fa-bars"></i>
+    </button>
+  </div>
+  <div class="p-4">
+    <h1 class="sidebar-container__logo">Online Med</h1>
+    <ul class="list-unstyled components mb-5">
+      <li *ngFor="let func of getPersonFunctionalities(); let i = index"
+          [ngClass]="{'active' : isActiveFunctionality(i)}">
+        <a (click)="onClickRedirect(func, i)" type="button">
+            <span [ngClass]="getFunctionalityIcon(func.name)" class="mr-3 sidebar-container__icon_size">
+          </span>{{translateName(func.name)}}</a>
+      </li>
+      <li>
+        <a type="button" (click)="onLogOut()">
+          <span class="fas fa-power-off mr-3 sidebar-container__icon_size"> </span>{{'common.log-out' | translate}}
+        </a>
+      </li>
+    </ul>
+  </div>
+
+  <div class="sidebar-container__footer">
+      <div class="d-flex">
+        <h5>{{'common.language' | translate}}: </h5>
+        <label class="ml-1">
+          <select class="form-control" [(ngModel)]='selectedMenuIndex' #item name="first" required (change)="onChangeLanguage()">
+            <option *ngFor="let lang of languages; let i = index" [value]="i" [selected]="i === selectedMenuIndex"
+                    [label]="getLanguageIcon(lang.locale)"></option>
+          </select>
+        </label>
+      </div>
+    <h6 >&#169; Copyright {{getDateYear()}} | Albert Piekielny</h6>
+  </div>
+</nav>

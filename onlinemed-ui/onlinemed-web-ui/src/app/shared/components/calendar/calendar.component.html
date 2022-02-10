@@ -1,0 +1,186 @@
+<div class="row text-center mt-2 ml-0 mr-0">
+  <div class="col-md-4">
+    <div class="btn-group">
+      <div
+        class="btn btn-primary"
+        mwlCalendarPreviousView
+        [view]="view"
+        [(viewDate)]="viewDate"
+        (viewDateChange)="closeOpenMonthViewDay()"
+      >
+        {{'common.previous' | translate}}
+      </div>
+      <div
+        class="btn btn-outline-secondary"
+        mwlCalendarToday
+        [(viewDate)]="viewDate"
+      >
+        {{'common.today' | translate}}
+      </div>
+      <div
+        class="btn btn-primary"
+        mwlCalendarNextView
+        [view]="view"
+        [(viewDate)]="viewDate"
+        (viewDateChange)="closeOpenMonthViewDay()"
+      >
+        Next
+      </div>
+    </div>
+  </div>
+  <div class="col-md-4">
+    <h3>{{ viewDate | calendarDate:(view + 'ViewTitle'):'en' }}</h3>
+  </div>
+  <div class="col-md-4">
+    <div class="btn-group">
+      <div
+        class="btn btn-primary"
+        (click)="setView(CalendarView.Day)"
+        [class.active]="view === CalendarView.Day"
+      >
+        {{'common.day' | translate}}
+      </div>
+      <div
+        class="btn btn-primary"
+        (click)="setView(CalendarView.Week)"
+        [class.active]="view === CalendarView.Week"
+      >
+        {{'common.week' | translate}}
+      </div>
+      <div
+        class="btn btn-primary"
+        (click)="setView(CalendarView.Month)"
+        [class.active]="view === CalendarView.Month"
+      >
+        {{'common.month' | translate}}
+      </div>
+    </div>
+  </div>
+</div>
+<br/>
+<div [ngSwitch]="view" style="max-width: 95%; margin: auto;">
+  <mwl-calendar-month-view
+    *ngSwitchCase="CalendarView.Month"
+    [viewDate]="viewDate"
+    [events]="events"
+    [refresh]="refresh"
+    [activeDayIsOpen]="activeDayIsOpen"
+    [tooltipDelay]="100"
+    (dayClicked)="dayClicked($event.day)"
+    (eventClicked)="handleEvent('Clicked', $event.event)"
+    (eventTimesChanged)="eventTimesChanged($event)"
+  >
+  </mwl-calendar-month-view>
+  <mwl-calendar-week-view
+    *ngSwitchCase="CalendarView.Week"
+    [viewDate]="viewDate"
+    [events]="events"
+    [refresh]="refresh"
+    (eventClicked)="handleEvent('Clicked', $event.event)"
+    (eventTimesChanged)="eventTimesChanged($event)"
+  >
+  </mwl-calendar-week-view>
+  <mwl-calendar-day-view
+    *ngSwitchCase="CalendarView.Day"
+    [viewDate]="viewDate"
+    [events]="events"
+    [refresh]="refresh"
+    (eventClicked)="handleEvent('Clicked', $event.event)"
+    (eventTimesChanged)="eventTimesChanged($event)"
+  >
+  </mwl-calendar-day-view>
+</div>
+
+<div *ngIf="isEditable">
+  <br/><br/><br/>
+
+  <div style="max-width: 95%; margin: auto">
+    <h3>
+      {{'common.edit-events' | translate}}
+      <button class="btn btn-primary float-right" (click)="addEvent()">
+        {{'common.add-new' | translate}}
+      </button>
+      <div class="clearfix"></div>
+    </h3>
+  </div>
+
+  <div class="table-responsive" style="max-width: 95%;margin: auto;">
+    <table class="table table-bordered">
+      <thead>
+      <tr>
+        <th>{{'common.title' | translate}}</th>
+        <th>{{'common.starts-at' | translate}}</th>
+        <th>{{'common.ends-at' | translate}}</th>
+        <th class="center-table-cell">{{'common.remove' | translate}}</th>
+        <th class="center-table-cell">{{'common.update' | translate}}</th>
+      </tr>
+      </thead>
+
+      <tbody>
+      <tr *ngFor="let event of events; let i = index" [id]="event.id">
+        <td>
+          <input
+            type="text"
+            class="form-control"
+            [(ngModel)]="event.title"
+            (keyup)="refresh.next()"
+          />
+        </td>
+        <td>
+          <input
+            class="form-control"
+            type="text"
+            mwlFlatpickr
+            [(ngModel)]="event.start"
+            (ngModelChange)="refresh.next()"
+            [altInput]="true"
+            [convertModelValue]="true"
+            [enableTime]="true"
+            dateFormat="Y-m-dTH:i"
+            altFormat="F j, Y H:i"
+            placeholder="Not set"
+          />
+        </td>
+        <td>
+          <input
+            class="form-control"
+            type="text"
+            mwlFlatpickr
+            [(ngModel)]="event.end"
+            (ngModelChange)="refresh.next()"
+            [altInput]="true"
+            [convertModelValue]="true"
+            [enableTime]="true"
+            dateFormat="Y-m-dTH:i"
+            altFormat="F j, Y H:i"
+            placeholder="Not set"
+          />
+        </td>
+        <td class="center-table-cell">
+
+          <button *ngIf="!isNewObject(event); else emptyText" class="btn btn-danger" (click)="deleteEventAction(event)">
+            {{'common.delete' | translate}}
+          </button>
+
+        </td>
+        <td class="center-table-cell">
+          <button *ngIf="!isNewObject(event)"
+                  class="btn btn-success" (click)="handleEvent('change',event)">
+            {{'common.update' | translate}}
+          </button>
+          <button *ngIf="isNewObject(event)" class="btn btn-primary"
+                  (click)="saveEvent(event)">
+            {{'common.save' | translate}}
+          </button>
+
+        </td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
+
+</div>
+
+<ng-template #emptyText>
+  <div class="new-evt-text">{{'common.new-event' | translate}}</div>
+</ng-template>

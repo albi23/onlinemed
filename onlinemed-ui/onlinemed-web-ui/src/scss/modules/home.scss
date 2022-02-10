@@ -1,0 +1,17 @@
+.home-container {
+  @extend .d-flex;
+  @extend .align-items-stretch;
+  width: 100%;
+  height: 100%;
+  background-color: #92b6d278;
+  overflow-y: auto;
+
+  &__route_content {
+    @extend .col;
+    max-width: 100%;
+    padding-left: 0;
+    padding-right: 0;
+    background: #0000000f;
+    overflow-y: auto;
+  }
+}

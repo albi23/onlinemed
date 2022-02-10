@@ -1,0 +1,85 @@
+<div class="message-container">
+  <div class="message-container__row">
+    <div class="message-container__col">
+      <div class="col" *ngIf="drInfo">
+        <table class="table profile__table mb-0">
+          <tbody style="font-size: 16px; color: black">
+          <tr>
+            <th><strong><i class="far fa-hospital mr-2" style="min-width: 16px;"></i>
+              {{'doctors-review.visit-location' | translate}}</strong>
+            </th>
+            <td>
+              <div class="w-100">
+                <label for="localisation" class="w-100">
+                  <select id="localisation" class="form-control"
+                          (ngModelChange)="onLocChange()"
+                          [(ngModel)]="selectedLocationIndex">
+                    <option *ngFor="let loc of drInfo.facilityLocations; let i = index"
+                            [value]="i"
+                            [label]="loc.facilityName">
+                    </option>
+                  </select>
+                </label>
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <th><strong><i class="fas fa-stethoscope mr-2"></i>{{'doctors-review.visit-type' | translate}}</strong></th>
+            <td>
+              <div class="w-100">
+                <label for="visitType" class="w-100">
+                  <select id="visitType" class="form-control" [(ngModel)]="selectedVisitType">
+                    <option *ngFor="let type of getVisitTypeArr()"
+                            [value]="type"
+                            [label]="type">
+                    </option>
+                  </select>
+                </label>
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <th><i class="far fa-calendar-plus mr-2"></i><strong>{{'doctors-review.visit-date' | translate}}</strong></th>
+            <td>
+              <input
+                class="form-control"
+                type="text"
+                mwlFlatpickr
+                [(ngModel)]="selectedDate"
+                [convertModelValue]="true"
+                [enableTime]="true"
+                [altInput]="true"
+                [time24hr]="true"
+                [minuteIncrement]="15"
+                [defaultMinute]="0"
+                [disable]="disableDateFunction"
+                dateFormat="Y-m-dTH:i"
+                altFormat="F j, Y H:i"
+                placeholder="Not set"
+              />
+            </td>
+          </tr>
+          <tr>
+            <th>
+              <i class="fas fa-envelope mr-2"></i><strong>{{'doctors-review.optional-message' | translate}}</strong></th>
+            <td>
+              <div class="group">
+                <textarea #message rows="8" required="required"></textarea>
+                <span class="highlight"></span>
+                <span class="bar"></span>
+                <label class="ms-label">{{'common.message' | translate}}</label>
+              </div>
+            </td>
+          </tr>
+          </tbody>
+        </table>
+        <div class="new-visit-body mt-2 d-flex justify-content-center">
+          <button class="dr-buttons" (click)="onSend()">{{'common.submit' | translate}}</button>
+          <button class="ml-2 dr-buttons" (click)="onCancel()">{{'common.cancel' | translate}}</button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+

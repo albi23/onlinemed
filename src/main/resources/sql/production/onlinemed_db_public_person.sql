@@ -1,0 +1,1 @@
+INSERT INTO public.person (id, timestamp, version, defaultlanguage, email, name, phonenumber, surname, username, security_id) VALUES ('4946d968-6b81-4636-8614-e02af743116a', '2020-12-03 11:17:07.683023', 1, 'en_GB', 'AdminSurname@niepodam.pl', 'Admin', '+48696878959', 'Surname', 'admin', '34ce3152-50dc-4ba4-8322-9655c3c9dff4');

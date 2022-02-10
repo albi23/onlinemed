@@ -1,0 +1,21 @@
+<div class="result-container">
+  <div *ngIf="drugHints && drugHints.length > 0; else noResult">
+    <h5>{{'drug-equivalents.search-result' | translate}}</h5>
+    <div class="items">
+      <div class="items-body">
+        <div *ngFor="let drugHint of drugHints; let i = index">
+          <div class="items-body-content" (click)="onSelectOption(i)">
+            <span>{{drugHint.name}}</span>
+            <i class="fa fa-angle-right"></i>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<ng-template #noResult>
+  <div class="no-result">
+    <h5>{{'drug-equivalents.no-results-found' | translate}}</h5>
+  </div>
+</ng-template>

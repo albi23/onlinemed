@@ -1,0 +1,113 @@
+%base-card {
+  @extend .card;
+  padding: 0;
+  border: none;
+  border-radius: 0.5rem
+}
+
+.locations-nav-container {
+  @extend .container;
+  @extend %base-card;
+  @extend .shadow;
+  @extend .d-flex;
+  @extend .justify-content-center;
+
+  &__ul {
+    @extend .nav;
+    @extend .nav-pills;
+    @extend .mb-3;
+    @extend .shadow-sm;
+    margin-top: 1rem;
+  }
+
+  &__nav-link-elem {
+    @extend .nav-link;
+    color: rgb(110, 110, 110);
+    font-weight: 500;
+    &:hover {
+      color: black;
+    }
+
+    &.active {
+      color: black !important;
+      background-color: white !important;
+      border-radius: 0.5rem 0.5rem 0 0;
+      font-weight: 600
+    }
+  }
+
+  &__tab-content {
+    @extend .tab-content;
+    @extend .p-3;
+    padding-bottom: 1.3rem
+  }
+
+  &__content {
+    list-style: none;
+    margin-top: 1rem;
+    padding-inline-start: 0;
+
+    & li .wrapp {
+      padding: 0.3rem 1rem 0.001rem 1rem
+    }
+
+    & li .wrapp div {
+      font-weight: 600
+    }
+
+    & li .wrapp p {
+      font-weight: 360
+    }
+
+    & li:hover {
+      background-color: #3c24bc0d;
+      color: #0e0e0e;
+    }
+  }
+
+  &__search {
+    padding: 0 1rem 0 1rem
+  }
+}
+
+a.active{
+  border-bottom: 2px solid #16286a;
+}
+
+.overlay-container {
+  position: fixed;
+  display: none;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.7);
+  z-index: 2500;
+  cursor: default;
+}
+.overlay-button{
+  background-color: #fff;
+  position: absolute;
+  text-align: center;
+  width: fit-content;
+  border-radius: 25px;
+  font-size: larger;
+  min-width: 30px;
+  min-height: 30px;
+  margin: 3% auto auto 92.5%;
+  line-height: 30px;
+  cursor: pointer;
+}
+
+.overlay-content{
+  height: 80%;
+  width: 85%;
+  margin: auto;
+  margin-top: 5% !important;
+  overflow-y: auto;
+  background-color: white;
+  border-radius: 10px;
+  box-shadow: 0 5px 15px rgba(0,0,0,.5);
+}

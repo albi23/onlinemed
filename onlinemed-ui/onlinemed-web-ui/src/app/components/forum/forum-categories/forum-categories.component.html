@@ -1,0 +1,21 @@
+<div class="categories-container show">
+  <div *ngFor="let category of categories">
+    <div class="col-12">
+      <div class="categories-container__category-content-block">
+        <div class="categories-container__flex-aligned">
+          <div class="d-flex flex-row align-items-center">
+            <strong class="categories-container__icon">
+              <i [ngClass]="category.icon"></i></strong>
+            <div class="flex-row ml-3">
+              <a (click)="onClickCategory(category.id)"
+                 class="categories-container__title-name">{{category.translationName | translate}}</a>
+              <div class="categories-container__flex-aligned mt-2">
+                {{category.description | translate}}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

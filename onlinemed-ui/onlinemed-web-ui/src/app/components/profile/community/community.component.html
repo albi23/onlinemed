@@ -1,0 +1,23 @@
+<div class="panel panel-default mt-2">
+  <div class="panel-heading">
+    <h4 class="panel-title">{{'profile.community' | translate}}</h4>
+  </div>
+  <div class="panel-body">
+    <table class="table profile__table">
+      <tbody>
+      <tr>
+        <th><strong>{{ 'profile.comments' | translate}}</strong></th>
+        <td>{{commentsNr}}</td>
+      </tr>
+      <tr>
+        <th><strong>{{ 'profile.member-since' | translate}}</strong></th>
+        <td>{{formatTimestamp(memberDate)}}</td>
+      </tr>
+      <tr>
+        <th><strong>{{ 'profile.last-login' | translate}}</strong></th>
+        <td>{{formatTimestamp(lastLoginDate)}}</td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
+</div>

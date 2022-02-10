@@ -1,0 +1,23 @@
+<div class="flex">
+  <div class="modalcontainer" [ngClass]="{'active': isActive}">
+    <div class="flex">
+      <div class="modal"
+           [ngStyle]="{'left': !isFullScreenModeWindow ? menuOpen  ? 'calc(50% - 10vw)': 'calc(50% - 20vw)' : ''}"
+           [ngClass]="{'active': isActive}">
+        <div class="close" (click)="onCancelAction()"><span>&#43;</span></div>
+        <div class="content">
+          <h2>{{title | translate}}</h2>
+          <p *ngIf="!isBodyAsHtml; else htmlBody">{{body | translate}}</p>
+        </div>
+        <div class="buttons">
+          <a  *ngIf="isCancelButton" type="button" (click)="onCancelAction()">{{cancelButtonText | translate}}</a>
+          <a type="button" (click)="onConfirmAction()">{{confirmButtonText | translate}}</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<ng-template #htmlBody>
+  <pre class="pb-3" [innerHTML]="body"></pre>
+</ng-template>

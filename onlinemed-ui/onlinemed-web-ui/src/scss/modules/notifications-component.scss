@@ -1,0 +1,14 @@
+.new-visit-body {
+  @extend .row;
+  font-size: 16px;
+  font-weight: 500;
+
+  button.dr-buttons {
+    background-color: #16286a !important;
+    color: white !important;
+  }
+}
+
+.disabled-button {
+  background-color: #8c8c8c !important;
+}

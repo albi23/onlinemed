@@ -1,0 +1,22 @@
+<div class="forum-container">
+<app-forum-temple></app-forum-temple>
+    <nav class="forum-container__content">
+      <div class="forum-container__nav">
+        <div class="all-post-container">
+          <div class="forum-container__rendered-content" >
+            <div class="mt-3">
+              <button (click)="onBackClick()" class="dr-buttons">{{'forum.back' | translate}}</button>
+              <button (click)="onClickNew()" class="ml-2 dr-buttons">{{'forum.create-new' | translate}}</button>
+            </div>
+            <div *ngFor="let categoryTopic of categoryTopics">
+              <app-single-topic-view
+                [topic]="categoryTopic"
+                [isUpdated]="isTopicInUpdateProcess(categoryTopic.id)"
+                [isLiked]="isCurrentPersonLikeTopic(categoryTopic.favorites)"
+              (topicEvent)="onTopicEvent($event)"></app-single-topic-view>
+            </div>
+          </div>
+        </div>
+      </div>
+    </nav>
+</div>

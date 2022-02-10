@@ -1,0 +1,56 @@
+.dr-container {
+  margin-top: 1%;
+  margin-left: 1%;
+  height: -webkit-fill-available;
+  overflow-y: auto;
+
+  &__row {
+    @extend .row;
+    height: inherit;
+  }
+}
+
+.dr-logo{
+  @extend .profile-comments__avatar;
+  float: inherit;
+  width: 100px;
+  height: 100px;
+}
+
+.dr-buttons{
+  @extend .mt-btn;
+  @extend .btn-primary;
+  background: transparent !important;
+  color: #16286a !important;
+  border: solid 2px #16286a;
+  font-weight: 700;
+  padding: 0 2px;
+
+  &:hover{
+    background-color: transparent !important;
+    box-shadow: 0 0 0 0.2rem rgb(22 40 106 / 46%);
+  }
+
+  &:focus{
+    background-color: transparent !important;
+    outline: none;
+  }
+}
+
+.message-overlay-container{
+  @extend .overlay-container;
+  display: block;
+  overflow-y: auto;
+  padding-bottom: 20px;
+}
+
+.dr-overlay-content {
+  @extend .overlay-content;
+  height: fit-content;
+  width: 60%;
+}
+
+.dr-overlay-button {
+  @extend .overlay-button;
+  margin: 3% auto auto 79.5%;
+}

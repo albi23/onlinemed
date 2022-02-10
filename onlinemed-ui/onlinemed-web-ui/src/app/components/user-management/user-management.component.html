@@ -1,0 +1,13 @@
+<div class="user-management-container">
+  <div class="user-management-container__table-container">
+    <h2 class="user-management-container__title">{{'user-management.users' | translate}}</h2>
+  </div>
+  <div class="user-management-container__table">
+    <app-spinner [isActive]="spinnerOn"></app-spinner>
+    <app-user-management-table #usersTableComponent
+    (toggleSpinner)="setSpinnerStatus($event)"
+    ></app-user-management-table>
+  </div>
+
+  <app-link-generation></app-link-generation>
+</div>

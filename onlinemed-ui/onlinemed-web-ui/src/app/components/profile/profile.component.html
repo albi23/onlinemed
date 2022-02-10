@@ -1,0 +1,119 @@
+<div class="profile-container">
+  <div class="container">
+    <div class="profile-container__row">
+      <div *ngIf="currPerson" class="col-xs-12 col-sm-9">
+
+        <!-- User profile -->
+        <div class="panel panel-default">
+          <div class="panel-heading">
+            <h4 class="panel-title">{{'profile.user-profile' | translate}}</h4>
+          </div>
+          <div class="panel-body">
+            <div class="profile__avatar">
+              <img src="assets/female.png" alt="male">
+            </div>
+            <div class="profile__header" style="position: relative">
+              <h4>{{currPerson.name}} {{currPerson.surname}}<small class="ml-1">{{getPersonRole()}}</small></h4>
+              <a *ngIf="profileIsEditable" type="button" (click)="clickEditTextProfile()" style="position: absolute;top: 15px;right: 0;">
+                <i [ngStyle]="{'color': editProfile? 'red': 'black'}"
+                   [ngClass]="editProfile ? 'fas fa-window-close fa-lg': 'fa fa-edit'"></i> </a>
+              <p #contentHolder class="text-muted" [ngStyle]="{'display': !editProfile ? 'block': 'none'}">
+                {{communityInfo.description}}
+              </p>
+              <div class="mt-2" [ngStyle]="{'display': editProfile ? 'block': 'none'}">
+                <form id="edit-text-area">
+                  <textarea #textArea rows="8" maxlength="660"></textarea>
+                  <button (click)="onClickApply()" class="btn btn-primary" style="float: right;">
+                    {{'profile.apply' | translate}}
+                  </button>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div *ngIf="!isCustomUser || !profileIsEditable">
+          <app-user-info
+            [isEditable]="profileIsEditable"
+            [currentPerson]="currPerson">
+          </app-user-info>
+        </div>
+          <app-community
+            [commentsNr]="communityInfo.comments"
+            [lastLoginDate]="communityInfo.lastLogin"
+            [memberDate]="communityInfo.timestamp"
+          >
+          </app-community>
+
+        <!-- Latest posts -->
+        <div class="panel panel-default">
+          <div class="panel-heading">
+            <h4 class="panel-title">Latest posts</h4>
+          </div>
+          <div class="panel-body">
+            <div class="profile__comments">
+              <div class="profile-comments__item">
+                <div class="profile-comments__controls">
+                  <a><i class="fa fa-share-square-o"></i></a>
+                  <a><i class="fa fa-edit"></i></a>
+                  <a><i class="fa fa-trash-o"></i></a>
+                </div>
+                <div class="profile-comments__avatar">
+                  <img src="https://bootdey.com/img/Content/avatar/avatar1.png" alt="...">
+                </div>
+                <div class="profile-comments__body">
+                  <h5 class="profile-comments__sender">
+                    Richard Roe <small>2 hours ago</small>
+                  </h5>
+                  <div class="profile-comments__content">
+                    Lorem ipsum dolor sit amet, consectetur adipisicing elit. Cum, corporis. Voluptatibus odio
+                    perspiciatis non quisquam provident, quasi eaque officia.
+                  </div>
+                </div>
+              </div>
+              <div class="profile-comments__item">
+                <div class="profile-comments__controls">
+                  <a><i class="fa fa-share-square-o"></i></a>
+                  <a><i class="fa fa-edit"></i></a>
+                  <a><i class="fa fa-trash-o"></i></a>
+                </div>
+                <div class="profile-comments__avatar">
+                  <img src="https://bootdey.com/img/Content/avatar/avatar6.png" alt="...">
+                </div>
+                <div class="profile-comments__body">
+                  <h5 class="profile-comments__sender">
+                    Richard Roe <small>5 hours ago</small>
+                  </h5>
+                  <div class="profile-comments__content">
+                    Lorem ipsum dolor sit amet, consectetur adipisicing elit. Libero itaque dolor laboriosam dolores
+                    magnam mollitia, voluptatibus inventore accusamus illo.
+                  </div>
+                </div>
+              </div>
+              <div class="profile-comments__item">
+                <div class="profile-comments__controls">
+                  <a><i class="fa fa-share-square-o"></i></a>
+                  <a><i class="fa fa-edit"></i></a>
+                  <a><i class="fa fa-trash-o"></i></a>
+                </div>
+                <div class="profile-comments__avatar">
+                  <img src="https://bootdey.com/img/Content/avatar/avatar2.png" alt="...">
+                </div>
+                <div class="profile-comments__body">
+                  <h5 class="profile-comments__sender">
+                    Richard Roe <small>1 day ago</small>
+                  </h5>
+                  <div class="profile-comments__content">
+                    Lorem ipsum dolor sit amet, consectetur adipisicing elit. Labore, esse, magni aliquam quisquam modi
+                    delectus veritatis est ut culpa minus repellendus.
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- Latest posts end-->
+      </div>
+    </div>
+  </div>
+</div>
+

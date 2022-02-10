@@ -1,0 +1,28 @@
+
+.notification-container {
+  @extend .container-fluid;
+  position: absolute;
+  top: 1vw;
+  width: fit-content;
+  right: 1vw;
+  z-index: 9999;
+
+  &__message-container{
+    @extend .d-flex;
+    @extend .flex-row;
+    @extend .flex-nowrap;
+  }
+
+  &__message{
+    @extend .d-flex;
+    @extend .col;
+    @extend .pr-1;
+  }
+
+  &__close_btn{
+    @extend .col-1;
+    padding-left: 0;
+    cursor: pointer;
+  }
+
+}

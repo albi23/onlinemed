@@ -1,0 +1,21 @@
+<div class="forum-container">
+  <app-forum-temple></app-forum-temple>
+  <nav class="forum-container__content">
+    <div class="forum-container__nav">
+      <ul class="forum-container__nav-ul">
+        <li *ngFor="let tab of forumTabs; let i = index"
+            class="nav-item">
+          <a class="locations-nav-container__nav-link-elem"
+             [ngClass]="{'active': selectedLocationIndex === i}"
+             (click)="onClickTab(tab.key, i)"
+             id="pills-home-tab" data-toggle="pill" role="tab"
+             aria-controls="pills-home" aria-selected="true">{{tab.key | translate}}</a>
+        </li>
+      </ul>
+      <div class="forum-container__rendered-content">
+        <router-outlet></router-outlet>
+      </div>
+    </div>
+  </nav>
+
+</div>

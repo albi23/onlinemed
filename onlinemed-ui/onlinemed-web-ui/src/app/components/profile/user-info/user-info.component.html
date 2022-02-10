@@ -1,0 +1,124 @@
+<div class="panel panel-default">
+  <div class="panel-heading">
+    <div class="d-flex">
+      <h4 class="panel-title">{{'profile.user-info' | translate}}</h4>
+      <a *ngIf="isEditable" type="button" (click)="onClickEditUserInfo()" style="margin-left: auto">
+        <i [ngStyle]="{'color': isEditInfoMode? 'red': 'black'}"
+           [ngClass]="isEditInfoMode ? 'fas fa-window-close fa-lg': 'fa fa-edit'"></i>
+      </a>
+    </div>
+  </div>
+  <div class="panel-body">
+    <table class="table profile__table mb-0">
+      <tbody *ngIf="doctorInfo">
+      <tr>
+        <th>
+          <strong>
+            <i class="fas fa-user-md mr-2" style="min-width: 16px;"></i>{{'profile.doctor-type' | translate}}
+          </strong>
+        </th>
+        <td *ngIf="!isEditInfoMode">{{doctorInfo.doctorType || ''}}</td>
+        <td *ngIf="isEditInfoMode">
+          <div class="form-group mb-0">
+            <input #doctorType type="text" [value]="doctorInfo.doctorType || ''" class="form-control">
+          </div>
+        </td>
+      </tr>
+      <tr>
+        <th><strong><i class="fas fa-syringe mr-2"></i>{{'profile.specialisation' | translate}}</strong></th>
+        <td *ngIf="!isEditInfoMode">{{doctorInfo.specialization || ''}}</td>
+        <td *ngIf="isEditInfoMode">
+          <div class="form-group mb-0">
+            <input #specialization type="text" [value]="doctorInfo.specialization || ''" class="form-control">
+          </div>
+        </td>
+      </tr>
+      <tr>
+        <th>
+          <i class="fas fa-phone-alt mr-2"></i><strong>{{'profile.phone' | translate}}</strong>
+        </th>
+        <td *ngIf="!isEditInfoMode" >{{doctorInfo.phoneNumber || ''}}</td>
+        <td *ngIf="isEditInfoMode">
+          <div class="form-group mb-0">
+            <input #phoneNumber type="text" [value]="doctorInfo.phoneNumber || ''" class="form-control">
+          </div>
+        </td>
+      </tr>
+      </tbody>
+    </table>
+    <div *ngIf="isEditInfoMode" class="d-flex">
+      <button (click)="onUpdateUserInfo()" class="btn btn-primary ml-auto">{{'profile.apply' | translate}}</button>
+    </div>
+
+  </div>
+
+</div>
+
+<div class="locations-nav-container">
+  <!-- nav options -->
+  <ul class="locations-nav-container__ul" id="pills-tab" role="tablist">
+    <li *ngFor="let location of locations; let i = index"
+        class="nav-item">
+      <a class="locations-nav-container__nav-link-elem" [ngClass]="{'active': selectedLocationIndex === i}"
+         (click)="selectedLocationIndex=i"
+         id="pills-home-tab" data-toggle="pill" role="tab"
+         aria-controls="pills-home" aria-selected="true">{{getTabName(i)}}</a>
+    </li>
+
+  </ul>
+  <div class="locations-nav-container__tab-content">
+    <!-- cards -->
+    <div *ngFor="let location of locations; let i = index">
+      <div class="tab-pane fade" [ngClass]="{'show active': selectedLocationIndex === i}"
+           role="tabpanel" aria-labelledby="pills-home-tab">
+        <ul class="locations-nav-container__content"
+            [ngStyle]="{'display': selectedLocationIndex === i ? 'block': 'none'}">
+          <li>
+            <div class="wrapp">
+              <div>
+                <strong class="mr-1"><i class="fas fa-map-marker-alt"></i></strong>
+                {{location.facilityAddress}}
+              </div>
+              <p>{{location.facilityName}}</p>
+            </div>
+          </li>
+          <li>
+            <div class="wrapp">
+              <div>
+                <strong class="mr-1"><i class="far fa-calendar-alt"></i></strong>{{'profile.timetable' | translate}}
+              </div>
+              <button class="btn btn-primary"
+                      (click)="onShowTimeTable()">{{'profile.show-timetable' | translate}}</button>
+            </div>
+          </li>
+          <li>
+            <div class="wrapp">
+              <div><strong class="mr-1"><i
+                class="fas fa-book-medical"></i></strong>{{'profile.medical-services' | translate}}</div>
+              <button (click)="onClickShowServices()"
+                      class="btn btn-primary">{{'profile.show-all-services' | translate}}
+              </button>
+              <div *ngIf="showServices">
+                <div *ngFor="let key of getKeyMap(i)" class="row mt-1"
+                     style="border-top: 1px solid #dee2e6;padding: 6px 6px;">
+                  <div class="col">{{key}}</div>
+                  <div class="col" style="">{{getValueFromMap(i, key)}}</div>
+                </div>
+              </div>
+            </div>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div *ngIf="showTimetable" class="overlay-container" [ngStyle]="{'display': showTimetable ? 'block': 'none'}">
+  <div class="overlay-button" (click)="onShowTimeTable()"><i class="fas fa-times"></i></div>
+  <div class="overlay-content">
+    <app-calendar #calendarComponent
+                  [isEditable]="isEditable"
+                  [calEvents]="calendarEvents"
+                  ></app-calendar>
+  </div>
+</div>

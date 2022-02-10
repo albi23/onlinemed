@@ -1,0 +1,91 @@
+<div class="post-view-container">
+    <div class="col-12 p-0" *ngIf="post">
+      <div class="post-view-container__content-block">
+        <div class="post-view-container__user-row-content">
+          <div class="f-row">
+           <div class="post-view-container__usr-name">
+             <h5><a>{{post.postCreator.userName}}</a></h5>
+           </div>
+            <div class="post-view-container__date-creation">
+              <h5>{{formatTimestamp(post.timestamp)}}</h5>
+            </div>
+          </div>
+        </div>
+        <div class="categories-container__flex-aligned mt-1">
+          <div class="f-row">
+            <div class="f-auto-col pr-2" style="flex: 15">
+              <div class="avatar-container">
+                <img src="assets/male.png" alt="img" class="user-img rounded-circle">
+              </div>
+              <table class="user-info mt-3">
+                <tbody>
+                <tr>
+                  <th><strong>{{'forum.registration' | translate}}</strong></th>
+                  <td>{{getTimeAgoString(post.postCreator.community.timestamp)}}</td>
+                </tr>
+                <tr>
+                  <th><strong>{{'forum.last' | translate}}</strong></th>
+                  <td>{{getTimeAgoString(post.postCreator.community.lastLogin)}}</td>
+                </tr>
+                <tr>
+                  <th><strong>{{'forum.posts' | translate}}</strong></th>
+                  <td>{{post.postCreator.community.comments}}</td>
+                </tr>
+                </tbody>
+              </table>
+
+            </div>
+            <div class="f-auto-col" style="flex: 79">
+              <div class="categories-container__flex-aligned mt-2" style="font-size: 17px" >
+                <div *ngIf="!isEditMode; else edit" [innerHTML]="post.text | sanitizeHtml"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="post-view-container__response_footer">
+          <div class="f-row">
+            <div class="post-view-container__usr-name">
+            </div>
+            <div class="post-view-container__date-creation ">
+             <div class="f-row justify-content-between p-2">
+               <div>
+                 <a class="mr-2"><span><i class="fas fa-share-alt mr-1"></i>{{'forum.share' | translate}}</span></a>
+                 <a><span><i class="far fa-comment mr-1"></i>{{'forum.comment' | translate}}</span></a>
+               </div>
+               <div *ngIf="editPrivileges; else userView">
+                 <a (click)="onRemove()" class="mr-2 pointer-cursor"><span><i
+                   class="fas fa-times mr-1"></i>{{'forum.remove' | translate}}</span></a>
+                 <a (click)="onEditClick()" class="mr-2 pointer-cursor"><span><i
+                   class="fas fa-edit mr-1"></i>{{'forum.edit' | translate}}</span></a>
+                 <a (click)="onReplay()" class="mr-2 pointer-cursor"><span><i
+                   class="fas fa-reply mr-1"></i>{{'forum.replay' | translate}}</span></a>
+               </div>
+             </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+</div>
+
+<ng-template #userView>
+  <div *ngIf="post.postCreator.id === loggedId; else replay">
+    <a (click)="onRemove()" class="mr-2 pointer-cursor"><span><i class="fas fa-times mr-1"></i>{{'forum.remove' | translate}}</span></a>
+    <a (click)="onEditClick()" class="mr-2 pointer-cursor"><span><i class="fas fa-edit mr-1"></i>{{'forum.edit' | translate}}</span></a>
+  </div>
+</ng-template>
+
+<ng-template #replay>
+  <a (click)="onReplay()" class="mr-2 pointer-cursor"><span><i class="fas fa-reply mr-1"></i>{{'forum.replay' | translate}}</span></a>
+</ng-template>
+
+
+<ng-template #edit>
+  <div class="w-100">
+    <app-editor #postEditor [editorValue]="post.text"></app-editor>
+    <div class="mt-3">
+      <button class="dr-buttons" (click)="onSave()">{{'forum.save' | translate}}</button>
+      <button class="ml-2 dr-buttons" (click)="onCancel()">{{'forum.cancel' | translate}}</button>
+    </div>
+  </div>
+</ng-template>
