@@ -6,7 +6,6 @@ import com.blueveery.core.services.BaseService;
 import com.blueveery.scopes.JsonScope;
 import com.onlinemed.model.RegistrationLink;
 import com.onlinemed.servises.api.RegistrationLinkService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
@@ -25,8 +24,12 @@ import static com.onlinemed.model.SystemFunctionalities.USER_MANAGEMENT;
 @JsonScope(positive = true, scope = {RegistrationLink.class})
 public class RegistrationLinkCtrl implements GetObjectCtrl<RegistrationLink>, DeleteObjectCtrl<RegistrationLink> {
 
-    @Autowired
-    private RegistrationLinkService registrationLinkService;
+
+    private final RegistrationLinkService registrationLinkService;
+
+    public RegistrationLinkCtrl(RegistrationLinkService registrationLinkService) {
+        this.registrationLinkService = registrationLinkService;
+    }
 
     @Override
     public BaseService<RegistrationLink> getService() {

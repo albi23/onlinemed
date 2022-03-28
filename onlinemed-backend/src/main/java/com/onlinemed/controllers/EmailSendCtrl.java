@@ -5,7 +5,6 @@ import com.blueveery.core.services.BaseService;
 import com.onlinemed.model.BaseObject;
 import com.onlinemed.model.dto.Mail;
 import com.onlinemed.servises.api.EmailSendService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
 
@@ -22,8 +21,12 @@ import static com.onlinemed.model.SystemFunctionalities.NOTIFICATIONS;
 @RequestMapping("/api/email")
 public class EmailSendCtrl implements BaseCtrl<BaseObject> {
 
-    @Autowired
+
     private EmailSendService emailSendService;
+
+    public EmailSendCtrl(EmailSendService emailSendService) {
+        this.emailSendService = emailSendService;
+    }
 
     @Override
     public BaseService<BaseObject> getService() {

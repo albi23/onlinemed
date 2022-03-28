@@ -7,7 +7,6 @@ import com.blueveery.core.services.BaseService;
 import com.blueveery.scopes.JsonScope;
 import com.onlinemed.model.CalendarEvent;
 import com.onlinemed.servises.api.CalendarEventService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
@@ -24,8 +23,11 @@ import java.util.stream.Collectors;
 public class CalendarEventCtrl implements BaseCtrl<CalendarEvent>, UpdateObjectCtrl<CalendarEvent>,
         DeleteObjectCtrl<CalendarEvent> {
 
-    @Autowired
-    private CalendarEventService calendarEventService;
+    private final CalendarEventService calendarEventService;
+
+    public CalendarEventCtrl(CalendarEventService calendarEventService) {
+        this.calendarEventService = calendarEventService;
+    }
 
     @Override
     public BaseService<CalendarEvent> getService() {

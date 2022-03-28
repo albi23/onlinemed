@@ -7,7 +7,6 @@ import com.blueveery.core.services.BaseService;
 import com.blueveery.scopes.JsonScope;
 import com.onlinemed.model.*;
 import com.onlinemed.servises.api.DoctorInfoService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
 
@@ -24,8 +23,11 @@ import static com.onlinemed.model.SystemFunctionalities.DOCTORS_PROFILE;
 @JsonScope(positive = true, scope = {DoctorInfo.class})
 public class DoctorInfoCtrl implements BaseCtrl<DoctorInfo>, FindAllCtrl<DoctorInfo> {
 
-    @Autowired
-    private DoctorInfoService doctorInfoService;
+    private final DoctorInfoService doctorInfoService;
+
+    public DoctorInfoCtrl(DoctorInfoService doctorInfoService) {
+        this.doctorInfoService = doctorInfoService;
+    }
 
     @Override
     public BaseService<DoctorInfo> getService() {

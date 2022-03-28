@@ -5,7 +5,6 @@ import com.blueveery.core.services.BaseService;
 import com.blueveery.scopes.JsonScope;
 import com.onlinemed.model.translations.StaticTranslation;
 import com.onlinemed.servises.api.StaticTranslationService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.security.PermitAll;
@@ -22,8 +21,11 @@ import java.util.Locale;
 @JsonScope(positive = true, scope = {StaticTranslation.class})
 public class StaticTranslationCtrl implements GetObjectCtrl<StaticTranslation> {
 
-    @Autowired
-    StaticTranslationService staticTranslationService;
+    private final StaticTranslationService staticTranslationService;
+
+    public StaticTranslationCtrl(StaticTranslationService staticTranslationService) {
+        this.staticTranslationService = staticTranslationService;
+    }
 
     @Override
     public BaseService<StaticTranslation> getService() {

@@ -5,7 +5,6 @@ import com.blueveery.core.services.BaseService;
 import com.blueveery.scopes.JsonScope;
 import com.onlinemed.model.ForumTopic;
 import com.onlinemed.servises.api.ForumTopicService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
 
@@ -25,8 +24,12 @@ public class ForumTopicCtrl implements BaseCtrl<ForumTopic>,
         GetObjectCtrl<ForumTopic>, CreateObjectCtrl<ForumTopic>,
         DeleteObjectCtrl<ForumTopic>, UpdateObjectCtrl<ForumTopic> {
 
-    @Autowired
-    private ForumTopicService forumTopicService;
+
+    private final ForumTopicService forumTopicService;
+
+    public ForumTopicCtrl(ForumTopicService forumTopicService) {
+        this.forumTopicService = forumTopicService;
+    }
 
     @Override
     public BaseService<ForumTopic> getService() {

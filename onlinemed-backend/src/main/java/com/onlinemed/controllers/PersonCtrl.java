@@ -15,7 +15,6 @@ import com.onlinemed.servises.api.PersonService;
 import com.onlinemed.servises.api.RegistrationLinkService;
 import com.onlinemed.servises.api.RoleService;
 import com.onlinemed.servises.api.SecurityService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.annotation.Secured;
@@ -40,17 +39,20 @@ import static com.onlinemed.model.SystemFunctionalities.USER_MANAGEMENT;
 public class PersonCtrl implements GetObjectCtrl<Person>, CountAll<Person>,
         DeleteObjectCtrl<Person>, UpdateObjectCtrl<Person> {
 
-    @Autowired
-    private PersonService personService;
+    final private PersonService personService;
+    final private RegistrationLinkService registrationLinkService;
+    final private SecurityService securityService;
+    final private RoleService roleService;
 
-    @Autowired
-    private RegistrationLinkService registrationLinkService;
-
-    @Autowired
-    private SecurityService securityService;
-
-    @Autowired
-    RoleService roleService;
+    public PersonCtrl(PersonService personService,
+                      RegistrationLinkService registrationLinkService,
+                      SecurityService securityService,
+                      RoleService roleService) {
+        this.personService = personService;
+        this.registrationLinkService = registrationLinkService;
+        this.securityService = securityService;
+        this.roleService = roleService;
+    }
 
     @Override
     public BaseService<Person> getService() {

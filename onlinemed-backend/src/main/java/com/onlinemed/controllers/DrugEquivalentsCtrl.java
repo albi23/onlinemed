@@ -8,7 +8,6 @@ import com.onlinemed.model.dto.DrugHints;
 import com.onlinemed.model.dto.DrugInfo;
 import com.onlinemed.servises.api.DrugEquivalentsService;
 import org.apache.commons.lang.NotImplementedException;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
 
@@ -25,8 +24,11 @@ import static com.onlinemed.model.SystemFunctionalities.DRUG_EQUIVALENTS;
 @JsonScope(positive = true, scope = {DrugHints.class})
 public class DrugEquivalentsCtrl implements BaseCtrl<BaseObject> {
 
-    @Autowired
-    private DrugEquivalentsService drugEquivalentsService;
+    private final DrugEquivalentsService drugEquivalentsService;
+
+    public DrugEquivalentsCtrl(DrugEquivalentsService drugEquivalentsService) {
+        this.drugEquivalentsService = drugEquivalentsService;
+    }
 
     @Override
     public BaseService<BaseObject> getService() {

@@ -10,7 +10,6 @@ import com.onlinemed.model.dto.Violation;
 import com.onlinemed.servises.api.PasetoTokenService;
 import com.onlinemed.servises.api.PersonService;
 import com.onlinemed.servises.impl.login.PasetoAuthProvider;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -26,6 +25,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static org.springframework.http.ResponseEntity.ok;
+
 /**
  * A class used to define the methods that manage the login process
  */
@@ -34,14 +34,17 @@ import static org.springframework.http.ResponseEntity.ok;
 @JsonScope(positive = true, scope = {Person.class})
 public class LoginCtrl implements UpdateObjectCtrl<BaseObject> {
 
-    @Autowired
-    PasetoTokenService pasetoTokenService;
+    private final PasetoTokenService pasetoTokenService;
+    private final PersonService personService;
+    private final PasetoAuthProvider pasetoAuthProvider;
 
-    @Autowired
-    PersonService personService;
-
-    @Autowired
-    PasetoAuthProvider pasetoAuthProvider;
+    public LoginCtrl(PasetoTokenService pasetoTokenService,
+                     PersonService personService,
+                     PasetoAuthProvider pasetoAuthProvider) {
+        this.pasetoTokenService = pasetoTokenService;
+        this.personService = personService;
+        this.pasetoAuthProvider = pasetoAuthProvider;
+    }
 
     @Override
     public BaseService<BaseObject> getService() {

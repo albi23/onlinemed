@@ -1,0 +1,27 @@
+version: '3.0'
+
+services:
+  app:
+    image: 'onlinemed-backend-docker:latest'
+    build:
+      context: ./onlinemed-backend
+    container_name: onlinemed-backend-docker
+    depends_on:
+      - postgresDB
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgresDB:5432/onlinemed_db
+      - SPRING_DATASOURCE_USERNAME=onlinemed_root
+      - SPRING_DATASOURCE_PASSWORD=e976908e-fab7-11ea-9418-5f9b5705bac5
+      - SPRING_JPA_HIBERNATE_DDL_AUTO=create-drop
+    ports:
+      - 8080:8080
+
+  postgresDB:
+    image: 'postgres:13-alpine'
+    container_name: postgresDB
+    environment:
+      - POSTGRES_USER=onlinemed_root
+      - POSTGRES_PASSWORD=e976908e-fab7-11ea-9418-5f9b5705bac5
+      - POSTGRES_DB=onlinemed_db
+    expose:
+      - "5555" # protect locally installed postgres port

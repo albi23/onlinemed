@@ -10,7 +10,6 @@ import com.onlinemed.model.Person;
 import com.onlinemed.model.Visit;
 import com.onlinemed.model.dto.Mail;
 import com.onlinemed.servises.api.NotificationsService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
@@ -30,8 +29,11 @@ import static com.onlinemed.model.SystemFunctionalities.NOTIFICATIONS;
 public class NotificationCtrl implements DeleteObjectCtrl<Notification>, CreateObjectCtrl<Notification>,
         UpdateObjectCtrl<Notification> {
 
-    @Autowired
-    private NotificationsService notificationsService;
+    private final NotificationsService notificationsService;
+
+    public NotificationCtrl(NotificationsService notificationsService) {
+        this.notificationsService = notificationsService;
+    }
 
     @Override
     public BaseService<Notification> getService() {

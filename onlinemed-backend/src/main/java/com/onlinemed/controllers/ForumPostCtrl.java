@@ -12,7 +12,6 @@ import com.onlinemed.model.ForumPost;
 import com.onlinemed.model.Person;
 import com.onlinemed.servises.api.CommunityService;
 import com.onlinemed.servises.api.ForumPostService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
 
@@ -33,11 +32,13 @@ public class ForumPostCtrl implements BaseCtrl<ForumPost>,
         CreateObjectCtrl<ForumPost>, UpdateObjectCtrl<ForumPost>,
         DeleteObjectCtrl<ForumPost> {
 
-    @Autowired
-    private ForumPostService forumPostService;
+    private final ForumPostService forumPostService;
+    private final CommunityService communityService;
 
-    @Autowired
-    private CommunityService communityService;
+    public ForumPostCtrl(ForumPostService forumPostService, CommunityService communityService) {
+        this.forumPostService = forumPostService;
+        this.communityService = communityService;
+    }
 
     @Override
     public BaseService<ForumPost> getService() {
