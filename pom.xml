@@ -10,7 +10,7 @@
     <version>1.0.0</version>
     <packaging>pom</packaging>
 
-    <description>Engineering thesis</description>
+    <description>Onlinemed app</description>
     <inceptionYear>2020</inceptionYear>
 
     <modules>
