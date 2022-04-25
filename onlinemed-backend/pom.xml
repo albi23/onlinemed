@@ -15,14 +15,16 @@
     <packaging>jar</packaging>
 
     <properties>
-        <java.version>15</java.version>
-        <hibernate.version>5.4.17.Final</hibernate.version>
+        <java.version>17</java.version>
+        <maven.compiler.source>17</maven.compiler.source>
+        <maven.compiler.target>17</maven.compiler.target>
+        <hibernate.version>5.6.8.Final</hibernate.version>
         <bv-artifacts-version>1.0.9.RELEASE</bv-artifacts-version>
         <jackson-version>2.11.0</jackson-version>
         <bv-rest2ts-version>1.2.6</bv-rest2ts-version>
         <dir>./target</dir>
         <spring.security.verson>5.3.3.RELEASE</spring.security.verson>
-        <springframework.boot.version>2.3.1.RELEASE</springframework.boot.version>
+        <springframework.boot.version>2.5.7</springframework.boot.version>
 
     </properties>
 
@@ -200,7 +202,9 @@
             <groupId>org.hibernate</groupId>
             <artifactId>hibernate-jpamodelgen</artifactId>
             <version>${hibernate.version}</version>
+            <scope>provided</scope>
         </dependency>
+
 
         <!-- Hibernate Entity Manager -->
         <dependency>
@@ -292,10 +296,10 @@
 
         <dependency>
             <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-javadoc-plugin</artifactId>
-            <version>3.2.0</version>
-            <type>maven-plugin</type>
+            <artifactId>maven-compiler-plugin</artifactId>
+            <version>3.10.1</version>
         </dependency>
+
     </dependencies>
 
     <build>
@@ -312,13 +316,19 @@
         <plugins>
             <plugin>
                 <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.10.1</version>
                 <configuration>
-                    <source>15</source>
-                    <compilerArgs>
-                        <arg>--enable-preview</arg>
-                    </compilerArgs>
+                    <source>${java.version}</source>
+                    <target>${java.version}</target>
+                    <release>${java.version}</release>
                     <forceJavacCompilerUse>true</forceJavacCompilerUse>
-                    <parameters>true</parameters>
+                    <annotationProcessorPaths>
+                        <annotationProcessorPath>
+                            <groupId>org.hibernate</groupId>
+                            <artifactId>hibernate-jpamodelgen</artifactId>
+                            <version>${hibernate.version}</version>
+                        </annotationProcessorPath>
+                    </annotationProcessorPaths>
                 </configuration>
             </plugin>
 
@@ -331,6 +341,7 @@
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
+                <!--  After solve CEV by spring and compatibility with jdk17 it should be done, for now skip  -->
                 <version>${springframework.boot.version}</version>
                 <executions>
                     <execution>
@@ -346,12 +357,13 @@
                 <version>3.2.0</version>
                 <configuration>
                     <javadocExecutable>${java.home}/bin/javadoc</javadocExecutable>
-                    <source>15</source>
-                    <release>15</release>
+                    <source>${java.version}</source>
                     <additionalOptions>--enable-preview</additionalOptions>
                     <debug>true</debug>
                     <sourceFileIncludes>
-                        <sourceFileInclude>${project.build.directory}/generated-sources/annotations/com/onlinemed/model</sourceFileInclude>
+                        <sourceFileInclude>
+                            ${project.build.directory}/generated-sources/annotations/com/onlinemed/model
+                        </sourceFileInclude>
                     </sourceFileIncludes>
                     <destDir>${project.build.directory}/javadoc</destDir>
                 </configuration>
