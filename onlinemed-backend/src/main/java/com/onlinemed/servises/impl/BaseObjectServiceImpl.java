@@ -51,7 +51,7 @@ public class BaseObjectServiceImpl<E extends BaseObject> extends BaseServiceImpl
     }
 
     @Override
-    @Transactional
+    @Transactional(readOnly = true, noRollbackFor = {ClassNotFoundException.class})
     public Long countAll() {
         CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
         CriteriaQuery<Long> criteriaQuery = criteriaBuilder.createQuery(Long.class);
@@ -61,7 +61,7 @@ public class BaseObjectServiceImpl<E extends BaseObject> extends BaseServiceImpl
         return Optional.of(typedQuery.getSingleResult()).orElse(0L);
     }
 
-    @Transactional
+    @Transactional(readOnly = true, noRollbackFor = {ClassNotFoundException.class})
     public List<E> findAllFromListById(List<UUID> uuidList) {
         CriteriaBuilder criteriaBuilder = getEntityManager().getCriteriaBuilder();
         CriteriaQuery<E> criteriaQuery = criteriaBuilder.createQuery(this.entityType);

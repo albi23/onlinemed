@@ -36,7 +36,7 @@ public class SecurityServiceImpl extends BaseObjectServiceImpl<Security> impleme
         return argon2.verify(hashedPassword, passwordToCheck);
     }
 
-    @Transactional
+    @Transactional(readOnly = true)
     @Override
     public Security findUserSecurity(UUID personID) {
         CriteriaBuilder cb = entityManager.getCriteriaBuilder();

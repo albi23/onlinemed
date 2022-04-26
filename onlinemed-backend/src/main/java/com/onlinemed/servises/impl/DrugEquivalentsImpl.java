@@ -8,6 +8,8 @@ import com.onlinemed.model.dto.DrugInfo;
 import com.onlinemed.model.dto.Violation;
 import com.onlinemed.servises.api.DrugEquivalentsService;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -30,6 +32,7 @@ public class DrugEquivalentsImpl implements DrugEquivalentsService {
         System.setProperty("org.apache.commons.logging.Log", "org.apache.commons.logging.impl.NoOpLog");
     }
 
+    @Transactional(propagation = Propagation.NOT_SUPPORTED)
     public List<DrugHints> generateEquivalentsHints(String searchedWord) {
 
         if (searchedWord == null || searchedWord.isEmpty()) {
@@ -51,7 +54,7 @@ public class DrugEquivalentsImpl implements DrugEquivalentsService {
         }
         return hints;
     }
-
+    @Transactional(propagation = Propagation.NOT_SUPPORTED)
     public List<DrugInfo> generateDrugInfoList(String queryLink) {
 
         if (queryLink == null || queryLink.isEmpty()) {

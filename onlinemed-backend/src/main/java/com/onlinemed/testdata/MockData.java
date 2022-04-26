@@ -8,7 +8,6 @@ import com.onlinemed.servises.api.*;
 import com.onlinemed.servises.impl.SQLFileQueryService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
@@ -35,23 +34,17 @@ public class MockData implements ApplicationRunner {
     @Value("${test.data}")
     private String runTestData;
 
-    @Autowired
-    private PersonService personService;
+    private final PersonService personService;
 
-    @Autowired
-    private ForumCategoryService forumCategoryService;
+    private final ForumCategoryService forumCategoryService;
 
-    @Autowired
-    private ForumTopicService forumTopicService;
+    private final ForumTopicService forumTopicService;
 
-    @Autowired
-    private ForumPostService forumPostService;
+    private final ForumPostService forumPostService;
 
-    @Autowired
-    private SQLFileQueryService sqlFileQueryService;
+    private final SQLFileQueryService sqlFileQueryService;
 
-    @Autowired
-    private SecurityService securityService;
+    private final SecurityService securityService;
 
 
     private Map<String, Functionality> functionalityMap;
@@ -60,6 +53,20 @@ public class MockData implements ApplicationRunner {
             "Endocrinologist", "Gastroenterologist", "Nephrologist", "Ophthalmologist", "Otolaryngologist",
             "Pulmonologist", "Neurologist", "Physician Executive", "Radiologist", "Anesthesiologist", "Oncologist"
      };
+
+    public MockData(PersonService personService,
+                    ForumCategoryService forumCategoryService,
+                    ForumTopicService forumTopicService,
+                    ForumPostService forumPostService,
+                    SQLFileQueryService sqlFileQueryService,
+                    SecurityService securityService) {
+        this.personService = personService;
+        this.forumCategoryService = forumCategoryService;
+        this.forumTopicService = forumTopicService;
+        this.forumPostService = forumPostService;
+        this.sqlFileQueryService = sqlFileQueryService;
+        this.securityService = securityService;
+    }
 
     @Override
     public void run(ApplicationArguments args) {
@@ -130,7 +137,7 @@ public class MockData implements ApplicationRunner {
                     final String iter = String.valueOf(i);
                     return createPerson(UUID.randomUUID(), "test-user-name".concat(iter), "test-surname".concat(iter),
                             "TestUser".concat(iter), "test.user".concat(iter).concat("@test.com"), "+48666777888", "TestUser".concat(iter));
-                }).collect(Collectors.toList());
+                }).toList();
         personDataByReflection.addAll(people);
 
         return personDataByReflection;
@@ -329,7 +336,7 @@ public class MockData implements ApplicationRunner {
         final List<ForumTopic> forumTopics = forumCategories.stream().flatMap(forumCat -> {
             final String creator = personList.get(rand.nextInt(personList.size())).getUserName();
             return this.createForumTopicsForCategory(forumCat, creator);
-        }).collect(Collectors.toList());
+        }).toList();
 
         final List<ForumPost> forumPosts = forumTopics.stream().flatMap(topic -> {
             final Person creator = personList.get(rand.nextInt(personList.size()));

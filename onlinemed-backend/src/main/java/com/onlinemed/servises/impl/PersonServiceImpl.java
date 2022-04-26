@@ -43,7 +43,6 @@ public class PersonServiceImpl extends BaseObjectServiceImpl<Person> implements 
         return personByUsername;
     }
 
-    @Transactional
     @Override
     public Set<GrantedAuthority> getAuthorities(List<Role> personRoles) {
         return personRoles.stream().map(Role::getFunctionalities)
@@ -52,7 +51,7 @@ public class PersonServiceImpl extends BaseObjectServiceImpl<Person> implements 
                 .collect(Collectors.toSet());
     }
 
-    @Transactional
+    @Transactional(readOnly = true)
     @Override
     public List<Person> findPeople(String sortBy, Boolean ascending, Integer pageNumber, Integer pageSize) {
         CriteriaBuilder criteriaBuilder = this.getEntityManager().getCriteriaBuilder();

@@ -4,6 +4,7 @@ import com.onlinemed.model.CalendarEvent;
 import com.onlinemed.model.CalendarEvent_;
 import com.onlinemed.servises.api.CalendarEventService;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
 import javax.persistence.criteria.CriteriaBuilder;
@@ -15,6 +16,7 @@ import java.util.UUID;
 @Service
 public class CalendarEventServiceImpl extends BaseObjectServiceImpl<CalendarEvent> implements CalendarEventService {
 
+    @Transactional(readOnly = true, noRollbackFor = {ClassNotFoundException.class})
     @Override
     public List<CalendarEvent> getUserEvents(UUID personId) {
         final EntityManager entityManager = this.getEntityManager();

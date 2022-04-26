@@ -22,7 +22,7 @@ import static com.onlinemed.model.SystemFunctionalities.NOTIFICATIONS;
 public class EmailSendCtrl implements BaseCtrl<BaseObject> {
 
 
-    private EmailSendService emailSendService;
+    private final EmailSendService emailSendService;
 
     public EmailSendCtrl(EmailSendService emailSendService) {
         this.emailSendService = emailSendService;

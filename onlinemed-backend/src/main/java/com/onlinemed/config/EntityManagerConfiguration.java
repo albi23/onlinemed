@@ -1,12 +1,11 @@
 package com.onlinemed.config;
 
 import com.onlinemed.model.BaseObject;
+import net.ttddyy.dsproxy.support.ProxyDataSource;
+import net.ttddyy.dsproxy.support.ProxyDataSourceBuilder;
 import org.hibernate.jpa.HibernatePersistenceProvider;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.PropertySource;
-import org.springframework.context.annotation.PropertySources;
+import org.jetbrains.annotations.Nullable;
+import org.springframework.context.annotation.*;
 import org.springframework.core.env.Environment;
 import org.springframework.core.env.StandardEnvironment;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
@@ -27,8 +26,11 @@ public class EntityManagerConfiguration {
 
     private static final String modelPackagePath = BaseObject.class.getPackageName();
 
-    @Autowired
-    private Environment environment;
+    private final Environment environment;
+
+    public EntityManagerConfiguration(Environment environment) {
+        this.environment = environment;
+    }
 
     @Bean
     public Properties hibernateProperties() {
@@ -42,9 +44,15 @@ public class EntityManagerConfiguration {
     }
 
     @Bean
+    @Primary
     public EntityManagerFactory entityManagerFactory(DataSource dataSource, Properties hibernateProperties) {
         final LocalContainerEntityManagerFactoryBean em = new LocalContainerEntityManagerFactoryBean();
         em.setDataSource(dataSource);
+        return getEntityManagerFactory(hibernateProperties, em);
+    }
+
+    @Nullable
+    private EntityManagerFactory getEntityManagerFactory(Properties hibernateProperties, LocalContainerEntityManagerFactoryBean em) {
         em.setPackagesToScan(modelPackagePath);
         em.setJpaVendorAdapter(new HibernateJpaVendorAdapter());
         em.setJpaProperties(hibernateProperties);
@@ -52,5 +60,23 @@ public class EntityManagerConfiguration {
         em.setPersistenceProviderClass(HibernatePersistenceProvider.class);
         em.afterPropertiesSet();
         return em.getObject();
+    }
+
+
+    @Bean
+    @Profile("Test")
+    public EntityManagerFactory entityManagerFactoryWithProxy(DataSource dataSource, Properties hibernateProperties) {
+        final LocalContainerEntityManagerFactoryBean em = new LocalContainerEntityManagerFactoryBean();
+        em.setDataSource(proxyDatasource(dataSource));
+        return getEntityManagerFactory(hibernateProperties, em);
+    }
+
+    public ProxyDataSource proxyDatasource(DataSource dataSource) {
+        return ProxyDataSourceBuilder.create(dataSource)
+                .name("Batch-Query")
+                .asJson()
+                .countQuery()
+                .logQueryToSysOut()
+                .build();
     }
 }

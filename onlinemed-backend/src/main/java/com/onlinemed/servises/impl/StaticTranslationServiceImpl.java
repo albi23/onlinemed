@@ -4,8 +4,8 @@ package com.onlinemed.servises.impl;
 import com.onlinemed.model.translations.*;
 import com.onlinemed.servises.api.LanguageService;
 import com.onlinemed.servises.api.StaticTranslationService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.*;
@@ -17,10 +17,14 @@ import java.util.Locale;
 public class StaticTranslationServiceImpl extends BaseObjectServiceImpl<StaticTranslation> implements StaticTranslationService {
 
 
-    @Autowired
-    LanguageService languageService;
+    private final LanguageService languageService;
+
+    public StaticTranslationServiceImpl(final LanguageService languageService) {
+        this.languageService = languageService;
+    }
 
     @Override
+    @Transactional(readOnly = true, noRollbackFor = {ClassNotFoundException.class})
     public List<StaticTranslation> findStaticTranslations(Locale languageLocale, String moduleName) {
         CriteriaBuilder criteriaBuilder = getEntityManager().getCriteriaBuilder();
         CriteriaQuery<StaticTranslation> criteriaQuery = criteriaBuilder.createQuery(StaticTranslation.class);
@@ -38,6 +42,7 @@ public class StaticTranslationServiceImpl extends BaseObjectServiceImpl<StaticTr
     }
 
     @Override
+    @Transactional(readOnly = true, noRollbackFor = {ClassNotFoundException.class})
     public List<StaticTranslation> getStaticTranslation(Locale languageLocale, String moduleName, String... uiKey) {
         CriteriaBuilder criteriaBuilder = getEntityManager().getCriteriaBuilder();
         CriteriaQuery<StaticTranslation> criteriaQuery = criteriaBuilder.createQuery(StaticTranslation.class);

@@ -101,10 +101,10 @@ public class EmailSendServiceImpl implements EmailSendService {
     }
 
     private String generateResponseTemplate() {
-        return new StringBuilder("<p>$body</p>").append("<br>")
-                .append("<p>-------------------- $information --------------</p>")
-                .append("<pre>$info-body</pre>")
-                .append("<p style=\"font-weight: bold;color: blue\">$sender</p>").toString();
+        return "<p>$body</p>" + "<br>" +
+                "<p>-------------------- $information --------------</p>" +
+                "<pre>$info-body</pre>" +
+                "<p style=\"font-weight: bold;color: blue\">$sender</p>";
     }
 
     private String getBodyWithTemplate(String senderMail, String body, String template) {
