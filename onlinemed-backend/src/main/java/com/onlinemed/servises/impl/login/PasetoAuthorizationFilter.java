@@ -3,7 +3,6 @@ package com.onlinemed.servises.impl.login;
 import com.onlinemed.model.Person;
 import com.onlinemed.servises.api.PasetoTokenService;
 import com.onlinemed.servises.api.PersonService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -25,11 +24,13 @@ import static com.onlinemed.servises.impl.login.SecurityConstants.TOKEN_HEADER;
 @Service
 public class PasetoAuthorizationFilter extends OncePerRequestFilter {
 
-    @Autowired
-    PasetoTokenService pasetoTokenService;
+    final PasetoTokenService pasetoTokenService;
+    private final PersonService personService;
 
-    @Autowired
-    private PersonService personService;
+    public PasetoAuthorizationFilter(PasetoTokenService pasetoTokenService, PersonService personService) {
+        this.pasetoTokenService = pasetoTokenService;
+        this.personService = personService;
+    }
 
     @Override
     protected void doFilterInternal(HttpServletRequest req, HttpServletResponse res, FilterChain chain) throws ServletException, IOException {

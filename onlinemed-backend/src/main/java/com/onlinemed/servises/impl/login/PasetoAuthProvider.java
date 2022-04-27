@@ -3,7 +3,6 @@ package com.onlinemed.servises.impl.login;
 import com.onlinemed.model.Person;
 import com.onlinemed.servises.api.PersonService;
 import com.onlinemed.servises.api.SecurityService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -17,13 +16,16 @@ import java.util.Set;
 @Component("pasetoAuthProvider")
 public class PasetoAuthProvider implements AuthenticationProvider {
 
-    @Autowired
-    private PersonService personService;
+    private final PersonService personService;
 
-    @Autowired
-    private SecurityService securityService;
+    private final SecurityService securityService;
 
     private Person authenticatedPerson;
+
+    public PasetoAuthProvider(PersonService personService, SecurityService securityService) {
+        this.personService = personService;
+        this.securityService = securityService;
+    }
 
     @Override
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
@@ -33,6 +35,7 @@ public class PasetoAuthProvider implements AuthenticationProvider {
         if (password.length() == 0) {
             throw new BadCredentialsException("model.emptyPassword");
         }
+        System.out.println("From : [authenticate]");
         authenticatedPerson = personService.findPersonByUsername(userName);
         if (authenticatedPerson == null) {
             throw new BadCredentialsException("model.incorrectCredential");

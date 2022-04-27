@@ -6,6 +6,8 @@ import com.onlinemed.model.Person_;
 import com.onlinemed.model.Role;
 import com.onlinemed.servises.api.PersonService;
 import com.onlinemed.servises.impl.login.FunctionalityGrantedAuthority;
+import org.springframework.cache.annotation.CacheConfig;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -20,11 +22,14 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
-public class PersonServiceImpl extends BaseObjectServiceImpl<Person> implements PersonService  {
+@CacheConfig(cacheNames = "person", cacheManager = "caffeine-manager")
+public class PersonServiceImpl extends BaseObjectServiceImpl<Person> implements PersonService {
 
 
     @Override
-    public Person findPersonByUsername(String username) {
+    @Cacheable(key = "#username", cacheNames = "person")
+    @Transactional
+    public Person findPersonByUsername(final String username) {
         CriteriaBuilder cb = entityManager.getCriteriaBuilder();
         CriteriaQuery<Person> cq = cb.createQuery(Person.class);
         Root<Person> root = cq.from(Person.class);
@@ -34,6 +39,7 @@ public class PersonServiceImpl extends BaseObjectServiceImpl<Person> implements 
     }
 
     @Override
+    @Cacheable(key = "#username", cacheNames = "person")
     @Transactional
     public Person findPersonByUsernameWithTouchRoles(String username) {
         final Person personByUsername = this.findPersonByUsername(username);
