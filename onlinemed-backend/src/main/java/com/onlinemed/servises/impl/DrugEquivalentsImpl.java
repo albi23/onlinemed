@@ -41,11 +41,11 @@ public class DrugEquivalentsImpl implements DrugEquivalentsService {
         final ArrayList<DrugHints> hints = new ArrayList<>();
         try {
             final HtmlPage page = c.getPage(String.format(URl_TEMPLATE, searchedWord));
-            final List<HtmlUnorderedList> byXPath = (List<HtmlUnorderedList>) page.getByXPath("//*[starts-with(@class, 'lista-handlowe')]");
-            for (HtmlUnorderedList ul : byXPath) {
-                for (DomElement el : ul.getChildElements()) {
+            final List<Object> byXPath = page.getByXPath("//*[starts-with(@class, 'lista-handlowe')]");
+            for (Object ul : byXPath) {
+                for (DomElement el : ((HtmlUnorderedList)ul).getChildElements()) {
                     final HtmlAnchor anchor = (HtmlAnchor) el.getFirstElementChild();
-                    hints.add(new DrugHints(anchor.asText(), anchor.getHrefAttribute()));
+                    hints.add(new DrugHints(anchor.asNormalizedText(), anchor.getHrefAttribute()));
                 }
             }
         } catch (IOException e) {
@@ -72,10 +72,10 @@ public class DrugEquivalentsImpl implements DrugEquivalentsService {
                 HtmlAnchor anchor = firstCell.getFirstByXPath("div[@class='zamiennik']/a");
                 HtmlBold b = firstCell.getFirstByXPath("b[@class='nazwa-leku']");
                 int iteration = 0;
-                if (b != null) info[iteration++] = b.asText();
+                if (b != null) info[iteration++] = b.asNormalizedText();
                 if (anchor != null) info[iteration] = anchor.getHrefAttribute();
                 for (HtmlTableCell cell : cells.subList(1, cells.size())) {
-                    info[++iteration] = cell.asText();
+                    info[++iteration] = cell.asNormalizedText();
                     if (iteration + 1 >= info.length) break;
                 }
                 drugInfo.add(toFixedDrugInfoForm(info));

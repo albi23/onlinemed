@@ -1,2 +1,1 @@
-web: java -Dserver.port=$PORT $JAVA_OPTS -jar --enable-preview target/onlinemed-1.0.0.jar
-
+web: java --add-opens java.base/jdk.internal.reflect=ALL-UNNAMED --add-opens java.base/java.lang=ALL-UNNAMED -Dfile.encoding=UTF-8 -XX:TieredStopAtLevel=1 -Dserver.port=$PORT -Dspring.output.ansi.enabled=always -Dcom.sun.management.jmxremote -Dspring.jmx.enabled=true -Dspring.liveBeansView.mbeanDomain $JAVA_OPTS -jar  onlinemed-backend/target/onlinemed-backend-1.0.0.jar

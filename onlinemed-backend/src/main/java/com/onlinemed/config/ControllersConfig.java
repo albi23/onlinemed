@@ -7,6 +7,7 @@ import com.onlinemed.config.exceptions.ValidationException;
 import com.onlinemed.model.dto.ErrorMessage;
 import com.onlinemed.model.dto.Violation;
 import javassist.NotFoundException;
+import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -30,10 +31,13 @@ import java.util.UUID;
  * The Global Controller Config class contains a common config for all controllers
  */
 @ControllerAdvice
+@Order(10000)
 public class ControllersConfig {
 
     @InitBinder
     public void binder(WebDataBinder binder) {
+        // This code protects Spring Core from a "Remote Code Execution" attack (dubbed "Spring4Shell").
+        binder.setDisallowedFields("class.*", "Class.*", "*.class.*", "*.Class.*");
         binder.registerCustomEditor(LocalDateTime.class, new LocalDateTimeEditor());
         binder.registerCustomEditor(UUID.class, new CustomUUIDEditor());
     }
