@@ -1,19 +1,20 @@
 package com.onlinemed.config;
 
+import com.onlinemed.config.hibernate.HibernatePropertiesConfig;
 import com.onlinemed.model.BaseObject;
 import net.ttddyy.dsproxy.support.ProxyDataSource;
 import net.ttddyy.dsproxy.support.ProxyDataSourceBuilder;
 import org.hibernate.jpa.HibernatePersistenceProvider;
 import org.jetbrains.annotations.Nullable;
-import org.springframework.context.annotation.*;
-import org.springframework.core.env.Environment;
-import org.springframework.core.env.StandardEnvironment;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Primary;
+import org.springframework.context.annotation.Profile;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
 
 import javax.persistence.EntityManagerFactory;
 import javax.sql.DataSource;
-import java.util.Objects;
 import java.util.Properties;
 
 /**
@@ -21,26 +22,19 @@ import java.util.Properties;
  * based on the values  in the application.*.properties file
  */
 @Configuration
-@PropertySources(value = {@PropertySource("classpath:application.properties")})
 public class EntityManagerConfiguration {
 
     private static final String modelPackagePath = BaseObject.class.getPackageName();
 
-    private final Environment environment;
+    private final HibernatePropertiesConfig hibernateProp;
 
-    public EntityManagerConfiguration(Environment environment) {
-        this.environment = environment;
+    public EntityManagerConfiguration(HibernatePropertiesConfig hibernateProp) {
+        this.hibernateProp = hibernateProp;
     }
 
     @Bean
     public Properties hibernateProperties() {
-        final Properties properties = new Properties();
-        Properties source = (Properties) (Objects.requireNonNull(((StandardEnvironment) environment).getPropertySources()
-                .get("class path resource [application.properties]"))).getSource();
-        source.keySet().stream()
-                .filter(s -> ((String) s).startsWith("hibernate"))
-                .forEach(x -> properties.put(x, source.get(x)));
-        return properties;
+        return this.hibernateProp.configure();
     }
 
     @Bean

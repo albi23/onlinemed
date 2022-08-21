@@ -35,7 +35,6 @@ public class PasetoAuthProvider implements AuthenticationProvider {
         if (password.length() == 0) {
             throw new BadCredentialsException("model.emptyPassword");
         }
-        System.out.println("From : [authenticate]");
         authenticatedPerson = personService.findPersonByUsername(userName);
         if (authenticatedPerson == null) {
             throw new BadCredentialsException("model.incorrectCredential");
