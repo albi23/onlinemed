@@ -24,7 +24,7 @@
         <bv-rest2ts-version>1.2.6</bv-rest2ts-version>
         <dir>./target</dir>
         <spring.security.verson>5.3.3.RELEASE</spring.security.verson>
-        <springframework.boot.version>2.5.7</springframework.boot.version>
+        <springframework.boot.version>2.7.2</springframework.boot.version>
 
     </properties>
 

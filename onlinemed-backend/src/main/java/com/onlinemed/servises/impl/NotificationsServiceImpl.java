@@ -4,12 +4,12 @@ import com.onlinemed.model.Notification;
 import com.onlinemed.model.Person;
 import com.onlinemed.model.Visit;
 import com.onlinemed.model.dto.Mail;
+import com.onlinemed.model.dto.NotificationDto;
 import com.onlinemed.servises.api.EmailSendService;
 import com.onlinemed.servises.api.NotificationsService;
 import com.onlinemed.servises.api.PersonService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -20,27 +20,30 @@ import java.util.Locale;
 import java.util.UUID;
 
 @Service
-public class NotificationsServiceImpl extends BaseObjectServiceImpl<Notification> implements NotificationsService {
+public class NotificationsServiceImpl extends BaseObjectServiceImpl<Notification> implements NotificationsService, NotificationReceiver {
 
-    @Autowired
-    private PersonService personService;
-
-    @Autowired
-    private EmailSendService emailSendService;
-
+    private final PersonService personService;
+    private final EmailSendService emailSendService;
     private final Logger logger = LoggerFactory.getLogger(NotificationsServiceImpl.class);
+
+    public NotificationsServiceImpl(PersonService personService,
+                                    EmailSendService emailSendService,
+                                    SendMailObserver sendMailObserver) {
+        this.personService = personService;
+        this.emailSendService = emailSendService;
+        sendMailObserver.addObserver(this);
+    }
 
     @Override
     @Transactional
-    public void addMessageNotificationToPerson(UUID senderId, UUID receiverId, String name, String surname) {
-
-        final Person person = this.personService.find(receiverId);
+    public void notificationToPerson(NotificationDto notification) {
+        final Person person = this.personService.find(notification.receiverId());
         if (person == null) {
             logger.error(String.format("[%s] Attempt to assign notification for non existing user ID: %s"
-                    , new Timestamp(new Date().getTime()), receiverId));
+                    , new Timestamp(new Date().getTime()), notification.receiverId()));
             return;
         }
-        person.getNotifications().add(new Notification(senderId, person, name, surname));
+        person.getNotifications().add(new Notification(notification.senderId(), person, notification.name(), notification.surname()));
         this.getEntityManager().merge(person);
     }
 

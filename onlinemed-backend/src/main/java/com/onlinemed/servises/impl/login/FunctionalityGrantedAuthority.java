@@ -3,15 +3,12 @@ package com.onlinemed.servises.impl.login;
 import com.onlinemed.model.Functionality;
 import org.springframework.security.core.GrantedAuthority;
 
-public class FunctionalityGrantedAuthority implements GrantedAuthority {
-
-    private final Functionality functionality;
+public record FunctionalityGrantedAuthority(Functionality functionality) implements GrantedAuthority {
 
     /**
      * @param functionality Functionality object
      */
-    public FunctionalityGrantedAuthority(Functionality functionality) {
-        this.functionality = functionality;
+    public FunctionalityGrantedAuthority {
     }
 
     /**

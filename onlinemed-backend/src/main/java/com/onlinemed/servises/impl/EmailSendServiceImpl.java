@@ -3,14 +3,13 @@ package com.onlinemed.servises.impl;
 
 import com.onlinemed.config.exceptions.ValidationException;
 import com.onlinemed.model.dto.Mail;
+import com.onlinemed.model.dto.NotificationDto;
 import com.onlinemed.model.dto.Violation;
 import com.onlinemed.model.translations.StaticTranslation;
 import com.onlinemed.servises.api.EmailSendService;
-import com.onlinemed.servises.api.NotificationsService;
 import com.onlinemed.servises.api.StaticTranslationService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.MailException;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.mail.javamail.MimeMessageHelper;
@@ -29,34 +28,32 @@ import java.util.UUID;
 @Service
 public class EmailSendServiceImpl implements EmailSendService {
 
-    @Autowired
     private final JavaMailSenderImpl emailSender;
-
-    @Autowired
-    private StaticTranslationService staticTranslationService;
-
-    @Autowired
-    private NotificationsService notificationsService;
+    private final StaticTranslationService staticTranslationService;
+    private final SendMailObserver sendMailObserver;
 
     private final HashMap<Locale, String> cacheTemplates = new HashMap<>();
     private final Logger logger = LoggerFactory.getLogger(EmailSendServiceImpl.class);
 
-    public EmailSendServiceImpl(JavaMailSenderImpl emailSender) {
+    public EmailSendServiceImpl(JavaMailSenderImpl emailSender,
+                                StaticTranslationService staticTranslationService,
+                                SendMailObserver sendMailObserver) {
         this.emailSender = emailSender;
+        this.staticTranslationService = staticTranslationService;
+        this.sendMailObserver = sendMailObserver;
     }
 
     public boolean sendMessageNotificationWithMail(Mail mail, Locale languageLocale, UUID senderId, UUID receiverId){
-        final boolean b = this.sendMessageMail(mail, languageLocale);
-        if (b) this.notificationsService.addMessageNotificationToPerson(senderId, receiverId, mail.getName(), mail.getSurname());
-        return b;
+        final boolean wasSent = this.sendMessageMail(mail, languageLocale);
+        if (wasSent) {
+            this.sendMailObserver.notifyObservers(new NotificationDto(senderId, receiverId, mail.getName(), mail.getSurname()));
+        }
+        return wasSent;
     }
 
     public boolean sendMessageMail(Mail mail, Locale languageLocale) {
         try {
-            String template = this.cacheTemplates.get(languageLocale);
-            if (template == null) {
-                template = getNewLanguageTemplate(languageLocale);
-            }
+            var template = this.cacheTemplates.getOrDefault(languageLocale, getNewLanguageTemplate(languageLocale));
             sendMessage(mail, template);
         } catch (MessagingException | MailException ex) {
             logger.error(ex.getMessage());

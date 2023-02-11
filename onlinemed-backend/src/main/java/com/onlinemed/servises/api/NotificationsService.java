@@ -8,7 +8,6 @@ import java.util.UUID;
 
 public interface NotificationsService extends BaseObjectService<Notification> {
 
-   void addMessageNotificationToPerson(UUID senderId, UUID receiverId, String name, String surname);
 
    Notification createNotificationWithMail(Notification notification, Locale languageLocale, String senderMail);
 

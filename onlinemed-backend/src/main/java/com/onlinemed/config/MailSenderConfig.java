@@ -17,7 +17,7 @@ public class MailSenderConfig {
     private static final Logger LOGGER = LoggerFactory.getLogger(MailSenderConfig.class);
 
     @Bean
-    void getMailSender() {
+    JavaMailSenderImpl mailSender() {
         JavaMailSenderImpl mailSender = new JavaMailSenderImpl();
         ConfigurableMimeFileTypeMap fileTypeMap = new ConfigurableMimeFileTypeMap();
         fileTypeMap.afterPropertiesSet();
@@ -46,5 +46,6 @@ public class MailSenderConfig {
             final String str = "\n" + IntStream.range(1, 113).mapToObj(i -> "_").collect(Collectors.joining());
             LOGGER.error(str + "\nMail configuration is not set. Please set up environment variable  SPRING_MAIL_USERNAME and SPRING_MAIL_PASSWORD" + str);
         }
+        return mailSender;
     }
 }

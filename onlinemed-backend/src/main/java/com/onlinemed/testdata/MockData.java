@@ -80,6 +80,7 @@ public class MockData implements ApplicationRunner {
             this.insertProductionSql();
             logger.info(String.format("[%s] END of insert sql files", new Timestamp(new Date().getTime())));
         }
+
     }
 
     private void createTestData() {
