@@ -12,10 +12,13 @@ import java.util.Objects;
 import java.util.Properties;
 
 import static com.onlinemed.config.BuildProfiles.DEV_PROFILE;
+import static com.onlinemed.config.BuildProfiles.TEST_PROFILE;
 
 @Component
-@Profile(DEV_PROFILE)
-@PropertySources(value = {@PropertySource(name = DEV_PROFILE, value = "classpath:application.properties")})
+@Profile({DEV_PROFILE, TEST_PROFILE})
+@PropertySources(value = {
+        @PropertySource(name = DEV_PROFILE, value = "classpath:application-dev.properties"),
+})
 public class DevHibernateProperties implements HibernatePropertiesConfig {
 
     private final Map<String, String> CUSTOM_DEV_PROP = Map.of(

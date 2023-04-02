@@ -1,10 +1,27 @@
 package com.onlinemed.testdata;
 
 import com.onlinemed.functionalUtils.FunctionalUtils;
-import com.onlinemed.model.*;
+import com.onlinemed.model.CalendarEvent;
+import com.onlinemed.model.Community;
+import com.onlinemed.model.DoctorInfo;
+import com.onlinemed.model.FacilityLocation;
+import com.onlinemed.model.ForumCategory;
+import com.onlinemed.model.ForumPost;
+import com.onlinemed.model.ForumTopic;
+import com.onlinemed.model.Functionality;
+import com.onlinemed.model.Notification;
+import com.onlinemed.model.Person;
+import com.onlinemed.model.Role;
+import com.onlinemed.model.Security;
+import com.onlinemed.model.SystemFunctionalities;
+import com.onlinemed.model.Visit;
 import com.onlinemed.model.enums.NotificationType;
 import com.onlinemed.model.enums.RoleType;
-import com.onlinemed.servises.api.*;
+import com.onlinemed.servises.api.ForumCategoryService;
+import com.onlinemed.servises.api.ForumPostService;
+import com.onlinemed.servises.api.ForumTopicService;
+import com.onlinemed.servises.api.PersonService;
+import com.onlinemed.servises.api.SecurityService;
 import com.onlinemed.servises.impl.SQLFileQueryService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,12 +33,24 @@ import org.springframework.stereotype.Component;
 import java.lang.reflect.Field;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Random;
+import java.util.UUID;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
-import static com.onlinemed.model.SystemFunctionalities.*;
+import static com.onlinemed.model.SystemFunctionalities.DOCTORS_PROFILE;
+import static com.onlinemed.model.SystemFunctionalities.DRUG_EQUIVALENTS;
+import static com.onlinemed.model.SystemFunctionalities.FORUM;
+import static com.onlinemed.model.SystemFunctionalities.NOTIFICATIONS;
+import static com.onlinemed.model.SystemFunctionalities.PROFILE;
+import static com.onlinemed.model.SystemFunctionalities.USER_MANAGEMENT;
 
 /**
  * Class responsible for create test data during development.
@@ -33,6 +62,9 @@ public class MockData implements ApplicationRunner {
 
     @Value("${test.data}")
     private String runTestData;
+
+    @Value("${insert.sql.data}")
+    private String insertSqlData;
 
     private final PersonService personService;
 
@@ -70,6 +102,9 @@ public class MockData implements ApplicationRunner {
 
     @Override
     public void run(ApplicationArguments args) {
+        if (!insertSqlData.equals("true")){
+            return;
+        }
         this.insertTranslations();
         if (runTestData.equals("true")) {
             logger.info(String.format("[%s] START of creating test data", new Timestamp(new Date().getTime())));

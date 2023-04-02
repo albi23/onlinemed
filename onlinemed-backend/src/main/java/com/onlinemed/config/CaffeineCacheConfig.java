@@ -11,7 +11,7 @@ import java.util.concurrent.TimeUnit;
 
 @EnableCaching
 @Configuration
-class CaffeineCacheConfig {
+public class CaffeineCacheConfig {
 
 
     @Bean(name = "caffeine-manager")

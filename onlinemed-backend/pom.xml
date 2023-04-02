@@ -18,14 +18,23 @@
         <java.version>17</java.version>
         <maven.compiler.source>17</maven.compiler.source>
         <maven.compiler.target>17</maven.compiler.target>
-        <hibernate.version>5.6.8.Final</hibernate.version>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+
         <bv-artifacts-version>1.0.9.RELEASE</bv-artifacts-version>
-        <jackson-version>2.11.0</jackson-version>
         <bv-rest2ts-version>1.2.6</bv-rest2ts-version>
+        <caffeine.version>3.0.6</caffeine.version>
         <dir>./target</dir>
+        <h2.version>2.1.214</h2.version>
+        <hibernate.version>5.6.8.Final</hibernate.version>
+        <htmlunit.version>2.60.0</htmlunit.version>
+        <jackson-version>2.11.0</jackson-version>
+        <json-path.artifactId>json-path</json-path.artifactId>
+        <junit-jupiter-engine.version>5.9.2</junit-jupiter-engine.version>
+        <maven-compiler-plugin.version>3.10.1</maven-compiler-plugin.version>
+        <mockito-core.version>4.6.1</mockito-core.version>
         <spring.security.verson>5.3.3.RELEASE</spring.security.verson>
         <springframework.boot.version>2.7.2</springframework.boot.version>
-
     </properties>
 
     <repositories>
@@ -285,25 +294,14 @@
         <dependency>
             <groupId>net.sourceforge.htmlunit</groupId>
             <artifactId>htmlunit</artifactId>
-            <version>2.60.0</version>
+            <version>${htmlunit.version}</version>
         </dependency>
 
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-test</artifactId>
-            <scope>test</scope>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.junit.vintage</groupId>
-                    <artifactId>junit-vintage-engine</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
 
         <dependency>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-compiler-plugin</artifactId>
-            <version>3.10.1</version>
+            <version>${maven-compiler-plugin.version}</version>
         </dependency>
 
         <!-- cache with caffeine-->
@@ -315,7 +313,7 @@
         <dependency>
             <groupId>com.github.ben-manes.caffeine</groupId>
             <artifactId>caffeine</artifactId>
-            <version>3.0.6</version>
+            <version>${caffeine.version}</version>
         </dependency>
 
         <!-- hibernate n+1 problem detection        -->
@@ -324,13 +322,49 @@
             <artifactId>spring-hibernate-query-utils</artifactId>
             <version>1.0.3</version>
         </dependency>
+
+        <!-- TEST dependencies -->
         <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <version>4.13.2</version>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.junit.vintage</groupId>
+                    <artifactId>junit-vintage-engine</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-engine</artifactId>
+            <version>${junit-jupiter-engine.version}</version>
             <scope>test</scope>
         </dependency>
-
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-api</artifactId>
+            <version>${junit-jupiter-engine.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.hamcrest</groupId>
+            <artifactId>hamcrest-library</artifactId>
+            <version>2.2</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.h2database</groupId>
+            <artifactId>h2</artifactId>
+            <version>${h2.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-core</artifactId>
+            <version>${mockito-core.version}</version>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 
     <build>
@@ -346,7 +380,7 @@
         <plugins>
             <plugin>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.10.1</version>
+                <version>${maven-compiler-plugin.version}</version>
                 <configuration>
                     <source>${java.version}</source>
                     <target>${java.version}</target>

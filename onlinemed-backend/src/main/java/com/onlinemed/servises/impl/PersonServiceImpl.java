@@ -2,7 +2,6 @@ package com.onlinemed.servises.impl;
 
 import com.onlinemed.model.BaseObject;
 import com.onlinemed.model.Person;
-import com.onlinemed.model.Person_;
 import com.onlinemed.model.Role;
 import com.onlinemed.servises.api.PersonService;
 import com.onlinemed.servises.impl.login.FunctionalityGrantedAuthority;
@@ -19,6 +18,7 @@ import javax.persistence.criteria.Root;
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
@@ -28,14 +28,12 @@ public class PersonServiceImpl extends BaseObjectServiceImpl<Person> implements 
 
     @Override
     @Cacheable(key = "#username", cacheNames = "person")
-    @Transactional
+    @Transactional(readOnly = true)
     public Person findPersonByUsername(final String username) {
-        CriteriaBuilder cb = entityManager.getCriteriaBuilder();
-        CriteriaQuery<Person> cq = cb.createQuery(Person.class);
-        Root<Person> root = cq.from(Person.class);
-        cq.select(root);
-        cq.where(cb.equal(root.get(Person_.userName), username));
-        return entityManager.createQuery(cq).getResultList().stream().findAny().orElse(null);
+        return entityManager.createNamedQuery(
+                        "Person.findPersonByUsernameWithTouchRoles", Person.class)
+                .setParameter("username", username)
+                .getSingleResult();
     }
 
     @Override
@@ -47,6 +45,14 @@ public class PersonServiceImpl extends BaseObjectServiceImpl<Person> implements 
                 .flatMap(r -> r.getFunctionalities().stream())
                 .forEach(BaseObject::touchObject);
         return personByUsername;
+    }
+
+    @Override
+    @Transactional
+    public int updatePersonLastLogin(UUID personID) {
+        return entityManager.createNamedQuery("Person.updateLastLoginCommunity")
+                .setParameter("id", personID)
+                .executeUpdate();
     }
 
     @Override

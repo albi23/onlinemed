@@ -5,7 +5,6 @@ import com.onlinemed.model.BaseObject;
 import net.ttddyy.dsproxy.support.ProxyDataSource;
 import net.ttddyy.dsproxy.support.ProxyDataSourceBuilder;
 import org.hibernate.jpa.HibernatePersistenceProvider;
-import org.jetbrains.annotations.Nullable;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
@@ -16,6 +15,8 @@ import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
 import javax.persistence.EntityManagerFactory;
 import javax.sql.DataSource;
 import java.util.Properties;
+
+import static com.onlinemed.config.BuildProfiles.TEST_PROFILE;
 
 /**
  * The class responsible for the configuration of the entity manager
@@ -45,7 +46,6 @@ public class EntityManagerConfiguration {
         return getEntityManagerFactory(hibernateProperties, em);
     }
 
-    @Nullable
     private EntityManagerFactory getEntityManagerFactory(Properties hibernateProperties, LocalContainerEntityManagerFactoryBean em) {
         em.setPackagesToScan(modelPackagePath);
         em.setJpaVendorAdapter(new HibernateJpaVendorAdapter());
@@ -58,7 +58,7 @@ public class EntityManagerConfiguration {
 
 
     @Bean
-    @Profile("Test")
+    @Profile(TEST_PROFILE)
     public EntityManagerFactory entityManagerFactoryWithProxy(DataSource dataSource, Properties hibernateProperties) {
         final LocalContainerEntityManagerFactoryBean em = new LocalContainerEntityManagerFactoryBean();
         em.setDataSource(proxyDatasource(dataSource));

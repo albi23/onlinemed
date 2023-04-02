@@ -18,7 +18,7 @@ public class SecurityServiceImpl extends BaseObjectServiceImpl<Security> impleme
 
     private final Argon2 argon2;
     private static final int DEFAULT_MEMORY = 1 << 12;
-    private static final int DEFAULT_PARALLELISM = 1;
+    private static final int DEFAULT_PARALLELISM = Runtime.getRuntime().availableProcessors();
     private static final int DEFAULT_ITERATIONS = 3;
 
 
@@ -28,12 +28,12 @@ public class SecurityServiceImpl extends BaseObjectServiceImpl<Security> impleme
 
     @Override
     public String hashPassword(String stringPwd) {
-        return argon2.hash(DEFAULT_ITERATIONS, DEFAULT_MEMORY, DEFAULT_PARALLELISM, stringPwd);
+        return argon2.hash(DEFAULT_ITERATIONS, DEFAULT_MEMORY, DEFAULT_PARALLELISM, stringPwd.toCharArray());
     }
 
     @Override
     public boolean validatePassword(String passwordToCheck, String hashedPassword) {
-        return argon2.verify(hashedPassword, passwordToCheck);
+        return argon2.verify(hashedPassword, passwordToCheck.toCharArray());
     }
 
     @Transactional(readOnly = true)

@@ -1,6 +1,17 @@
 package com.onlinemed.model;
 
-import javax.persistence.*;
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.Index;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
+import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
+import javax.persistence.PrimaryKeyJoinColumn;
+import javax.persistence.Table;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -10,7 +21,33 @@ import java.util.UUID;
  * The class responsible for creating the person table and mapping data to the form
  * of Person objects
  */
-@Entity
+@Entity(name = "person")
+@org.hibernate.annotations.NamedNativeQueries({
+                @org.hibernate.annotations.NamedNativeQuery(
+                        name = "Person.findPersonByUsernameWithTouchRoles",
+                        query = """
+                                select * from person
+                                join person_x_role on person.id = person_x_role.person_id
+                                join role on role.id = person_x_role.role_id
+                                join role_x_functionality on role.id = role_x_functionality.role_id
+                                join functionality on functionality.id = role_x_functionality.functionality_id
+                                join person_x_doctor_info on person.id = person_x_doctor_info.person_id
+                                join doctor_info on doctor_info.id = person_x_doctor_info.doctor_info_id
+                                where userName = :username
+                                """,
+                        readOnly = true,
+                        resultClass = Person.class
+                ),
+                @org.hibernate.annotations.NamedNativeQuery(
+                        name = "Person.updateLastLoginCommunity",
+                        query = """
+                                update community
+                                set lastlogin = CURRENT_TIMESTAMP
+                                where id = :id
+                                """
+                       ),
+        }
+)
 @Table(name = "person", indexes = {@Index(name = "person_index", columnList = "userName")})
 public class Person extends BaseObject {
 

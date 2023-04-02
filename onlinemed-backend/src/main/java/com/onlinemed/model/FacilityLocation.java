@@ -1,6 +1,14 @@
 package com.onlinemed.model;
 
-import javax.persistence.*;
+import javax.persistence.CollectionTable;
+import javax.persistence.Column;
+import javax.persistence.ElementCollection;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.MapKeyColumn;
+import javax.persistence.Table;
 import java.util.HashMap;
 import java.util.Map;
 /**
@@ -16,8 +24,8 @@ public class FacilityLocation extends BaseObject {
 
     @ElementCollection(fetch = FetchType.LAZY)
     @MapKeyColumn(name = "field_key", length = 100)
-    @Column(name = "value", length = 200)
-    @CollectionTable(name = "values", joinColumns = @JoinColumn(name = "doctor_info_id"))
+    @Column(name = "price_value", length = 200)
+    @CollectionTable(name = "price_values", joinColumns = @JoinColumn(name = "facility_location_id"))
     private Map<String, String> visitsPriceList = new HashMap<>();
 
     @ManyToOne(fetch = FetchType.LAZY)
