@@ -1,5 +1,5 @@
 export const environment = {
   production: true,
-  BASE_UR: 'https://onlinemed.herokuapp.com',
-  BASE_UI_UR: 'https://online-med-ui.herokuapp.com/',
+  BASE_URL: 'https://onlinemed.herokuapp.com',
+  BASE_UI_URL: 'https://online-med-ui.herokuapp.com/',
 };

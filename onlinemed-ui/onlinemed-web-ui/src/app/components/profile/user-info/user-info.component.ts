@@ -1,5 +1,10 @@
 import {Component, ElementRef, Input, OnInit, ViewChild} from '@angular/core';
-import {CalendarEvent as CalendarEventDto, DoctorInfo, FacilityLocation, Person} from '../../../core/sdk/onlinemed-model';
+import {
+  CalendarEvent as CalendarEventDto,
+  DoctorInfo,
+  FacilityLocation,
+  Person
+} from '../../../core/sdk/onlinemed-model';
 import {CalendarEventCtrl, DoctorInfoCtrl, PersonCtrl} from '../../../core/sdk/onlinemed-controllers';
 import {Utility} from '../../../shared/utilities/utility';
 import {CalendarComponent} from '../../../shared/components/calendar/calendar.component';
@@ -7,6 +12,7 @@ import {TranslateService} from '../../../core/translations/translate.service';
 import {NotificationWrapComponent} from '../../../shared/components/notification-box/notification-wrap.component';
 import {Alert, AlertType} from '../../../shared/classes/alert';
 import {AuthService} from '../../../core/auth/auth.service';
+import {untilDestroyed} from "@ngneat/until-destroy";
 
 @Component({
   selector: 'app-user-info',
@@ -50,14 +56,16 @@ export class UserInfoComponent implements OnInit {
     if (this.showTimetable) {
       const changedEvents = this.getChangedEvents();
       if (changedEvents.length > 0) {
-        this.calendarEventCtrl.updateUserEvents(changedEvents);
+        this.calendarEventCtrl.updateUserEvents(changedEvents).pipe(untilDestroyed(this));
       }
       if (this.calendarComponent.removedEvents.length > 0) {
-        this.calendarEventCtrl.removeUserEvents(this.calendarComponent.removedEvents);
+        this.calendarEventCtrl.removeUserEvents(this.calendarComponent.removedEvents).pipe(untilDestroyed(this));
       }
       this.showTimetable = !this.showTimetable;
     } else {
-      this.calendarEventCtrl.getUserEvents(Utility.getObjectId(this.currentPerson.id)).subscribe(
+      this.calendarEventCtrl.getUserEvents(Utility.getObjectId(this.currentPerson.id))
+        .pipe(untilDestroyed(this))
+        .subscribe(
         (res: CalendarEventDto[]) => {
           this.calendarEvents = res;
           this.showTimetable = !this.showTimetable;

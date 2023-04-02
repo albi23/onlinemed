@@ -12,7 +12,9 @@ import {Message} from '../../shared/components/message-sender/message-sender.com
 import {Mail} from '../../core/sdk/model-dto';
 import {TranslateService} from '../../core/translations/translate.service';
 import {ModalService} from '../../shared/services/modal.service';
+import {UntilDestroy, untilDestroyed} from "@ngneat/until-destroy";
 
+@UntilDestroy()
 @Component({
   selector: 'app-notifications',
   templateUrl: './notifications.component.html',
@@ -50,7 +52,8 @@ export class NotificationsComponent implements OnInit {
   onClickRemove(id: string): void {
     this.loggedPerson.notifications = this.loggedPerson.notifications.filter(n => n.id !== id);
     this.notifications = this.loggedPerson.notifications;
-    this.notificationCtrl.deleteObject(Utility.getObjectId(id)).subscribe(_ => Utility.updateSuccessfullyNotification(),
+    this.notificationCtrl.deleteObject(Utility.getObjectId(id)).pipe(untilDestroyed(this))
+      .subscribe(_ => Utility.updateSuccessfullyNotification(),
       _ => Utility.updateRejectedNotification());
   }
 
@@ -79,10 +82,10 @@ export class NotificationsComponent implements OnInit {
     const changedEvents = [...this.calendarComponent.changedEvents.values()]
       .map(e => Utility.mapToDto(e)).filter(e => e.version >= 0);
     if (changedEvents.length > 0) {
-      this.calendarEventCtrl.updateUserEvents(changedEvents);
+      this.calendarEventCtrl.updateUserEvents(changedEvents).pipe(untilDestroyed(this));
     }
     if (this.calendarComponent.removedEvents.length > 0) {
-      this.calendarEventCtrl.removeUserEvents(this.calendarComponent.removedEvents);
+      this.calendarEventCtrl.removeUserEvents(this.calendarComponent.removedEvents).pipe(untilDestroyed(this));
     }
     this.showTimetable = false;
   }
@@ -100,7 +103,9 @@ export class NotificationsComponent implements OnInit {
   }
 
   saveNewEventInDb(evt: CalendarEventDto): void {
-    this.calendarEventCtrl.updateUserEvents([evt]).subscribe(res => {
+    this.calendarEventCtrl.updateUserEvents([evt])
+      .pipe(untilDestroyed(this))
+      .subscribe(res => {
       const resEvent = res[0];
       this.calendarComponent.changedEvents.delete(resEvent.id);
       const index = this.calendarComponent.events.findIndex(e => e.id === resEvent.id);
@@ -115,6 +120,7 @@ export class NotificationsComponent implements OnInit {
 
   initCalendarEvents(): void {
     this.calendarEventCtrl.getUserEvents(Utility.getIdFromObject(this.loggedPerson))
+      .pipe(untilDestroyed(this))
       .subscribe((res: CalendarEventDto[]) => this.calendarEvents = res,
         (err) => Utility.showViolationsIfOccurs(err));
   }
@@ -166,14 +172,17 @@ export class NotificationsComponent implements OnInit {
   }
 
   addNewNotificationToRecipient(notification: Notification): void {
-    this.notificationCtrl.createObject(notification).subscribe(res => {
+    this.notificationCtrl.createObject(notification)
+      .pipe(untilDestroyed(this))
+      .subscribe(res => {
       this.onCloseMessageWindow();
       NotificationWrapComponent.sendAlert(new Alert(AlertType.SUCCESS, 'A notification has been added for the recipient'));
     }, error => Utility.showViolationsIfOccurs(error)); // TODO: Translations
   }
 
   updateNotificationState(notification: Notification): void {
-    this.notificationCtrl.updateObject(notification).subscribe(res => {
+    this.notificationCtrl.updateObject(notification).pipe(untilDestroyed(this))
+      .subscribe(res => {
       const index = this.loggedPerson.notifications.findIndex(not => not.id === res.id);
       this.authService.getCurrentLoggedPerson().notifications[index] = res;
       this.notifications = this.authService.getCurrentLoggedPerson().notifications;
@@ -182,13 +191,15 @@ export class NotificationsComponent implements OnInit {
 
   sendMailMessage(message: Message, receiverId: string): void {
     const mail = this.constructMailObject(message);
-    this.notificationCtrl.createMailNotification(mail, this.translateService.currentLanguage.locale, receiverId).subscribe(_ => {
+    this.notificationCtrl.createMailNotification(mail, this.translateService.currentLanguage.locale, receiverId).pipe(untilDestroyed(this))
+      .subscribe(_ => {
       NotificationWrapComponent.sendAlert(new Alert(AlertType.SUCCESS, 'The recipient received an email with a notification.'));
     }, error => Utility.showViolationsIfOccurs(error));  // TODO: Translations
   }
 
   deleteRejectedNotification(): void {
     this.notificationCtrl.deleteObject(Utility.getIdFromObject(this.currentHandledNotification))
+      .pipe(untilDestroyed(this))
       .subscribe(_ => {
         this.notifications = this.notifications.filter(n => n.id !== this.currentHandledNotification.id);
       }, error => Utility.showViolationsIfOccurs(error));
@@ -197,6 +208,7 @@ export class NotificationsComponent implements OnInit {
 
   handleCanceledVisit(message: Message): void {
     this.notificationCtrl.deleteByVisitId(Utility.getIdFromObject(this.currentHandledNotification.visit as Visit))
+      .pipe(untilDestroyed(this))
       .subscribe(_ => {
         /*
         #

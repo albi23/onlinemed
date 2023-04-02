@@ -17,6 +17,7 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -29,21 +30,22 @@ public class PersonServiceImpl extends BaseObjectServiceImpl<Person> implements 
     @Override
     @Cacheable(key = "#username", cacheNames = "person")
     @Transactional(readOnly = true)
-    public Person findPersonByUsername(final String username) {
+    public Optional<Person> findPersonByUsername(final String username) {
         return entityManager.createNamedQuery(
                         "Person.findPersonByUsernameWithTouchRoles", Person.class)
                 .setParameter("username", username)
-                .getSingleResult();
+                .getResultList().stream().findFirst();
     }
 
     @Override
     @Cacheable(key = "#username", cacheNames = "person")
     @Transactional
-    public Person findPersonByUsernameWithTouchRoles(String username) {
-        final Person personByUsername = this.findPersonByUsername(username);
-        personByUsername.getRoles().stream()
+    public Optional<Person> findPersonByUsernameWithTouchRoles(String username) {
+        final Optional<Person> personByUsername = this.findPersonByUsername(username);
+        personByUsername.ifPresent(person ->
+                person.getRoles().stream()
                 .flatMap(r -> r.getFunctionalities().stream())
-                .forEach(BaseObject::touchObject);
+                .forEach(BaseObject::touchObject));
         return personByUsername;
     }
 

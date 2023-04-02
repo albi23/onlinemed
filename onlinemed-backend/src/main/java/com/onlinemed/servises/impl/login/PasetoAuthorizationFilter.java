@@ -14,6 +14,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.Optional;
 import java.util.Set;
 
 import static com.onlinemed.servises.impl.login.SecurityConstants.TOKEN_HEADER;
@@ -39,13 +40,13 @@ public class PasetoAuthorizationFilter extends OncePerRequestFilter {
             return;
         }
         if (pasetoTokenService.requestTokenValid(req.getHeader(TOKEN_HEADER))) {
-            Person person = pasetoTokenService.getPersonFromRequestToken(req);
-            if (person != null) {
+            Optional<Person> personOpt = pasetoTokenService.getPersonFromRequestToken(req);
+            personOpt.ifPresent(person -> {
                 UsernamePasswordAuthenticationToken authentication = getAuthentication(person);
                 SecurityContextHolder.getContext().setAuthentication(authentication);
                 res.addHeader(TOKEN_HEADER, pasetoTokenService.generateRequestToken(
-                        pasetoTokenService.getPersonFromRequestToken(req).getUserName()));
-            }
+                        person.getUserName()));
+            });
         }
         chain.doFilter(req, res);
     }

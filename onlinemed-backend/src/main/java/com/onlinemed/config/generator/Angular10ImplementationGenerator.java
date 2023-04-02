@@ -1,13 +1,23 @@
 package com.onlinemed.config.generator;
 
+import com.blueveery.springrest2ts.extensions.ModelSerializerExtension;
 import com.blueveery.springrest2ts.implgens.Angular4ImplementationGenerator;
 import com.blueveery.springrest2ts.spring.RequestMappingUtility;
-import com.blueveery.springrest2ts.tsmodel.*;
+import com.blueveery.springrest2ts.tsmodel.TSClass;
+import com.blueveery.springrest2ts.tsmodel.TSComplexElement;
+import com.blueveery.springrest2ts.tsmodel.TSField;
+import com.blueveery.springrest2ts.tsmodel.TSMethod;
+import com.blueveery.springrest2ts.tsmodel.TSModule;
+import com.blueveery.springrest2ts.tsmodel.TSParameter;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.io.BufferedWriter;
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 import java.util.stream.Stream;
 
 /**
@@ -27,6 +37,9 @@ public class Angular10ImplementationGenerator extends Angular4ImplementationGene
         super(null);
         /* Override implementation set up */
         this.addExternalProjectImport("rxjs", "Subject");
+        this.addExternalProjectImport("rxjs/operators", "take");
+        this.addExternalProjectImport("src/environments/environment", "environment");
+
 
         this.setSerializationExtension(new ScopedJsonSerializerExtension());
         implementationSpecificFieldNames = new String[]{FIELD_NAME_HTTP_SERVICE, FIELD_NAME_ERROR_SERVICE};
@@ -111,11 +124,31 @@ public class Angular10ImplementationGenerator extends Angular4ImplementationGene
                                         boolean isRequestOptionRequired, String tsPath,
                                         String requestOptions, boolean isJsonParsingRequired) throws IOException {
         writer.write("   const subject = new Subject<" + method.getType().getName() + ">();\n");
-        writer.write("    this." + FIELD_NAME_HTTP_SERVICE + "." + httpMethod + getGenericType(method, isRequestOptionRequired) + "("
-                + tsPath
-                + requestOptions
-                + ")" + getParseResponseFunction(isJsonParsingRequired) + "\n      .subscribe(res => subject.next(res)" + defineErrorHandling() +
-                "    return subject.asObservable();");
+        String sb = "    this." +
+                FIELD_NAME_HTTP_SERVICE +
+                "." +
+                httpMethod +
+                getGenericType(method, isRequestOptionRequired) + "(" +
+                "environment.BASE_URL + " +
+                tsPath +
+                requestOptions +
+                ")" +
+                getParseResponseFunction(isJsonParsingRequired) +
+                "\n      .subscribe(res => subject.next(res)" + defineErrorHandling() +
+                "    return subject.asObservable();";
+
+        writer.write(sb);
+    }
+
+    @Override
+    protected String getParseResponseFunction(boolean isJsonResponse) {
+        if (isJsonResponse) {
+            ModelSerializerExtension modelSerializerExtension = this.modelSerializerExtension;
+            String parseFunction = modelSerializerExtension.generateDeserializationCode("res");
+            return "\n      .pipe(map(res => " + parseFunction + "), take(1))";
+        } else {
+            return "\n      .pipe(take(1))";
+        }
     }
 
     /**

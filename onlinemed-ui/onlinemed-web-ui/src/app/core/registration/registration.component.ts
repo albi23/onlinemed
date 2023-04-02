@@ -286,7 +286,7 @@ export class RegistrationComponent implements OnInit {
     const headers = new HttpHeaders().set('Content-type', 'application/json')
       .append('Authorization', 'Basic ' + btoa(passwordPlain));
     const subject = new Subject<Person>();
-    this.httpService.post(environment.BASE_UR + '/api/person/' + id + '/register',
+    this.httpService.post(environment.BASE_URL + '/api/person/' + id + '/register',
       JsonScopedSerializer.stringify(entity, new JsonScope(false, [])), {headers, params, responseType: 'text'})
       .pipe(map(res => JSON.parse(res)))
       .subscribe(res => subject.next(res), error => {

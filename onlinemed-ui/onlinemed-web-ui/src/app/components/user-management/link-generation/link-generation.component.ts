@@ -64,7 +64,7 @@ export class LinkGenerationComponent extends MultiDropdownAdapter implements OnI
         }
       });
     }else {
-      this.BACKEND_URL = environment.BASE_UI_UR;
+      this.BACKEND_URL = environment.BASE_UI_URL;
     }
   }
 

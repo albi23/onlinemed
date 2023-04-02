@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.Optional;
 
 import static com.onlinemed.servises.impl.login.SecurityConstants.TOKEN_HEADER;
 
@@ -98,7 +99,7 @@ public class PasetoTokenServiceImpl implements PasetoTokenService {
 
 
     @Override
-    public Person getPersonFromRequestToken(HttpServletRequest request) {
+    public Optional<Person> getPersonFromRequestToken(HttpServletRequest request) {
         String token =  request.getHeader(TOKEN_HEADER);
         if (token != null) {
             String username = parseRequestToken(token).getSubject();

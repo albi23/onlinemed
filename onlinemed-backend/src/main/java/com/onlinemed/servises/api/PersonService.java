@@ -5,14 +5,15 @@ import com.onlinemed.model.Role;
 import org.springframework.security.core.GrantedAuthority;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 
 public interface PersonService extends BaseObjectService<Person> {
 
-    Person findPersonByUsername(String username);
+    Optional<Person> findPersonByUsername(String username);
 
-    Person findPersonByUsernameWithTouchRoles(String username);
+    Optional<Person> findPersonByUsernameWithTouchRoles(String username);
 
     int updatePersonLastLogin(UUID personID);
 

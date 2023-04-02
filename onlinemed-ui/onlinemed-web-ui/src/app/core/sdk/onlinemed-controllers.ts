@@ -20,7 +20,7 @@ import {
   Role
 } from './onlinemed-model';
 import {Observable, Subject} from 'rxjs';
-import {map} from 'rxjs/operators';
+import {map, take} from 'rxjs/operators';
 import {environment} from 'src/environments/environment';
 
 /* tslint:disable  max-line-length  align  eofline   */
@@ -38,7 +38,8 @@ export class CalendarEventCtrl {
 
   public deleteObject(id: string): Observable<void>  {
     const subject = new Subject<void>();
-    this.httpService.delete<void>(environment.BASE_UR + '/api/calendar-event/' + id + '')
+    this.httpService.delete<void>(environment.BASE_URL + '/api/calendar-event/' + id + '')
+      .pipe(take(1))
       .subscribe(res => subject.next(res), error => {
         this.errorHandlerService.handleErrors(error);
         subject.error(error);
@@ -46,9 +47,10 @@ export class CalendarEventCtrl {
     return subject.asObservable();
   }
 
-  public getUserEvents(id: string): Observable<CalendarEvent[]>  {
+  public getUserEvents(arg0: string): Observable<CalendarEvent[]>  {
     const subject = new Subject<CalendarEvent[]>();
-    this.httpService.get(environment.BASE_UR + '/api/calendar-event/user/' + id + '', {responseType: 'text'}).pipe(map(res => JSON.parse(res)))
+    this.httpService.get(environment.BASE_URL + '/api/calendar-event/user/' + arg0 + '', {responseType: 'text'})
+      .pipe(map(res => JSON.parse(res)), take(1))
       .subscribe(res => subject.next(res), error => {
         this.errorHandlerService.handleErrors(error);
         subject.error(error);
@@ -56,10 +58,11 @@ export class CalendarEventCtrl {
     return subject.asObservable();
   }
 
-  public removeUserEvents(removeIdList: string[]): Observable<void>  {
+  public removeUserEvents(arg0: string[]): Observable<void>  {
     const headers = new HttpHeaders().set('Content-type', 'application/json');
     const subject = new Subject<void>();
-    this.httpService.post<void>(environment.BASE_UR + '/api/calendar-event/remove-many', removeIdList, {headers})
+    this.httpService.post<void>(environment.BASE_URL + '/api/calendar-event/remove-many', arg0 , {headers})
+      .pipe(take(1))
       .subscribe(res => subject.next(res), error => {
         this.errorHandlerService.handleErrors(error);
         subject.error(error);
@@ -70,10 +73,8 @@ export class CalendarEventCtrl {
   public updateObject(entity: BaseEntity): Observable<CalendarEvent>  {
     const headers = new HttpHeaders().set('Content-type', 'application/json');
     const subject = new Subject<CalendarEvent>();
-    this.httpService.put(environment.BASE_UR + '/api/calendar-event/' + entity.id.split('/')[1] + '', JsonScopedSerializer.stringify(entity, new JsonScope(false, [])), {
-      headers,
-      responseType: 'text'
-    }).pipe(map(res => JSON.parse(res)))
+    this.httpService.put(environment.BASE_URL + '/api/calendar-event/' + entity.id.split('/')[1] + '', JsonScopedSerializer.stringify(entity, new JsonScope(false, [])) , {headers, responseType: 'text'})
+      .pipe(map(res => JSON.parse(res)), take(1))
       .subscribe(res => subject.next(res), error => {
         this.errorHandlerService.handleErrors(error);
         subject.error(error);
@@ -81,13 +82,11 @@ export class CalendarEventCtrl {
     return subject.asObservable();
   }
 
-  public updateUserEvents(events: CalendarEvent[]): Observable<CalendarEvent[]>  {
+  public updateUserEvents(arg0: CalendarEvent[]): Observable<CalendarEvent[]>  {
     const headers = new HttpHeaders().set('Content-type', 'application/json');
     const subject = new Subject<CalendarEvent[]>();
-    this.httpService.post(environment.BASE_UR + '/api/calendar-event/update-many', JsonScopedSerializer.stringify(events, new JsonScope(false, [])), {
-      headers,
-      responseType: 'text'
-    }).pipe(map(res => JSON.parse(res)))
+    this.httpService.post(environment.BASE_URL + '/api/calendar-event/update-many', JsonScopedSerializer.stringify(arg0, new JsonScope(false, [])) , {headers, responseType: 'text'})
+      .pipe(map(res => JSON.parse(res)), take(1))
       .subscribe(res => subject.next(res), error => {
         this.errorHandlerService.handleErrors(error);
         subject.error(error);
@@ -110,7 +109,8 @@ export class CommunityCtrl {
 
   public getObject(id: string): Observable<Community>  {
     const subject = new Subject<Community>();
-    this.httpService.get(environment.BASE_UR + '/api/community/' + id + '', {responseType: 'text'}).pipe(map(res => JSON.parse(res)))
+    this.httpService.get(environment.BASE_URL + '/api/community/' + id + '', {responseType: 'text'})
+      .pipe(map(res => JSON.parse(res)), take(1))
       .subscribe(res => subject.next(res), error => {
         this.errorHandlerService.handleErrors(error);
         subject.error(error);
@@ -121,10 +121,8 @@ export class CommunityCtrl {
   public updateObject(entity: BaseEntity): Observable<Community>  {
     const headers = new HttpHeaders().set('Content-type', 'application/json');
     const subject = new Subject<Community>();
-    this.httpService.put(environment.BASE_UR + '/api/community/' + entity.id.split('/')[1] + '', JsonScopedSerializer.stringify(entity, new JsonScope(false, [])), {
-      headers,
-      responseType: 'text'
-    }).pipe(map(res => JSON.parse(res)))
+    this.httpService.put(environment.BASE_URL + '/api/community/' + entity.id.split('/')[1] + '', JsonScopedSerializer.stringify(entity, new JsonScope(false, [])) , {headers, responseType: 'text'})
+      .pipe(map(res => JSON.parse(res)), take(1))
       .subscribe(res => subject.next(res), error => {
         this.errorHandlerService.handleErrors(error);
         subject.error(error);
@@ -147,7 +145,8 @@ export class DoctorInfoCtrl {
 
   public findAll(): Observable<DoctorInfo[]>  {
     const subject = new Subject<DoctorInfo[]>();
-    this.httpService.get(environment.BASE_UR + '/api/doctor-info', {responseType: 'text'}).pipe(map(res => JSON.parse(res)))
+    this.httpService.get(environment.BASE_URL + '/api/doctor-info', {responseType: 'text'})
+      .pipe(map(res => JSON.parse(res)), take(1))
       .subscribe(res => subject.next(res), error => {
         this.errorHandlerService.handleErrors(error);
         subject.error(error);
@@ -155,13 +154,11 @@ export class DoctorInfoCtrl {
     return subject.asObservable();
   }
 
-  public updateObject(entity: BaseEntity): Observable<DoctorInfo>  {
+  public updateObject(arg0: BaseEntity): Observable<DoctorInfo>  {
     const headers = new HttpHeaders().set('Content-type', 'application/json');
     const subject = new Subject<DoctorInfo>();
-    this.httpService.put(environment.BASE_UR + '/api/doctor-info/' + entity.id.split('/')[1] + '', JsonScopedSerializer.stringify(entity, new JsonScope(false, [])), {
-      headers,
-      responseType: 'text'
-    }).pipe(map(res => JSON.parse(res)))
+    this.httpService.put(environment.BASE_URL + '/api/doctor-info/' + arg0.id.split('/')[1] + '', JsonScopedSerializer.stringify(arg0, new JsonScope(false, [])) , {headers, responseType: 'text'})
+      .pipe(map(res => JSON.parse(res)), take(1))
       .subscribe(res => subject.next(res), error => {
         this.errorHandlerService.handleErrors(error);
         subject.error(error);
@@ -182,18 +179,16 @@ export class DrugEquivalentsCtrl {
     this.errorHandlerService = errorHandlerService;
   }
 
-  public searchDrugHints(search: string): Observable<DrugHints[]>  {
+  public searchDrugHints(arg0: string): Observable<DrugHints[]>  {
     const queryParamsList: { name: string, value: string }[] = [];
-    queryParamsList.push({name: 'search', value: search});
+    queryParamsList.push({name: 'search', value: arg0});
     let params = new HttpParams();
     for (const queryParam of queryParamsList) {
       params = params.append(queryParam.name, queryParam.value);
     }
     const subject = new Subject<DrugHints[]>();
-    this.httpService.get(environment.BASE_UR + '/api/drug-equivalent/hints', {
-      params,
-      responseType: 'text'
-    }).pipe(map(res => JSON.parse(res)))
+    this.httpService.get(environment.BASE_URL + '/api/drug-equivalent/hints', {params, responseType: 'text'})
+      .pipe(map(res => JSON.parse(res)), take(1))
       .subscribe(res => subject.next(res), error => {
         this.errorHandlerService.handleErrors(error);
         subject.error(error);
@@ -201,18 +196,16 @@ export class DrugEquivalentsCtrl {
     return subject.asObservable();
   }
 
-  public searchDrugInfo(url: string): Observable<DrugInfo[]>  {
+  public searchDrugInfo(arg0: string): Observable<DrugInfo[]>  {
     const queryParamsList: { name: string, value: string }[] = [];
-    queryParamsList.push({name: 'url', value: url});
+    queryParamsList.push({name: 'url', value: arg0});
     let params = new HttpParams();
     for (const queryParam of queryParamsList) {
       params = params.append(queryParam.name, queryParam.value);
     }
     const subject = new Subject<DrugInfo[]>();
-    this.httpService.get(environment.BASE_UR + '/api/drug-equivalent/drug-info', {
-      params,
-      responseType: 'text'
-    }).pipe(map(res => JSON.parse(res)))
+    this.httpService.get(environment.BASE_URL + '/api/drug-equivalent/drug-info', {params, responseType: 'text'})
+      .pipe(map(res => JSON.parse(res)), take(1))
       .subscribe(res => subject.next(res), error => {
         this.errorHandlerService.handleErrors(error);
         subject.error(error);
@@ -233,21 +226,19 @@ export class EmailSendCtrl {
     this.errorHandlerService = errorHandlerService;
   }
 
-  public sendMessageMail(mail: Mail, languageLocale: string, senderId: string, receiverId: string): Observable<boolean>  {
+  public sendMessageMail(arg0: Mail, arg1: string, arg2: string, arg3: string): Observable<boolean>  {
     const queryParamsList: { name: string, value: string }[] = [];
-    queryParamsList.push({name: 'sender', value: senderId});
+    queryParamsList.push({name: 'sender', value: arg2});
 
-    queryParamsList.push({name: 'receiver', value: receiverId});
+    queryParamsList.push({name: 'receiver', value: arg3});
     let params = new HttpParams();
     for (const queryParam of queryParamsList) {
       params = params.append(queryParam.name, queryParam.value);
     }
     const headers = new HttpHeaders().set('Content-type', 'application/json');
     const subject = new Subject<boolean>();
-    this.httpService.post<boolean>(environment.BASE_UR + '/api/email/' + languageLocale + '/send', mail, {
-      headers,
-      params
-    })
+    this.httpService.post<boolean>(environment.BASE_URL + '/api/email/' + arg1 + '/send', arg0 , {headers, params})
+      .pipe(take(1))
       .subscribe(res => subject.next(res), error => {
         this.errorHandlerService.handleErrors(error);
         subject.error(error);
@@ -270,7 +261,8 @@ export class ForumCategoryCtrl {
 
   public findAll(): Observable<ForumCategory[]>  {
     const subject = new Subject<ForumCategory[]>();
-    this.httpService.get(environment.BASE_UR + '/api/forum-category', {responseType: 'text'}).pipe(map(res => JSON.parse(res)))
+    this.httpService.get(environment.BASE_URL + '/api/forum-category', {responseType: 'text'})
+      .pipe(map(res => JSON.parse(res)), take(1))
       .subscribe(res => subject.next(res), error => {
         this.errorHandlerService.handleErrors(error);
         subject.error(error);
@@ -294,10 +286,8 @@ export class ForumPostCtrl {
   public createObject(entity: BaseEntity): Observable<ForumPost>  {
     const headers = new HttpHeaders().set('Content-type', 'application/json');
     const subject = new Subject<ForumPost>();
-    this.httpService.post(environment.BASE_UR + '/api/forum-post', JsonScopedSerializer.stringify(entity, new JsonScope(false, [])), {
-      headers,
-      responseType: 'text'
-    }).pipe(map(res => JSON.parse(res)))
+    this.httpService.post(environment.BASE_URL + '/api/forum-post', JsonScopedSerializer.stringify(entity, new JsonScope(false, [])) , {headers, responseType: 'text'})
+      .pipe(map(res => JSON.parse(res)), take(1))
       .subscribe(res => subject.next(res), error => {
         this.errorHandlerService.handleErrors(error);
         subject.error(error);
@@ -307,7 +297,8 @@ export class ForumPostCtrl {
 
   public deleteObject(id: string): Observable<void>  {
     const subject = new Subject<void>();
-    this.httpService.delete<void>(environment.BASE_UR + '/api/forum-post/' + id + '')
+    this.httpService.delete<void>(environment.BASE_URL + '/api/forum-post/' + id + '')
+      .pipe(take(1))
       .subscribe(res => subject.next(res), error => {
         this.errorHandlerService.handleErrors(error);
         subject.error(error);
@@ -315,32 +306,30 @@ export class ForumPostCtrl {
     return subject.asObservable();
   }
 
-  public getPaginatedTopicPosts(topicId: string, pageNumber: number | null = 0, sortBy: string = "timestamp", ascending: boolean | null = true, pageSize: number | null = 10): Observable<ForumPost[]>  {
+  public getPaginatedTopicPosts(arg0: string, arg1: number | null = 0, arg2: string = "timestamp", arg3: boolean | null = true, arg4: number | null = 10): Observable<ForumPost[]>  {
     const queryParamsList: { name: string, value: string }[] = [];
-    if (pageNumber !== undefined && pageNumber !== null) {
-      queryParamsList.push({name: 'pageNumber', value: pageNumber.toString()});
+    if (arg1 !== undefined && arg1 !== null) {
+      queryParamsList.push({name: 'pageNumber', value: arg1.toString()});
     }
 
-    if (sortBy !== undefined && sortBy !== null) {
-      queryParamsList.push({name: 'sortBy', value: sortBy});
+    if (arg2 !== undefined && arg2 !== null) {
+      queryParamsList.push({name: 'sortBy', value: arg2});
     }
 
-    if (ascending !== undefined && ascending !== null) {
-      queryParamsList.push({name: 'ascending', value: ascending.toString()});
+    if (arg3 !== undefined && arg3 !== null) {
+      queryParamsList.push({name: 'ascending', value: arg3.toString()});
     }
 
-    if (pageSize !== undefined && pageSize !== null) {
-      queryParamsList.push({name: 'pageSize', value: pageSize.toString()});
+    if (arg4 !== undefined && arg4 !== null) {
+      queryParamsList.push({name: 'pageSize', value: arg4.toString()});
     }
     let params = new HttpParams();
     for (const queryParam of queryParamsList) {
       params = params.append(queryParam.name, queryParam.value);
     }
     const subject = new Subject<ForumPost[]>();
-    this.httpService.get(environment.BASE_UR + '/api/forum-post/' + topicId + '/topic-posts', {
-      params,
-      responseType: 'text'
-    }).pipe(map(res => JSON.parse(res)))
+    this.httpService.get(environment.BASE_URL + '/api/forum-post/' + arg0 + '/topic-posts', {params, responseType: 'text'})
+      .pipe(map(res => JSON.parse(res)), take(1))
       .subscribe(res => subject.next(res), error => {
         this.errorHandlerService.handleErrors(error);
         subject.error(error);
@@ -348,29 +337,30 @@ export class ForumPostCtrl {
     return subject.asObservable();
   }
 
-  public getTopicPostCount(topicId: string, pageNumber: number | null = 0, sortBy: string = "timestamp", ascending: boolean | null = true, pageSize: number | null = 10): Observable<number>  {
+  public getTopicPostCount(arg0: string, arg1: number | null = 0, arg2: string = "timestamp", arg3: boolean | null = true, arg4: number | null = 10): Observable<number>  {
     const queryParamsList: { name: string, value: string }[] = [];
-    if (pageNumber !== undefined && pageNumber !== null) {
-      queryParamsList.push({name: 'pageNumber', value: pageNumber.toString()});
+    if (arg1 !== undefined && arg1 !== null) {
+      queryParamsList.push({name: 'pageNumber', value: arg1.toString()});
     }
 
-    if (sortBy !== undefined && sortBy !== null) {
-      queryParamsList.push({name: 'sortBy', value: sortBy});
+    if (arg2 !== undefined && arg2 !== null) {
+      queryParamsList.push({name: 'sortBy', value: arg2});
     }
 
-    if (ascending !== undefined && ascending !== null) {
-      queryParamsList.push({name: 'ascending', value: ascending.toString()});
+    if (arg3 !== undefined && arg3 !== null) {
+      queryParamsList.push({name: 'ascending', value: arg3.toString()});
     }
 
-    if (pageSize !== undefined && pageSize !== null) {
-      queryParamsList.push({name: 'pageSize', value: pageSize.toString()});
+    if (arg4 !== undefined && arg4 !== null) {
+      queryParamsList.push({name: 'pageSize', value: arg4.toString()});
     }
     let params = new HttpParams();
     for (const queryParam of queryParamsList) {
       params = params.append(queryParam.name, queryParam.value);
     }
     const subject = new Subject<number>();
-    this.httpService.get<number>(environment.BASE_UR + '/api/forum-post/' + topicId + '/topic-posts/count', {params})
+    this.httpService.get<number>(environment.BASE_URL + '/api/forum-post/' + arg0 + '/topic-posts/count', {params})
+      .pipe(take(1))
       .subscribe(res => subject.next(res), error => {
         this.errorHandlerService.handleErrors(error);
         subject.error(error);
@@ -378,13 +368,11 @@ export class ForumPostCtrl {
     return subject.asObservable();
   }
 
-  public updateObject(entity: BaseEntity): Observable<ForumPost>  {
+  public updateObject(arg0: BaseEntity): Observable<ForumPost>  {
     const headers = new HttpHeaders().set('Content-type', 'application/json');
     const subject = new Subject<ForumPost>();
-    this.httpService.put(environment.BASE_UR + '/api/forum-post/' + entity.id.split('/')[1] + '', JsonScopedSerializer.stringify(entity, new JsonScope(false, [])), {
-      headers,
-      responseType: 'text'
-    }).pipe(map(res => JSON.parse(res)))
+    this.httpService.put(environment.BASE_URL + '/api/forum-post/' + arg0.id.split('/')[1] + '', JsonScopedSerializer.stringify(arg0, new JsonScope(false, [])) , {headers, responseType: 'text'})
+      .pipe(map(res => JSON.parse(res)), take(1))
       .subscribe(res => subject.next(res), error => {
         this.errorHandlerService.handleErrors(error);
         subject.error(error);
@@ -408,10 +396,8 @@ export class ForumTopicCtrl {
   public createObject(entity: BaseEntity): Observable<ForumTopic>  {
     const headers = new HttpHeaders().set('Content-type', 'application/json');
     const subject = new Subject<ForumTopic>();
-    this.httpService.post(environment.BASE_UR + '/api/forum-topic', JsonScopedSerializer.stringify(entity, new JsonScope(false, [])), {
-      headers,
-      responseType: 'text'
-    }).pipe(map(res => JSON.parse(res)))
+    this.httpService.post(environment.BASE_URL + '/api/forum-topic', JsonScopedSerializer.stringify(entity, new JsonScope(false, [])) , {headers, responseType: 'text'})
+      .pipe(map(res => JSON.parse(res)), take(1))
       .subscribe(res => subject.next(res), error => {
         this.errorHandlerService.handleErrors(error);
         subject.error(error);
@@ -421,7 +407,8 @@ export class ForumTopicCtrl {
 
   public deleteObject(id: string): Observable<void>  {
     const subject = new Subject<void>();
-    this.httpService.delete<void>(environment.BASE_UR + '/api/forum-topic/' + id + '')
+    this.httpService.delete<void>(environment.BASE_URL + '/api/forum-topic/' + id + '')
+      .pipe(take(1))
       .subscribe(res => subject.next(res), error => {
         this.errorHandlerService.handleErrors(error);
         subject.error(error);
@@ -429,9 +416,10 @@ export class ForumTopicCtrl {
     return subject.asObservable();
   }
 
-  public getCategoryTopics(id: string): Observable<ForumTopic[]>  {
+  public getCategoryTopics(arg0: string): Observable<ForumTopic[]>  {
     const subject = new Subject<ForumTopic[]>();
-    this.httpService.get(environment.BASE_UR + '/api/forum-topic/category/' + id + '', {responseType: 'text'}).pipe(map(res => JSON.parse(res)))
+    this.httpService.get(environment.BASE_URL + '/api/forum-topic/category/' + arg0 + '', {responseType: 'text'})
+      .pipe(map(res => JSON.parse(res)), take(1))
       .subscribe(res => subject.next(res), error => {
         this.errorHandlerService.handleErrors(error);
         subject.error(error);
@@ -439,32 +427,30 @@ export class ForumTopicCtrl {
     return subject.asObservable();
   }
 
-  public getNewestTopics(sortBy: string = "timestamp", ascending: boolean | null = true, pageNumber: number | null = 0, pageSize: number | null = 20): Observable<ForumTopic[]>  {
+  public getNewestTopics(arg0: string = "timestamp", arg1: boolean | null = true, arg2: number | null = 0, arg3: number | null = 20): Observable<ForumTopic[]>  {
     const queryParamsList: { name: string, value: string }[] = [];
-    if (sortBy !== undefined && sortBy !== null) {
-      queryParamsList.push({name: 'sortBy', value: sortBy});
+    if (arg0 !== undefined && arg0 !== null) {
+      queryParamsList.push({name: 'sortBy', value: arg0});
     }
 
-    if (ascending !== undefined && ascending !== null) {
-      queryParamsList.push({name: 'ascending', value: ascending.toString()});
+    if (arg1 !== undefined && arg1 !== null) {
+      queryParamsList.push({name: 'ascending', value: arg1.toString()});
     }
 
-    if (pageNumber !== undefined && pageNumber !== null) {
-      queryParamsList.push({name: 'pageNumber', value: pageNumber.toString()});
+    if (arg2 !== undefined && arg2 !== null) {
+      queryParamsList.push({name: 'pageNumber', value: arg2.toString()});
     }
 
-    if (pageSize !== undefined && pageSize !== null) {
-      queryParamsList.push({name: 'pageSize', value: pageSize.toString()});
+    if (arg3 !== undefined && arg3 !== null) {
+      queryParamsList.push({name: 'pageSize', value: arg3.toString()});
     }
     let params = new HttpParams();
     for (const queryParam of queryParamsList) {
       params = params.append(queryParam.name, queryParam.value);
     }
     const subject = new Subject<ForumTopic[]>();
-    this.httpService.get(environment.BASE_UR + '/api/forum-topic/get-newest', {
-      params,
-      responseType: 'text'
-    }).pipe(map(res => JSON.parse(res)))
+    this.httpService.get(environment.BASE_URL + '/api/forum-topic/get-newest', {params, responseType: 'text'})
+      .pipe(map(res => JSON.parse(res)), take(1))
       .subscribe(res => subject.next(res), error => {
         this.errorHandlerService.handleErrors(error);
         subject.error(error);
@@ -474,7 +460,8 @@ export class ForumTopicCtrl {
 
   public getObject(id: string): Observable<ForumTopic>  {
     const subject = new Subject<ForumTopic>();
-    this.httpService.get(environment.BASE_UR + '/api/forum-topic/' + id + '', {responseType: 'text'}).pipe(map(res => JSON.parse(res)))
+    this.httpService.get(environment.BASE_URL + '/api/forum-topic/' + id + '', {responseType: 'text'})
+      .pipe(map(res => JSON.parse(res)), take(1))
       .subscribe(res => subject.next(res), error => {
         this.errorHandlerService.handleErrors(error);
         subject.error(error);
@@ -485,10 +472,8 @@ export class ForumTopicCtrl {
   public updateObject(entity: BaseEntity): Observable<ForumTopic>  {
     const headers = new HttpHeaders().set('Content-type', 'application/json');
     const subject = new Subject<ForumTopic>();
-    this.httpService.put(environment.BASE_UR + '/api/forum-topic/' + entity.id.split('/')[1] + '', JsonScopedSerializer.stringify(entity, new JsonScope(false, [])), {
-      headers,
-      responseType: 'text'
-    }).pipe(map(res => JSON.parse(res)))
+    this.httpService.put(environment.BASE_URL + '/api/forum-topic/' + entity.id.split('/')[1] + '', JsonScopedSerializer.stringify(entity, new JsonScope(false, [])) , {headers, responseType: 'text'})
+      .pipe(map(res => JSON.parse(res)), take(1))
       .subscribe(res => subject.next(res), error => {
         this.errorHandlerService.handleErrors(error);
         subject.error(error);
@@ -511,7 +496,8 @@ export class LanguageCtrl {
 
   public findAll(): Observable<Language[]>  {
     const subject = new Subject<Language[]>();
-    this.httpService.get(environment.BASE_UR + '/api/language', {responseType: 'text'}).pipe(map(res => JSON.parse(res)))
+    this.httpService.get(environment.BASE_URL + '/api/language', {responseType: 'text'})
+      .pipe(map(res => JSON.parse(res)), take(1))
       .subscribe(res => subject.next(res), error => {
         this.errorHandlerService.handleErrors(error);
         subject.error(error);
@@ -521,7 +507,8 @@ export class LanguageCtrl {
 
   public getObject(id: string): Observable<Language>  {
     const subject = new Subject<Language>();
-    this.httpService.get(environment.BASE_UR + '/api/language/' + id + '', {responseType: 'text'}).pipe(map(res => JSON.parse(res)))
+    this.httpService.get(environment.BASE_URL + '/api/language/' + id + '', {responseType: 'text'})
+      .pipe(map(res => JSON.parse(res)), take(1))
       .subscribe(res => subject.next(res), error => {
         this.errorHandlerService.handleErrors(error);
         subject.error(error);
@@ -545,10 +532,8 @@ export class LoginCtrl {
   public updateObject(entity: BaseEntity): Observable<BaseObject>  {
     const headers = new HttpHeaders().set('Content-type', 'application/json');
     const subject = new Subject<BaseObject>();
-    this.httpService.put(environment.BASE_UR + '/api/login/' + entity.id.split('/')[1] + '', JsonScopedSerializer.stringify(entity, new JsonScope(false, [])), {
-      headers,
-      responseType: 'text'
-    }).pipe(map(res => JSON.parse(res)))
+    this.httpService.put(environment.BASE_URL + '/api/login/' + entity.id.split('/')[1] + '', JsonScopedSerializer.stringify(entity, new JsonScope(false, [])) , {headers, responseType: 'text'})
+      .pipe(map(res => JSON.parse(res)), take(1))
       .subscribe(res => subject.next(res), error => {
         this.errorHandlerService.handleErrors(error);
         subject.error(error);
@@ -569,19 +554,17 @@ export class NotificationCtrl {
     this.errorHandlerService = errorHandlerService;
   }
 
-  public createMailNotification(mail: Mail, languageLocale: string, receiverId: string): Observable<boolean>  {
+  public createMailNotification(arg0: Mail, arg1: string, arg2: string): Observable<boolean>  {
     const queryParamsList: { name: string, value: string }[] = [];
-    queryParamsList.push({name: 'receiverId', value: receiverId});
+    queryParamsList.push({name: 'receiverId', value: arg2});
     let params = new HttpParams();
     for (const queryParam of queryParamsList) {
       params = params.append(queryParam.name, queryParam.value);
     }
     const headers = new HttpHeaders().set('Content-type', 'application/json');
     const subject = new Subject<boolean>();
-    this.httpService.post<boolean>(environment.BASE_UR + '/api/notification/decline/' + languageLocale + '/', mail, {
-      headers,
-      params
-    })
+    this.httpService.post<boolean>(environment.BASE_URL + '/api/notification/decline/' + arg1 + '/', arg0 , {headers, params})
+      .pipe(take(1))
       .subscribe(res => subject.next(res), error => {
         this.errorHandlerService.handleErrors(error);
         subject.error(error);
@@ -589,20 +572,17 @@ export class NotificationCtrl {
     return subject.asObservable();
   }
 
-  public createNotificationWithMail(entity: Notification, languageLocale: string, senderMail: string): Observable<Notification>  {
+  public createNotificationWithMail(arg0: Notification, arg1: string, arg2: string): Observable<Notification>  {
     const queryParamsList: { name: string, value: string }[] = [];
-    queryParamsList.push({name: 'sender', value: senderMail});
+    queryParamsList.push({name: 'sender', value: arg2});
     let params = new HttpParams();
     for (const queryParam of queryParamsList) {
       params = params.append(queryParam.name, queryParam.value);
     }
     const headers = new HttpHeaders().set('Content-type', 'application/json');
     const subject = new Subject<Notification>();
-    this.httpService.post(environment.BASE_UR + '/api/notification/' + languageLocale + '/', JsonScopedSerializer.stringify(entity, new JsonScope(false, [])), {
-      headers,
-      params,
-      responseType: 'text'
-    }).pipe(map(res => JSON.parse(res)))
+    this.httpService.post(environment.BASE_URL + '/api/notification/' + arg1 + '/', JsonScopedSerializer.stringify(arg0, new JsonScope(false, [])) , {headers, params, responseType: 'text'})
+      .pipe(map(res => JSON.parse(res)), take(1))
       .subscribe(res => subject.next(res), error => {
         this.errorHandlerService.handleErrors(error);
         subject.error(error);
@@ -613,10 +593,8 @@ export class NotificationCtrl {
   public createObject(entity: BaseEntity): Observable<Notification>  {
     const headers = new HttpHeaders().set('Content-type', 'application/json');
     const subject = new Subject<Notification>();
-    this.httpService.post(environment.BASE_UR + '/api/notification', JsonScopedSerializer.stringify(entity, new JsonScope(false, [])), {
-      headers,
-      responseType: 'text'
-    }).pipe(map(res => JSON.parse(res)))
+    this.httpService.post(environment.BASE_URL + '/api/notification', JsonScopedSerializer.stringify(entity, new JsonScope(false, [])) , {headers, responseType: 'text'})
+      .pipe(map(res => JSON.parse(res)), take(1))
       .subscribe(res => subject.next(res), error => {
         this.errorHandlerService.handleErrors(error);
         subject.error(error);
@@ -624,9 +602,10 @@ export class NotificationCtrl {
     return subject.asObservable();
   }
 
-  public deleteByVisitId(visitId: string): Observable<number>  {
+  public deleteByVisitId(arg0: string): Observable<number>  {
     const subject = new Subject<number>();
-    this.httpService.delete<number>(environment.BASE_UR + '/api/notification/visit/' + visitId + '')
+    this.httpService.delete<number>(environment.BASE_URL + '/api/notification/visit/' + arg0 + '')
+      .pipe(take(1))
       .subscribe(res => subject.next(res), error => {
         this.errorHandlerService.handleErrors(error);
         subject.error(error);
@@ -636,7 +615,8 @@ export class NotificationCtrl {
 
   public deleteObject(id: string): Observable<void>  {
     const subject = new Subject<void>();
-    this.httpService.delete<void>(environment.BASE_UR + '/api/notification/' + id + '')
+    this.httpService.delete<void>(environment.BASE_URL + '/api/notification/' + id + '')
+      .pipe(take(1))
       .subscribe(res => subject.next(res), error => {
         this.errorHandlerService.handleErrors(error);
         subject.error(error);
@@ -647,10 +627,8 @@ export class NotificationCtrl {
   public updateObject(entity: BaseEntity): Observable<Notification>  {
     const headers = new HttpHeaders().set('Content-type', 'application/json');
     const subject = new Subject<Notification>();
-    this.httpService.put(environment.BASE_UR + '/api/notification/' + entity.id.split('/')[1] + '', JsonScopedSerializer.stringify(entity, new JsonScope(false, [])), {
-      headers,
-      responseType: 'text'
-    }).pipe(map(res => JSON.parse(res)))
+    this.httpService.put(environment.BASE_URL + '/api/notification/' + entity.id.split('/')[1] + '', JsonScopedSerializer.stringify(entity, new JsonScope(false, [])) , {headers, responseType: 'text'})
+      .pipe(map(res => JSON.parse(res)), take(1))
       .subscribe(res => subject.next(res), error => {
         this.errorHandlerService.handleErrors(error);
         subject.error(error);
@@ -673,7 +651,8 @@ export class PersonCtrl {
 
   public countAll(): Observable<number>  {
     const subject = new Subject<number>();
-    this.httpService.get<number>(environment.BASE_UR + '/api/person/countAll')
+    this.httpService.get<number>(environment.BASE_URL + '/api/person/countAll')
+      .pipe(take(1))
       .subscribe(res => subject.next(res), error => {
         this.errorHandlerService.handleErrors(error);
         subject.error(error);
@@ -681,9 +660,10 @@ export class PersonCtrl {
     return subject.asObservable();
   }
 
-  public deleteObject(id: string): Observable<void>  {
+  public deleteObject(arg0: string): Observable<void>  {
     const subject = new Subject<void>();
-    this.httpService.delete<void>(environment.BASE_UR + '/api/person/' + id + '')
+    this.httpService.delete<void>(environment.BASE_URL + '/api/person/' + arg0 + '')
+      .pipe(take(1))
       .subscribe(res => subject.next(res), error => {
         this.errorHandlerService.handleErrors(error);
         subject.error(error);
@@ -691,9 +671,10 @@ export class PersonCtrl {
     return subject.asObservable();
   }
 
-  public getDoctorInfoFromPerson(personId: string): Observable<Person>  {
+  public getDoctorInfoFromPerson(arg0: string): Observable<Person>  {
     const subject = new Subject<Person>();
-    this.httpService.get(environment.BASE_UR + '/api/person/get-doctor-info/' + personId + '', {responseType: 'text'}).pipe(map(res => JSON.parse(res)))
+    this.httpService.get(environment.BASE_URL + '/api/person/get-doctor-info/' + arg0 + '', {responseType: 'text'})
+      .pipe(map(res => JSON.parse(res)), take(1))
       .subscribe(res => subject.next(res), error => {
         this.errorHandlerService.handleErrors(error);
         subject.error(error);
@@ -703,7 +684,8 @@ export class PersonCtrl {
 
   public getObject(id: string): Observable<Person>  {
     const subject = new Subject<Person>();
-    this.httpService.get(environment.BASE_UR + '/api/person/' + id + '', {responseType: 'text'}).pipe(map(res => JSON.parse(res)))
+    this.httpService.get(environment.BASE_URL + '/api/person/' + id + '', {responseType: 'text'})
+      .pipe(map(res => JSON.parse(res)), take(1))
       .subscribe(res => subject.next(res), error => {
         this.errorHandlerService.handleErrors(error);
         subject.error(error);
@@ -733,10 +715,8 @@ export class PersonCtrl {
       params = params.append(queryParam.name, queryParam.value);
     }
     const subject = new Subject<Person[]>();
-    this.httpService.get(environment.BASE_UR + '/api/person/getPeople', {
-      params,
-      responseType: 'text'
-    }).pipe(map(res => JSON.parse(res)))
+    this.httpService.get(environment.BASE_URL + '/api/person/getPeople', {params, responseType: 'text'})
+      .pipe(map(res => JSON.parse(res)), take(1))
       .subscribe(res => subject.next(res), error => {
         this.errorHandlerService.handleErrors(error);
         subject.error(error);
@@ -744,15 +724,16 @@ export class PersonCtrl {
     return subject.asObservable();
   }
 
-  public isUsernameUsed(username: string): Observable<boolean>  {
+  public isUsernameUsed(arg0: string): Observable<boolean>  {
     const queryParamsList: { name: string, value: string }[] = [];
-    queryParamsList.push({name: 'username', value: username});
+    queryParamsList.push({name: 'username', value: arg0});
     let params = new HttpParams();
     for (const queryParam of queryParamsList) {
       params = params.append(queryParam.name, queryParam.value);
     }
     const subject = new Subject<boolean>();
-    this.httpService.get<boolean>(environment.BASE_UR + '/api/person/usage-username/', {params})
+    this.httpService.get<boolean>(environment.BASE_URL + '/api/person/usage-username/', {params})
+      .pipe(take(1))
       .subscribe(res => subject.next(res), error => {
         this.errorHandlerService.handleErrors(error);
         subject.error(error);
@@ -760,13 +741,11 @@ export class PersonCtrl {
     return subject.asObservable();
   }
 
-  public updateObject(entity: BaseEntity): Observable<Person>  {
+  public updateObject(arg0: BaseEntity): Observable<Person>  {
     const headers = new HttpHeaders().set('Content-type', 'application/json');
     const subject = new Subject<Person>();
-    this.httpService.put(environment.BASE_UR + '/api/person/' + entity.id.split('/')[1] + '', JsonScopedSerializer.stringify(entity, new JsonScope(false, [])), {
-      headers,
-      responseType: 'text'
-    }).pipe(map(res => JSON.parse(res)))
+    this.httpService.put(environment.BASE_URL + '/api/person/' + arg0.id.split('/')[1] + '', JsonScopedSerializer.stringify(arg0, new JsonScope(false, [])) , {headers, responseType: 'text'})
+      .pipe(map(res => JSON.parse(res)), take(1))
       .subscribe(res => subject.next(res), error => {
         this.errorHandlerService.handleErrors(error);
         subject.error(error);
@@ -787,13 +766,11 @@ export class RegistrationLinkCtrl {
     this.errorHandlerService = errorHandlerService;
   }
 
-  public createRegistrationLinks(registrationLinks: RegistrationLink[]): Observable<RegistrationLink[]>  {
+  public createRegistrationLinks(arg0: RegistrationLink[]): Observable<RegistrationLink[]>  {
     const headers = new HttpHeaders().set('Content-type', 'application/json');
     const subject = new Subject<RegistrationLink[]>();
-    this.httpService.post(environment.BASE_UR + '/api/registration-link/group', JsonScopedSerializer.stringify(registrationLinks, new JsonScope(false, [])), {
-      headers,
-      responseType: 'text'
-    }).pipe(map(res => JSON.parse(res)))
+    this.httpService.post(environment.BASE_URL + '/api/registration-link/group', JsonScopedSerializer.stringify(arg0, new JsonScope(false, [])) , {headers, responseType: 'text'})
+      .pipe(map(res => JSON.parse(res)), take(1))
       .subscribe(res => subject.next(res), error => {
         this.errorHandlerService.handleErrors(error);
         subject.error(error);
@@ -803,7 +780,8 @@ export class RegistrationLinkCtrl {
 
   public deleteObject(id: string): Observable<void>  {
     const subject = new Subject<void>();
-    this.httpService.delete<void>(environment.BASE_UR + '/api/registration-link/' + id + '')
+    this.httpService.delete<void>(environment.BASE_URL + '/api/registration-link/' + id + '')
+      .pipe(take(1))
       .subscribe(res => subject.next(res), error => {
         this.errorHandlerService.handleErrors(error);
         subject.error(error);
@@ -813,7 +791,8 @@ export class RegistrationLinkCtrl {
 
   public getObject(id: string): Observable<RegistrationLink>  {
     const subject = new Subject<RegistrationLink>();
-    this.httpService.get(environment.BASE_UR + '/api/registration-link/' + id + '', {responseType: 'text'}).pipe(map(res => JSON.parse(res)))
+    this.httpService.get(environment.BASE_URL + '/api/registration-link/' + id + '', {responseType: 'text'})
+      .pipe(map(res => JSON.parse(res)), take(1))
       .subscribe(res => subject.next(res), error => {
         this.errorHandlerService.handleErrors(error);
         subject.error(error);
@@ -823,7 +802,8 @@ export class RegistrationLinkCtrl {
 
   public getServerIp(): Observable<string>  {
     const subject = new Subject<string>();
-    this.httpService.get<string>(environment.BASE_UR + '/api/registration-link/server/ip')
+    this.httpService.get<string>(environment.BASE_URL + '/api/registration-link/server/ip')
+      .pipe(take(1))
       .subscribe(res => subject.next(res), error => {
         this.errorHandlerService.handleErrors(error);
         subject.error(error);
@@ -846,7 +826,8 @@ export class RoleCtrl {
 
   public countAll(): Observable<number>  {
     const subject = new Subject<number>();
-    this.httpService.get<number>(environment.BASE_UR + '/api/role/countAll')
+    this.httpService.get<number>(environment.BASE_URL + '/api/role/countAll')
+      .pipe(take(1))
       .subscribe(res => subject.next(res), error => {
         this.errorHandlerService.handleErrors(error);
         subject.error(error);
@@ -856,7 +837,8 @@ export class RoleCtrl {
 
   public findAll(): Observable<Role[]>  {
     const subject = new Subject<Role[]>();
-    this.httpService.get(environment.BASE_UR + '/api/role', {responseType: 'text'}).pipe(map(res => JSON.parse(res)))
+    this.httpService.get(environment.BASE_URL + '/api/role', {responseType: 'text'})
+      .pipe(map(res => JSON.parse(res)), take(1))
       .subscribe(res => subject.next(res), error => {
         this.errorHandlerService.handleErrors(error);
         subject.error(error);
@@ -879,7 +861,8 @@ export class StaticTranslationCtrl {
 
   public getObject(id: string): Observable<StaticTranslation>  {
     const subject = new Subject<StaticTranslation>();
-    this.httpService.get(environment.BASE_UR + '/api/static-translation/' + id + '', {responseType: 'text'}).pipe(map(res => JSON.parse(res)))
+    this.httpService.get(environment.BASE_URL + '/api/static-translation/' + id + '', {responseType: 'text'})
+      .pipe(map(res => JSON.parse(res)), take(1))
       .subscribe(res => subject.next(res), error => {
         this.errorHandlerService.handleErrors(error);
         subject.error(error);
@@ -889,7 +872,8 @@ export class StaticTranslationCtrl {
 
   public getStaticTranslations(languageLocale: string, functionalityName: string): Observable<StaticTranslation[]>  {
     const subject = new Subject<StaticTranslation[]>();
-    this.httpService.get(environment.BASE_UR + '/api/static-translation/' + languageLocale + '/' + functionalityName + '', {responseType: 'text'}).pipe(map(res => JSON.parse(res)))
+    this.httpService.get(environment.BASE_URL + '/api/static-translation/' + languageLocale + '/' + functionalityName + '', {responseType: 'text'})
+      .pipe(map(res => JSON.parse(res)), take(1))
       .subscribe(res => subject.next(res), error => {
         this.errorHandlerService.handleErrors(error);
         subject.error(error);

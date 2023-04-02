@@ -2,7 +2,7 @@ import {EventEmitter, Injectable} from '@angular/core';
 import {Observable, Subject} from 'rxjs';
 import {HttpClient, HttpHeaders} from '@angular/common/http';
 import {ErrorHandlerService} from '../sdk/error-handler.service';
-import {map} from 'rxjs/operators';
+import {map, take} from 'rxjs/operators';
 import {SessionService} from '../../shared/services/session.service';
 import {Functionality, Person} from '../sdk/onlinemed-model';
 import {Utility} from '../../shared/utilities/utility';
@@ -49,8 +49,8 @@ export class AuthService {
     let headers = new HttpHeaders().set('Content-type', 'application/json');
     headers = headers.append('Authorization', 'Basic ' + btoa(username + ':' + password));
     const subject = new Subject<{ [key: string]: any }>();
-    this.httpService.post(environment.BASE_UR + '/api/login', null, {headers, responseType: 'text'})
-      .pipe(map(res => JSON.parse(res)))
+    this.httpService.post(environment.BASE_URL + '/api/login', null, {headers, responseType: 'text'})
+      .pipe(map(res => JSON.parse(res)), take(1))
       .subscribe(res => subject.next(res), error => {
         this.errorHandlerService.handleErrors(error);
         subject.error(error);
