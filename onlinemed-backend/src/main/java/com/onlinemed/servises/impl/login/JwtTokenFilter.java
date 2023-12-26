@@ -23,24 +23,26 @@ import static com.onlinemed.servises.impl.login.SecurityConstants.TOKEN_HEADER;
  * Authorization filter to validate requests containing paseto token
  */
 @Service
-public class PasetoAuthorizationFilter extends OncePerRequestFilter {
+public class JwtTokenFilter extends OncePerRequestFilter {
 
     final PasetoTokenService pasetoTokenService;
     private final PersonService personService;
 
-    public PasetoAuthorizationFilter(PasetoTokenService pasetoTokenService, PersonService personService) {
+    public JwtTokenFilter(PasetoTokenService pasetoTokenService,
+                          PersonService personService) {
         this.pasetoTokenService = pasetoTokenService;
         this.personService = personService;
     }
 
     @Override
     protected void doFilterInternal(HttpServletRequest req, HttpServletResponse res, FilterChain chain) throws ServletException, IOException {
-        if (req.getHeader(TOKEN_HEADER) == null) {
+        String token = req.getHeader(TOKEN_HEADER);
+        if (token == null) {
             chain.doFilter(req, res);
             return;
         }
-        if (pasetoTokenService.requestTokenValid(req.getHeader(TOKEN_HEADER))) {
-            Optional<Person> personOpt = pasetoTokenService.getPersonFromRequestToken(req);
+        if (pasetoTokenService.requestTokenValid(token)) {
+            Optional<Person> personOpt = pasetoTokenService.getPersonFromRequestToken(token);
             personOpt.ifPresent(person -> {
                 UsernamePasswordAuthenticationToken authentication = getAuthentication(person);
                 SecurityContextHolder.getContext().setAuthentication(authentication);

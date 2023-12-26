@@ -3,109 +3,81 @@ package com.onlinemed.servises.impl.login;
 import com.onlinemed.model.Person;
 import com.onlinemed.servises.api.PasetoTokenService;
 import com.onlinemed.servises.api.PersonService;
-import net.aholbrook.paseto.exception.PasetoParseException;
-import net.aholbrook.paseto.exception.SignatureVerificationException;
-import net.aholbrook.paseto.exception.claims.ExpiredTokenException;
-import net.aholbrook.paseto.exception.claims.MissingClaimException;
-import net.aholbrook.paseto.service.Token;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import javax.servlet.http.HttpServletRequest;
+import javax.crypto.SecretKey;
+import javax.crypto.spec.SecretKeySpec;
+import java.nio.charset.StandardCharsets;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.util.Date;
 import java.util.Optional;
-
-import static com.onlinemed.servises.impl.login.SecurityConstants.TOKEN_HEADER;
 
 @Service
 public class PasetoTokenServiceImpl implements PasetoTokenService {
 
     @Autowired
     PersonService personService;
-
-    private static int expirationMinutes;
-    private static int securityExpirationMinutes;
-    private static String sharedKeyValue;
-    private static String sharedSecurityKeyValue;
+    private int expirationMinutes;
+    private SecretKey sharedKeyValue;
+    private final ZoneId defaultZoneId = ZoneId.systemDefault();
 
     @Value("${shared.key}")
     public void setSharedKey(String sharedKey) {
-        PasetoTokenServiceImpl.sharedKeyValue = sharedKey;
+        sharedKeyValue = new SecretKeySpec(sharedKey.getBytes(StandardCharsets.UTF_8), SignatureAlgorithm.HS512.getJcaName());
     }
 
     @Value("${key.expiration.minutes}")
     public void setExpirationTime(int expirationTime) {
-        PasetoTokenServiceImpl.expirationMinutes = expirationTime;
+        expirationMinutes = expirationTime;
     }
-
-    @Value("${security.shared.key}")
-    public void setSharedSecurityKey(String sharedSecurityKey) {
-        PasetoTokenServiceImpl.sharedSecurityKeyValue = sharedSecurityKey;
-    }
-
-    @Value("${security.key.expiration.minutes}")
-    public void setSecurityExpirationTime(int expirationTime) {
-        PasetoTokenServiceImpl.securityExpirationMinutes = expirationTime;
-    }
-
 
     @Override
     public String generateRequestToken(String subject) {
-        return PasetoUtil.generateToken(subject,
-                PasetoTokenServiceImpl.sharedKeyValue,
-                PasetoTokenServiceImpl.expirationMinutes);
+        var localDateTime = LocalDateTime.now().plusMinutes(expirationMinutes);
+        var expiration = Date.from(localDateTime.atZone(defaultZoneId).toInstant());
+
+        return Jwts.builder()
+                .subject(subject)
+                .signWith(sharedKeyValue)
+                .expiration(expiration)
+                .compact();
     }
 
     @Override
-    public Token parseRequestToken(String token) {
-        return PasetoUtil.parseToken(token,
-                PasetoTokenServiceImpl.sharedKeyValue,
-                PasetoTokenServiceImpl.expirationMinutes);
+    public Optional<String> parseRequestToken(String token) {
+        try {
+            return Optional.of(Jwts.parser()
+                    .verifyWith(sharedKeyValue)
+                    .build()
+                    .parseSignedClaims(token)
+                    .getPayload()
+                    .getSubject());
+
+        } catch (Exception ex) {
+            return Optional.empty();
+        }
+
     }
 
-    @Override
-    public String generateSecurityToken(String subject) {
-        return PasetoUtil.generateToken(subject,
-                PasetoTokenServiceImpl.sharedSecurityKeyValue,
-                PasetoTokenServiceImpl.securityExpirationMinutes);
-    }
-
-    @Override
-    public Token parseSecurityToken(String token) {
-        return PasetoUtil.parseToken(token,
-                PasetoTokenServiceImpl.sharedSecurityKeyValue,
-                PasetoTokenServiceImpl.securityExpirationMinutes);
-    }
-
-    @Override
-    public boolean securityTokensValid(Person person, String token) {
-        final boolean correctToken = parseToken(token);
-        return correctToken && person.getSecurity().getSecurityToken().equals(token);
-    }
 
     @Override
     public boolean requestTokenValid(String token) {
-       return this.parseToken(token);
-    }
-
-    private boolean parseToken(String token){
-        try {
-            parseRequestToken(token);
-            return true;
-        } catch (ExpiredTokenException | MissingClaimException | PasetoParseException | SignatureVerificationException e) {
-            return false;
-        }
+        return parseRequestToken(token).isPresent();
     }
 
 
     @Override
-    public Optional<Person> getPersonFromRequestToken(HttpServletRequest request) {
-        String token =  request.getHeader(TOKEN_HEADER);
-        if (token != null) {
-            String username = parseRequestToken(token).getSubject();
-            return personService.findPersonByUsernameWithTouchRoles(username);
-        }
-        return null;
+    public Optional<Person> getPersonFromRequestToken(String token) {
+        return Optional.ofNullable(token)
+                .map(optToken -> parseRequestToken(token))
+                .filter(Optional::isPresent)
+                .flatMap(username -> personService.findPersonByUsernameWithTouchRoles(username.get()));
+
     }
 
 }

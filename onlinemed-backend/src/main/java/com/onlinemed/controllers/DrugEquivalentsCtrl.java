@@ -7,7 +7,6 @@ import com.onlinemed.model.BaseObject;
 import com.onlinemed.model.dto.DrugHints;
 import com.onlinemed.model.dto.DrugInfo;
 import com.onlinemed.servises.api.DrugEquivalentsService;
-import org.apache.commons.lang.NotImplementedException;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
 
@@ -32,7 +31,7 @@ public class DrugEquivalentsCtrl implements BaseCtrl<BaseObject> {
 
     @Override
     public BaseService<BaseObject> getService() {
-        throw new NotImplementedException("Method getService() not implemented in" + this.getClass().getSimpleName());
+        throw new IllegalStateException("Method getService() not implemented in" + this.getClass().getSimpleName());
     }
 
     @RequestMapping(path = "/hints", method = RequestMethod.GET, produces = {"application/json"})

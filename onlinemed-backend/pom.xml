@@ -46,6 +46,7 @@
         <!-- required for passeto password encoder-->
         <repository>
             <id>lazysodium</id>
+            <name>lazysodium</name>
             <url>https://dl.bintray.com/terl/lazysodium-maven</url>
         </repository>
     </repositories>
@@ -263,6 +264,24 @@
             <artifactId>spring-security-core</artifactId>
             <version>${spring.security.verson}</version>
         </dependency>
+
+        <dependency>
+            <groupId>io.jsonwebtoken</groupId>
+            <artifactId>jjwt-api</artifactId>
+            <version>0.12.3</version>
+        </dependency>
+        <dependency>
+            <groupId>io.jsonwebtoken</groupId>
+            <artifactId>jjwt-impl</artifactId>
+            <version>0.12.3</version>
+            <scope>runtime</scope>
+        </dependency>
+        <dependency>
+            <groupId>io.jsonwebtoken</groupId>
+            <artifactId>jjwt-jackson</artifactId> <!-- or jjwt-gson if Gson is preferred -->
+            <version>0.12.3</version>
+            <scope>runtime</scope>
+        </dependency>
         <!-- Spring security end section -->
 
         <!-- Argon2 Dependency-->
@@ -275,12 +294,6 @@
             <groupId>de.mkammerer</groupId>
             <artifactId>argon2-jvm</artifactId>
             <version>2.11</version>
-        </dependency>
-
-        <dependency>
-            <groupId>net.aholbrook.paseto</groupId>
-            <artifactId>meta</artifactId>
-            <version>0.5.0</version>
         </dependency>
 
         <!-- Repair bug with moved Nullable annotation for openjdk11-->
@@ -441,5 +454,5 @@
         </resources>
     </build>
 
-    
+
 </project>

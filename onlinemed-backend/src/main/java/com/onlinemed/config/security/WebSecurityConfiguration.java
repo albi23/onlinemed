@@ -1,7 +1,7 @@
 package com.onlinemed.config.security;
 
 import com.onlinemed.servises.impl.login.PasetoAuthProvider;
-import com.onlinemed.servises.impl.login.PasetoAuthorizationFilter;
+import com.onlinemed.servises.impl.login.JwtTokenFilter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,7 +40,7 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
     private PasetoAuthenticationEntryPoint pasetoAuthenticationEntryPoint;
 
     @Autowired
-    private PasetoAuthorizationFilter pasetoAuthorizationFilter;
+    private JwtTokenFilter jwtTokenFilter;
 
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -66,7 +66,7 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
         http.cors().configurationSource(request -> new CorsConfiguration().applyPermitDefaultValues())
                 .and().csrf().disable()
                 /* Add custom authorisation filter */
-                .addFilterBefore(pasetoAuthorizationFilter, UsernamePasswordAuthenticationFilter.class).authorizeRequests()
+                .addFilterBefore(jwtTokenFilter, UsernamePasswordAuthenticationFilter.class).authorizeRequests()
                 .antMatchers("/api/login/**").permitAll()
                 .antMatchers("/api/language/**").permitAll()
                 .antMatchers("/api/static-translation/**").permitAll()
