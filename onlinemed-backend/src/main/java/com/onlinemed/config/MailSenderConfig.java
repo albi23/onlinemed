@@ -43,7 +43,7 @@ public class MailSenderConfig {
             mailSender.setPassword(password);
             mailSender.setUsername(username);
         } else {
-            final String str = "\n" + IntStream.range(1, 113).mapToObj(i -> "_").collect(Collectors.joining());
+            final String str = "\n" + "_".repeat(113);
             LOGGER.error(str + "\nMail configuration is not set. Please set up environment variable  SPRING_MAIL_USERNAME and SPRING_MAIL_PASSWORD" + str);
         }
         return mailSender;

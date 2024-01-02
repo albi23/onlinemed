@@ -6,6 +6,7 @@ import com.onlinemed.model.ForumTopic;
 import com.onlinemed.model.ForumTopic_;
 import com.onlinemed.servises.api.ForumTopicService;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
@@ -40,6 +41,7 @@ public class ForumTopicServiceImpl extends BaseObjectServiceImpl<ForumTopic> imp
     }
 
 
+    @Transactional
     @Override
     public void delete(UUID id) {
         final ForumTopic entity = this.find(id);

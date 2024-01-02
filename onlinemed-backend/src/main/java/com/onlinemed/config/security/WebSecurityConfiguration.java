@@ -88,10 +88,13 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .antMatchers("/api/forum-topic/**").permitAll()
                 .antMatchers("/api/forum-post/**").permitAll()
                 .antMatchers("/api/registration-link/**").permitAll()
-                .anyRequest().authenticated()
-                .and().exceptionHandling()
+                .anyRequest()
+                .authenticated()
+                .and().
+                exceptionHandling()
                 .authenticationEntryPoint(pasetoAuthenticationEntryPoint).and()
-                .sessionManagement().and().sessionManagement()
+                .sessionManagement().and()
+                .sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
     }
 

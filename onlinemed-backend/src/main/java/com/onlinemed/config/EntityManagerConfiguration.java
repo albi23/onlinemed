@@ -1,6 +1,7 @@
 package com.onlinemed.config;
 
 import com.onlinemed.config.hibernate.HibernatePropertiesConfig;
+import com.onlinemed.config.micrometer.MicrometerListener;
 import com.onlinemed.model.BaseObject;
 import net.ttddyy.dsproxy.support.ProxyDataSource;
 import net.ttddyy.dsproxy.support.ProxyDataSourceBuilder;
@@ -16,6 +17,7 @@ import javax.persistence.EntityManagerFactory;
 import javax.sql.DataSource;
 import java.util.Properties;
 
+import static com.onlinemed.config.BuildProfiles.DEV_PROFILE;
 import static com.onlinemed.config.BuildProfiles.TEST_PROFILE;
 
 /**
@@ -58,7 +60,7 @@ public class EntityManagerConfiguration {
 
 
     @Bean
-    @Profile(TEST_PROFILE)
+    @Profile({TEST_PROFILE, DEV_PROFILE})
     public EntityManagerFactory entityManagerFactoryWithProxy(DataSource dataSource, Properties hibernateProperties) {
         final LocalContainerEntityManagerFactoryBean em = new LocalContainerEntityManagerFactoryBean();
         em.setDataSource(proxyDatasource(dataSource));
@@ -66,11 +68,13 @@ public class EntityManagerConfiguration {
     }
 
     public ProxyDataSource proxyDatasource(DataSource dataSource) {
+        var listener = new MicrometerListener();
+//        listener.setLogLevel(SLF4JLogLevel.TRACE);
+
         return ProxyDataSourceBuilder.create(dataSource)
-                .name("Batch-Query")
-                .asJson()
+                .name("DataSource")
                 .countQuery()
-                .logQueryToSysOut()
+                .listener(listener)
                 .build();
     }
 }
