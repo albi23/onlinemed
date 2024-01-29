@@ -23,15 +23,15 @@ import static com.onlinemed.model.SystemFunctionalities.DOCTORS_PROFILE;
 @JsonScope(positive = true, scope = {DoctorInfo.class})
 public class DoctorInfoCtrl implements BaseCtrl<DoctorInfo>, FindAllCtrl<DoctorInfo> {
 
-    private final DoctorInfoService doctorInfoService;
+    private final DoctorInfoService doctorInfoServiceImpl;
 
-    public DoctorInfoCtrl(DoctorInfoService doctorInfoService) {
-        this.doctorInfoService = doctorInfoService;
+    public DoctorInfoCtrl(DoctorInfoService doctorInfoServiceImpl) {
+        this.doctorInfoServiceImpl = doctorInfoServiceImpl;
     }
 
     @Override
     public BaseService<DoctorInfo> getService() {
-        return this.doctorInfoService;
+        return this.doctorInfoServiceImpl;
     }
 
     @RequestMapping(path = {"/{id}"}, method = {RequestMethod.PUT}, consumes = {"application/json"}, produces = {"application/json"})
@@ -45,15 +45,16 @@ public class DoctorInfoCtrl implements BaseCtrl<DoctorInfo>, FindAllCtrl<DoctorI
     }
 
     @RequestMapping(method = {RequestMethod.GET}, produces = {"application/json"})
-    @JsonScope(positive = true, scope = {Person.class, DoctorInfo.class, FacilityLocation.class, CalendarEvent.class})
+//    @JsonScope(positive = true, scope = {Person.class, DoctorInfo.class, FacilityLocation.class, CalendarEvent.class})
     @ResponseBody
     public List<DoctorInfo> findAll() {
-        final List<DoctorInfo> doctorInfos = this.doFindAll();
-        doctorInfos.forEach(d -> {
-            d.getFacilityLocations().forEach(loc -> loc.getVisitsPriceList().size());
-            d.getPerson().getCalendarEvents().forEach(BaseObject::touchObject);
-        });
-        return doctorInfos;
+//        this.getService().findAll();
+//        final List<DoctorInfo> doctorInfos = this.doFindAll();
+//        doctorInfos.forEach(d -> {
+//            d.getFacilityLocations().forEach(loc -> loc.getVisitsPriceList().size());
+//            d.getPerson().getCalendarEvents().forEach(BaseObject::touchObject);
+//        });
+        return this.getService().findAll();
     }
 
 }
