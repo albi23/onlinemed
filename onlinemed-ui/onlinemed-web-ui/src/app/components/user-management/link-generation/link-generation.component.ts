@@ -58,9 +58,9 @@ export class LinkGenerationComponent extends MultiDropdownAdapter implements OnI
     if (!environment.production) {
       this.registrationLinkCtrl.getServerIp().subscribe((ip: string) => {
         if (!ip) {
-          this.BACKEND_URL = 'http://localhost:4201';
+          this.BACKEND_URL = 'http://localhost:4300';
         } else {
-          this.BACKEND_URL = 'http://' + ip + ':4201';
+          this.BACKEND_URL = 'http://' + ip + ':4300';
         }
       });
     }else {

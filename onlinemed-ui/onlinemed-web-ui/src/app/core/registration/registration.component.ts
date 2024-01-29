@@ -12,7 +12,7 @@ import {JsonScopedSerializer} from '../sdk/JsonParser';
 import {JsonScope} from '../sdk/jsonScope';
 import {map} from 'rxjs/operators';
 import {ErrorHandlerService} from '../sdk/error-handler.service';
-import {environment} from '../../../environments/environment.prod';
+import {environment} from '../../../environments/environment';
 
 export interface DoctorServices {
   id: string;

@@ -60,7 +60,7 @@ public class EntityManagerConfiguration {
 
 
     @Bean
-    @Profile({TEST_PROFILE, DEV_PROFILE})
+    @Profile({TEST_PROFILE})
     public EntityManagerFactory entityManagerFactoryWithProxy(DataSource dataSource, Properties hibernateProperties) {
         final LocalContainerEntityManagerFactoryBean em = new LocalContainerEntityManagerFactoryBean();
         em.setDataSource(proxyDatasource(dataSource));

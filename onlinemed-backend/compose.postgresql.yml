@@ -1,0 +1,15 @@
+version: '3.7'
+
+services:
+
+  onlinemed_db_service:
+    image: 'postgres:latest'
+    container_name: onlinemed_db_service
+    environment:
+      - POSTGRES_USER=onlinemed_root
+      - POSTGRES_PASSWORD=e976908e-fab7-11ea-9418-5f9b5705bac5
+      - POSTGRES_DB=onlinemed_db
+      - POSTGRES_HOST_AUTH_METHOD=trust
+    ports:
+      - "5678:5432" # Publishes 5678 to other containers but NOT to host machine
+#    command: -p 5555

@@ -11,7 +11,8 @@
     "test": "ng test",
     "lint": "ng lint",
     "e2e": "ng e2e",
-    "postinstall": "ng build --aot --prod"
+    "build-prod": "ng build --aot --prod",
+    "build-dev": "ng build --aot --configuration=dev"
   },
   "private": true,
   "dependencies": {

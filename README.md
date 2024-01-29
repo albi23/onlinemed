@@ -4,14 +4,14 @@
 Stack 
 <li>Angular 11</li>
 <li>SpringBoot</li>
-<li>PostgreSQL</li>
+<li>Jdk 17</li>
+<li>Prometheus</li>
+<li>Grafana</li>
+<li>Nginx</li>
+<li>Docker</li>
 
-You can check how it behaves on my [Heroku](https://www.heroku.com/platform) server  here:
-
-[**Online-Med-Site**](https://online-med-ui.herokuapp.com/)
-
-
-Server requires around ~30s to start.(You will see correct translations).On each startup scripts fill app with test data
+### Build project via maven command:
+``mvn clean package`` and than ``docker compose up``
 
 Test user:
 
@@ -52,3 +52,7 @@ it is usually your login and password for your gmail account.
 
 ### JVM command used to check NullPointerException
 ```-XX:+ShowCodeDetailsInExceptionMessages```
+
+### JVM run args
+
+```--add-opens java.base/jdk.internal.reflect=ALL-UNNAMED --add-opens java.base/java.lang=ALL-UNNAMED```

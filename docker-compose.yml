@@ -1,4 +1,4 @@
-version: '3.7'
+version: '3.9'
 
 #networks:
 #  back-tier:
@@ -8,38 +8,62 @@ volumes:
   grafana_data: {}
 
 services:
-  app:
-    container_name: onlinemed-backend-docker
-    image: 'onlinemed-backend-docker:latest'
+  onlinemed-service:
+    container_name: onlinemed-service-docker
+    image: 'onlinemed-service-docker:latest'
     build:
       context: ./onlinemed-backend
       dockerfile: ./Dockerfile
     depends_on:
-      - postgresDB
+      - onlinemed-postgresDB
     environment:
-      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgresDB:5432/onlinemed_db
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://onlinemed-postgresDB:5432/onlinemed_db
       - SPRING_DATASOURCE_USERNAME=onlinemed_root
       - SPRING_DATASOURCE_PASSWORD=e976908e-fab7-11ea-9418-5f9b5705bac5
       - SPRING_JPA_HIBERNATE_DDL_AUTO=create-drop
+      - SPRING_PROFILES_ACTIVE=dev
     ports:
       - "8080:8080"
     restart: always
     deploy:
         mode: global
+        restart_policy:
+          delay: 2s
+          max_attempts: 5
+          window: 20s
 
-  postgresDB:
-    image: 'postgres:13-alpine'
-    container_name: postgresDB
+  onlinemed-postgresDB:
+    image: 'postgres:latest'
+    container_name: onlinemed-postgresDB
     environment:
       - POSTGRES_USER=onlinemed_root
       - POSTGRES_PASSWORD=e976908e-fab7-11ea-9418-5f9b5705bac5
       - POSTGRES_DB=onlinemed_db
       - POSTGRES_HOST_AUTH_METHOD=trust
     ports:
-      - "5432:5555"
-    expose:
-      - "5555" # protect locally installed postgres port
+      - "5555:5432"  # [outside:inside]protect locally installed postgres port
+#    expose:
+#      - "5555" # protect locally installed postgres port
 
+
+  onlinemed-ui-service:
+    container_name: onlinemed-ui-docker
+    image: 'onlinemed-ui-docker:latest'
+    build:
+      context: ./onlinemed-ui
+      dockerfile: ./Dockerfile
+    depends_on:
+      - onlinemed-service
+    ports:
+      - "4300:80"
+    deploy:
+      mode: global
+      restart_policy:
+        delay: 2s
+        max_attempts: 5
+        window: 20s
+
+# Tracing/analytic  services ---------------------------------------------------------------------------
   prometheus:
     image: prom/prometheus:v2.45.2
     container_name: prometheus
@@ -54,9 +78,9 @@ services:
     ports:
       - "9090:9090"
     links:
-      - app:app
+      - onlinemed-service:onlinemed-service
     depends_on:
-      - app
+      - onlinemed-service
     restart: always
 
   grafana:

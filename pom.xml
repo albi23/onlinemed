@@ -41,14 +41,4 @@
         <maven.compiler.target>17</maven.compiler.target>
     </properties>
 
-    <developers>
-        <developer>
-            <name>Albert Piekielny</name>
-            <email>albert.piekielny@blue-veery.com</email>
-            <organization>blue veery GmbH</organization>
-            <organizationUrl>https://github.com/blue-veery-gmbh</organizationUrl>
-        </developer>
-    </developers>
-
-
 </project>
