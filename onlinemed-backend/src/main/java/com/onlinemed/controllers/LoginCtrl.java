@@ -73,7 +73,6 @@ public class LoginCtrl implements UpdateObjectCtrl<BaseObject> {
         if (authentication.isAuthenticated()) {
             Map<String, Object> model = new HashMap<>();
             final Person authenticatedPerson = pasetoAuthProvider.getAuthenticatedPerson();
-            authenticatedPerson.getNotifications().forEach(BaseObject::touchObject);
             model.put("person", authenticatedPerson);
             model.put("token", pasetoTokenService.generateRequestToken(pwd[0]));
             this.personService.updatePersonLastLogin(authenticatedPerson.getId());

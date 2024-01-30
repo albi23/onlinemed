@@ -43,7 +43,7 @@ public class DrugEquivalentsImpl implements DrugEquivalentsService {
             final HtmlPage page = c.getPage(String.format(URl_TEMPLATE, searchedWord));
             final List<Object> byXPath = page.getByXPath("//*[starts-with(@class, 'lista-handlowe')]");
             for (Object ul : byXPath) {
-                for (DomElement el : ((HtmlUnorderedList)ul).getChildElements()) {
+                for (DomElement el : ((HtmlUnorderedList) ul).getChildElements()) {
                     final HtmlAnchor anchor = (HtmlAnchor) el.getFirstElementChild();
                     hints.add(new DrugHints(anchor.asNormalizedText(), anchor.getHrefAttribute()));
                 }
@@ -54,6 +54,7 @@ public class DrugEquivalentsImpl implements DrugEquivalentsService {
         }
         return hints;
     }
+
     @Transactional(propagation = Propagation.NOT_SUPPORTED)
     public List<DrugInfo> generateDrugInfoList(String queryLink) {
 
@@ -89,21 +90,31 @@ public class DrugEquivalentsImpl implements DrugEquivalentsService {
     }
 
     private DrugInfo toFixedDrugInfoForm(String[] info) {
-        info[9] = extractPriceAndCurrency(info[9]);
-        info[8] = extractPercentage(info[8]);
+        info[9] = extractPriceAndCurrency(info);
+        info[8] = extractPercentage(info);
         final String[] split = info[7].split(":");
         info[7] = split.length == 1 ? split[0] : split[1];
         return new DrugInfo(info[0], info[1], info[2], info[3], info[4], info[7], info[8], info[9]);
 
     }
 
-    private String extractPriceAndCurrency(String drugData) {
-        final String[] split = drugData.split(":");
-        return (split.length == 1) ? split[0] : split[1].concat(split[0].substring(split[0].length() - 5));
+    private String extractPriceAndCurrency(String[] info) {
+        try {
+            var drugData = info[9] != null ? info[9] : info[6];
+            final String[] split = drugData.split(":");
+            return (split.length == 1) ? split[0] : split[1].concat(split[0].substring(split[0].length() - 5));
+        } catch (IndexOutOfBoundsException ex) {
+            return "";
+        }
     }
 
-    private String extractPercentage(String drugData) {
-        final String[] split = drugData.split(":");
-        return (split.length == 1) ? split[0] : split[1];
+    private String extractPercentage(String[] info) {
+        try {
+            var drugData = info[8] != null ? info[9] : info[7];
+            final String[] split = drugData.split(":");
+            return (split.length == 1) ? split[0] : split[1];
+        } catch (IndexOutOfBoundsException ex) {
+            return "";
+        }
     }
 }

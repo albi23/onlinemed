@@ -56,3 +56,5 @@ it is usually your login and password for your gmail account.
 ### JVM run args
 
 ```--add-opens java.base/jdk.internal.reflect=ALL-UNNAMED --add-opens java.base/java.lang=ALL-UNNAMED```
+
+docker compose build <service>
