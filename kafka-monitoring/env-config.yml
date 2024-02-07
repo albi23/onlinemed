@@ -1,0 +1,34 @@
+organization: # Organization name (mandatory)
+  name: "OnlineMed"
+
+database: # Database credentials, must match what you have in the docker-compose (mandatory)
+  host: "kafka-monitor-postgresql"
+  port: 5432
+  name: "kafka-monitor"
+  username: "onlinemed_root"
+  password: "3a676f28-d564-4932-8ca7-8ca3507b0088"
+
+admin: # Define the local admin for the initial setup (mandatory)
+  email: admin@onlinemed.com
+  password: admin
+
+auth: # Define a local user (optional)
+  local-users:
+    - email: user@onlinemed.com
+      password: user
+
+monitoring: # Monitoring settings (optional)
+  cortex-url: http://conduktor-monitoring:9009/
+  alert-manager-url: http://conduktor-monitoring:9010/
+  callback-url: http://kafka-ui-console:9080/monitoring/api/
+  notifications-callback-url: http://localhost:9080
+
+clusters: # Cluster and schema registry configuration (optional)
+  - id: onlinemed-kafka-cluster
+    name: OnlineMed Kafka Cluster
+    bootstrapServers: "kafka:19092"
+    schemaRegistry:
+      url: "http://schema-registry:9081"
+#    kafkaConnects:
+#      - url: http://kafka-connect:8083
+#        name: full stack kafka connect
