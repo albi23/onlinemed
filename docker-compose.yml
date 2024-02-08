@@ -34,6 +34,7 @@ services:
           delay: 2s
           max_attempts: 5
           window: 20s
+
   onlinemed-mail-sender:
     container_name: onlinemed-mail-sender-docker
     image: 'onlinemed-mail-sender-docker:latest'
@@ -132,7 +133,7 @@ services:
     environment:
       SCHEMA_REGISTRY_KAFKASTORE_BOOTSTRAP_SERVERS: PLAINTEXT://kafka:19092
       SCHEMA_REGISTRY_HOST_NAME: schema-registry
-      SCHEMA_REGISTRY_LISTENERS: http://0.0.0.0:8081
+      SCHEMA_REGISTRY_LISTENERS: http://0.0.0.0:9081
     depends_on:
       - zookeeper
       - kafka
@@ -156,12 +157,12 @@ services:
     depends_on:
       - kafka-monitor-postgresql
     ports:
-      - "9080:9080"
+      - "9080:8080"
     expose:
       - 9080
     volumes:
       - type: bind
-        source: "./kafka-monitoring/env-config.yml"
+        source: "./kafka-monitoring/platform-config.yaml"
         target: /opt/conduktor/platform-config.yaml
         read_only: true
     environment:
