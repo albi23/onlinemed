@@ -4,8 +4,8 @@ version: '3.9'
 #  back-tier:
 
 volumes:
-  prometheus_data: {}
-  grafana_data: {}
+  prometheus_data: { }
+  grafana_data: { }
 
 services:
 
@@ -29,11 +29,11 @@ services:
       - "8080:8080"
     restart: always
     deploy:
-        mode: global
-        restart_policy:
-          delay: 2s
-          max_attempts: 5
-          window: 20s
+      mode: global
+      restart_policy:
+        delay: 2s
+        max_attempts: 5
+        window: 20s
 
   onlinemed-mail-sender:
     container_name: onlinemed-mail-sender-docker
@@ -41,6 +41,8 @@ services:
     build:
       context: ./onlinemed-mail-sender
       dockerfile: ./Dockerfile
+    environment:
+     - SPRING_PROFILES_ACTIVE=docker
     depends_on:
       - kafka
     ports:
@@ -81,7 +83,7 @@ services:
         max_attempts: 5
         window: 20s
 
-################## Kafka  ##################
+  ################## Kafka  ##################
 
   zookeeper:
     image: confluentinc/cp-zookeeper:7.3.0
@@ -121,6 +123,9 @@ services:
       KAFKA_JMX_HOSTNAME: ${DOCKER_HOST_IP:-127.0.0.1}
       KAFKA_AUTHORIZER_CLASS_NAME: kafka.security.authorizer.AclAuthorizer
       KAFKA_ALLOW_EVERYONE_IF_NO_ACL_FOUND: "true"
+#    volumes:
+#      - ./docker-volumes/kafka/:/usr/kafka-setup
+#    entrypoint: [ "/bin/bash", "/usr/kafka-setup/initial-setup.sh"]
     depends_on:
       - zookeeper
 
@@ -162,7 +167,7 @@ services:
       - 9080
     volumes:
       - type: bind
-        source: "./kafka-monitoring/platform-config.yaml"
+        source: ./docker-volumes/kafka-monitoring/platform-config.yaml
         target: /opt/conduktor/platform-config.yaml
         read_only: true
     environment:
@@ -182,7 +187,7 @@ services:
     image: prom/prometheus:v2.45.2
     container_name: prometheus
     volumes:
-      - ./:/etc/prometheus/
+      - ./docker-volumes/prometheus:/etc/prometheus/
       - prometheus_data:/prometheus
     command:
       - '--config.file=/etc/prometheus/prometheus.yml'
@@ -207,8 +212,8 @@ services:
       - "3000:3000"
     volumes:
       - grafana_data:/var/lib/grafana
-      - ./grafana/provisioning/datasources:/etc/grafana/provisioning/datasources
-      - ./grafana/provisioning/dashboards:/etc/grafana/dashboards
+      - ./docker-volumes/grafana/provisioning/datasources:/etc/grafana/provisioning/datasources
+      - ./docker-volumes/grafana/provisioning/dashboards:/etc/grafana/dashboards
     env_file:
-      - ./grafana/config.monitoring
+      - docker-volumes/grafana/config.monitoring
     restart: always
