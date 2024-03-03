@@ -1,4 +1,4 @@
-package com.onlinemed.config;
+package com.onlinemed.features.mail;
 
 public final class KafkaTopicsDefs {
 

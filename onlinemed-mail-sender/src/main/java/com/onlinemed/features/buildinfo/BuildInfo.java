@@ -1,6 +1,5 @@
-package com.onlinemed.config;
+package com.onlinemed.features.buildinfo;
 
-import com.onlinemed.dto.BuildInfoRecord;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.info.BuildProperties;
 import org.springframework.context.annotation.Bean;
@@ -11,7 +10,7 @@ import java.util.Optional;
 
 @Slf4j
 @Configuration
-public class BuildInfo {
+class BuildInfo {
 
     private final BuildProperties buildProperties;
 

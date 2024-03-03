@@ -1,4 +1,4 @@
-package com.onlinemed.config;
+package com.onlinemed.features.mail.cfg;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
@@ -10,7 +10,7 @@ import java.util.Properties;
 
 @Slf4j
 @Configuration
-public class MailSenderConfig {
+class MailSenderConfig {
 
     @Bean
     JavaMailSenderImpl mailSender() {

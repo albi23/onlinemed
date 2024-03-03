@@ -1,4 +1,4 @@
-FROM openjdk:17
+FROM openjdk:21
 ADD target/onlinemed-mail-sender-1.0.0.jar onlinemed-mail-sender-1.0.0.jar
 EXPOSE 8080
 RUN echo 'Starting  onlinemed-mail-sender'

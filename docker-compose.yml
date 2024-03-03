@@ -45,6 +45,7 @@ services:
      - SPRING_PROFILES_ACTIVE=docker
     depends_on:
       - kafka
+      - onlinemed-postgresDB
     ports:
       - "8082:8082"
     restart: always

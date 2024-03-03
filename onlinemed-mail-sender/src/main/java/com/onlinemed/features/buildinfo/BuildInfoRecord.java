@@ -1,8 +1,8 @@
-package com.onlinemed.dto;
+package com.onlinemed.features.buildinfo;
 
 import java.time.Instant;
 
-public record BuildInfoRecord(
+ record BuildInfoRecord(
         String group,
         String artifact,
         String name,

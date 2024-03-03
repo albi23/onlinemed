@@ -1,13 +1,12 @@
-package com.onlinemed.controller;
+package com.onlinemed.features.buildinfo;
 
-import com.onlinemed.dto.BuildInfoRecord;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/api/v1/health-check")
-public class HealthCheckCtrl {
+class HealthCheckCtrl {
 
     private final BuildInfoRecord buildInfo;
 

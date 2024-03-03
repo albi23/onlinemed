@@ -43,7 +43,39 @@ it is usually your login and password for your gmail account.
 <br>
 
 
+```mermaid
+C4Dynamic
+title Docker System Connection
 
+
+    Container_Boundary(b4, "", "", "") {
+      Component(omus, "onlinemed-ui-service", "4300:80", "User interface")
+    }
+
+    Container_Boundary(b1, "", "", "") {
+      Component(oms, "onlinemed-service", "8080:8080", " container")
+    }
+
+    Container_Boundary(b5, "", "", "") {
+      Component(omk, "kafka", "9092:9092", "Kafka service")
+    }
+
+    Container_Boundary(b3, "", "", "") {
+      Component(ompdb, "onlinemed-postgresDB", "5555:5432", "Main database")
+    }
+
+    Container_Boundary(b2, "", "", "") {
+      Component(omss, "onlinemed-mail-sender", "8082:8082", "Notification container")
+    }
+
+  
+    BiRel(omus, oms, "HTTP - ")
+    Rel(oms, omk, "Queue - mail notification produce")
+    BiRel(oms, ompdb, "DB transaction")
+    Rel(omk, omss, "Queue - mail notification consume")
+  
+
+```
 
 ### Custom profile
 /usr/lib/jvm/jdk-15/bin/java -jar --enable-preview

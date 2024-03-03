@@ -24,8 +24,10 @@ public class ThreadConfigurations {
         final ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
         int cores = Runtime.getRuntime().availableProcessors();
         executor.setCorePoolSize(cores);
-        executor.setMaxPoolSize(cores);
-        executor.setQueueCapacity(100);
+        int maxPoolSize = cores * 3;
+        executor.setMaxPoolSize(maxPoolSize);
+        executor.setQueueCapacity((int)(maxPoolSize * 2.5));
+        executor.setPrestartAllCoreThreads(true);
         executor.setThreadNamePrefix("Thread-");
         executor.initialize();
         return executor;
