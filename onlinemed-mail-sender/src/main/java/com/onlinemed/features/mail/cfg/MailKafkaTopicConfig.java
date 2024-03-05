@@ -12,9 +12,25 @@ import org.springframework.kafka.config.TopicBuilder;
 class MailKafkaTopicConfig {
 
     @Bean
-    public NewTopic topic() {
+    public NewTopic mailReceiveTopic() {
         return TopicBuilder.name(KafkaTopicsDefs.MAIL_RECEIVE)
                 .partitions(3)
+                .replicas(1)
+                .build();
+    }
+
+    @Bean
+    public NewTopic mailReceiveTopicDead() {
+        return TopicBuilder.name(KafkaTopicsDefs.MAIL_RECEIVE_DED)
+                .partitions(2)
+                .replicas(1)
+                .build();
+    }
+
+    @Bean
+    public NewTopic exceptionDeadEnd() {
+        return TopicBuilder.name(KafkaTopicsDefs.GENERAL_DEAD)
+                .partitions(2)
                 .replicas(1)
                 .build();
     }

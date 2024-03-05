@@ -5,6 +5,7 @@ import com.onlinemed.model.dto.Mail;
 
 import java.util.Locale;
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
 
 /**
  * Interface responsible for sending emails. The interface implementation uses JavaMailSenderImpl (Bean)
@@ -14,6 +15,6 @@ public interface EmailSendService {
 
     boolean sendMessageNotificationWithMail(Mail mail, Locale languageLocale, UUID senderId, UUID receiverId);
 
-    boolean sendMessageMail(Mail mail, Locale languageLocale);
+    CompletableFuture<Boolean> sendMessageMail(Mail mail, Locale languageLocale);
 
 }

@@ -51,6 +51,14 @@ public class ControllersConfig {
         return new ErrorMessage(ex.getMessage(), request.getRequestURL().toString());
     }
 
+    @ResponseStatus(value = HttpStatus.INTERNAL_SERVER_ERROR)
+    @ExceptionHandler(org.apache.kafka.common.errors.SerializationException.class)
+    @ResponseBody
+    public ErrorMessage kafkaSerializationEx(Exception ex, HttpServletRequest request) {
+        ex.printStackTrace();
+        return new ErrorMessage(ex.getMessage(), request.getRequestURL().toString());
+    }
+
     @ResponseStatus(value = HttpStatus.REQUEST_TIMEOUT)
     @ExceptionHandler(TimeOutException.class)
     @ResponseBody

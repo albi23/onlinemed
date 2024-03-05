@@ -37,7 +37,7 @@ public record HibernateProperties(
                         Map.entry("hibernate.order_updates", orderUpdates()),
                         Map.entry("hibernate.query.fail_on_pagination_over_collection_fetch", query().failOnPaginationOverCollectionFetch()),
                         Map.entry("hibernate.query.in_clause_parameter_padding", query().inClauseParameterPadding()),
-                        Map.entry("hibernate.session.events.log.LOG_QUERIES_SLOWER_THAN_MS", 20)
+                        Map.entry("hibernate.session.events.log.LOG_QUERIES_SLOWER_THAN_MS", Integer.toString(20))
                 )
         );
         return properties;

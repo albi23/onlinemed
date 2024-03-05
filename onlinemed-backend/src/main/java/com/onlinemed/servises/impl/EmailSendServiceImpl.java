@@ -1,110 +1,62 @@
 package com.onlinemed.servises.impl;
 
 
-import com.onlinemed.config.exceptions.ValidationException;
+import com.onlinemed.config.KafkaTopicsDefs;
 import com.onlinemed.model.dto.Mail;
+import com.onlinemed.model.dto.MailPayload;
 import com.onlinemed.model.dto.NotificationDto;
-import com.onlinemed.model.dto.Violation;
-import com.onlinemed.model.translations.StaticTranslation;
 import com.onlinemed.servises.api.EmailSendService;
-import com.onlinemed.servises.api.StaticTranslationService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.mail.MailException;
-import org.springframework.mail.javamail.JavaMailSenderImpl;
-import org.springframework.mail.javamail.MimeMessageHelper;
+import org.springframework.kafka.core.KafkaTemplate;
+import org.springframework.kafka.support.SendResult;
 import org.springframework.stereotype.Service;
+import org.springframework.util.concurrent.ListenableFuture;
 
-import javax.mail.Message;
-import javax.mail.MessagingException;
-import javax.mail.internet.AddressException;
-import javax.mail.internet.InternetAddress;
-import javax.mail.internet.MimeMessage;
-import java.util.HashMap;
-import java.util.List;
 import java.util.Locale;
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 
 @Service
 public class EmailSendServiceImpl implements EmailSendService {
 
-    private final JavaMailSenderImpl emailSender;
-    private final StaticTranslationService staticTranslationService;
     private final SendMailObserver sendMailObserver;
+    private final KafkaTemplate<UUID, Object> kafkaTemplate;
 
-    private final HashMap<Locale, String> cacheTemplates = new HashMap<>();
     private final Logger logger = LoggerFactory.getLogger(EmailSendServiceImpl.class);
 
-    public EmailSendServiceImpl(JavaMailSenderImpl emailSender,
-                                StaticTranslationService staticTranslationService,
-                                SendMailObserver sendMailObserver) {
-        this.emailSender = emailSender;
-        this.staticTranslationService = staticTranslationService;
+    public EmailSendServiceImpl(SendMailObserver sendMailObserver,
+                                KafkaTemplate<UUID, Object> kafkaTemplate) {
         this.sendMailObserver = sendMailObserver;
+        this.kafkaTemplate = kafkaTemplate;
     }
 
-    public boolean sendMessageNotificationWithMail(Mail mail, Locale languageLocale, UUID senderId, UUID receiverId){
-        final boolean wasSent = this.sendMessageMail(mail, languageLocale);
-        if (wasSent) {
-            this.sendMailObserver.notifyObservers(new NotificationDto(senderId, receiverId, mail.getName(), mail.getSurname()));
-        }
-        return wasSent;
-    }
-
-    public boolean sendMessageMail(Mail mail, Locale languageLocale) {
+    public boolean sendMessageNotificationWithMail(Mail mail, Locale languageLocale, UUID senderId, UUID receiverId) {
         try {
-            var template = this.cacheTemplates.getOrDefault(languageLocale, getNewLanguageTemplate(languageLocale));
-            sendMessage(mail, template);
-        } catch (MessagingException | MailException ex) {
-            logger.error(ex.getMessage());
-            if (ex instanceof MailException) {
-                throw new ValidationException(new Violation("model.sending-mail-temporarily-unavailable"));
-            } else if (ex instanceof AddressException) {
-                throw new ValidationException(new Violation("model.incorrect-receiver-mail"));
+            final boolean wasSent = this.sendMessageMail(mail, languageLocale).get();
+            if (wasSent) {
+                this.sendMailObserver.notifyObservers(new NotificationDto(senderId, receiverId, mail.getName(), mail.getSurname()));
             }
+            return wasSent;
+        } catch (ExecutionException | InterruptedException ex) {
+            logger.error("Error during sending message with notification", ex);
+            return false;
         }
-        return true;
+
     }
 
 
-    private void sendMessage(Mail mail, String template) throws MessagingException, MailException {
-        MimeMessage message = emailSender.createMimeMessage();
-        MimeMessageHelper helper = new MimeMessageHelper(message);
-        helper.setFrom(String.format("%s %s <%s>", mail.getName(), mail.getSurname(), emailSender.getHost()));
-        final InternetAddress address = new InternetAddress(mail.getReceiverMail());
-        try {
-            new InternetAddress(mail.getSenderMail());
-        } catch (AddressException ex) {
-            throw new ValidationException(new Violation("model.incorrect-sender-mail"));
-        }
-        message.addRecipient(Message.RecipientType.TO, address);
-        final String senderMail = mail.getSenderMail();
-        final String body = mail.getBody();
-        final String parsedMessage = getBodyWithTemplate(senderMail, body, template);
-        helper.setSubject(mail.getSubject());
-        helper.setText(parsedMessage, true);
-        emailSender.send(message);
+
+    public CompletableFuture<Boolean> sendMessageMail(Mail mail, Locale languageLocale) {
+        var mailPayload = new MailPayload(mail, languageLocale);
+        logger.info("Sending {}", mailPayload);
+        ListenableFuture<SendResult<UUID, Object>> sent = kafkaTemplate.send(KafkaTopicsDefs.MAIL_TOPIC, UUID.randomUUID(), mailPayload);
+        return sent.completable()
+                .thenApply((SendResult<UUID, Object> resp) -> true).exceptionally((ex) -> {
+                    logger.error("Error during sending message ", ex);
+                    return false;
+                });
     }
 
-    private String getNewLanguageTemplate(Locale languageLocale) {
-        final List<StaticTranslation> staticTranslation =
-                this.staticTranslationService.getStaticTranslation(languageLocale, "mail", "information", "info-body");
-        if (staticTranslation.size() < 2) return this.cacheTemplates.get(Locale.UK);
-        String template = this.generateResponseTemplate();
-        template = template.replace("$information", staticTranslation.get(0).getName());
-        template = template.replace("$info-body", staticTranslation.get(1).getName());
-        this.cacheTemplates.put(languageLocale, template);
-        return template;
-    }
-
-    private String generateResponseTemplate() {
-        return "<p>$body</p>" + "<br>" +
-                "<p>-------------------- $information --------------</p>" +
-                "<pre>$info-body</pre>" +
-                "<p style=\"font-weight: bold;color: blue\">$sender</p>";
-    }
-
-    private String getBodyWithTemplate(String senderMail, String body, String template) {
-        return template.replace("$body", body).replace("$sender", senderMail);
-    }
 }

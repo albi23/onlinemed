@@ -2,6 +2,7 @@ package com.onlinemed.features.mail;
 
 import com.onlinemed.exception.ValidationException;
 import com.onlinemed.exception.Violation;
+import com.onlinemed.features.mail.dto.MailBody;
 import com.onlinemed.features.mail.dto.MailPayload;
 import jakarta.mail.Message;
 import jakarta.mail.MessagingException;
@@ -37,10 +38,10 @@ class MailService {
         this.staticTranslation = staticTranslation;
     }
 
-    public boolean sendMessageMail(MailPayload mail, Locale languageLocale) {
+    public boolean sendMessageMail(MailPayload mail) {
         try {
-            var template = LOCAL_CACHE.getOrDefault(languageLocale, getNewLanguageTemplate(languageLocale));
-            sendMessage(mail, template);
+            var template = LOCAL_CACHE.getOrDefault(mail.languageLocale(), getNewLanguageTemplate(mail.languageLocale()));
+            sendMessage(mail.mail(), template);
         } catch (MessagingException | MailException ex) {
             log.error("Error has occurred", ex);
             if (ex instanceof MailException) {
@@ -52,7 +53,7 @@ class MailService {
         return true;
     }
 
-    private void sendMessage(MailPayload mail, String template) throws MessagingException, MailException {
+    private void sendMessage(MailBody mail, String template) throws MessagingException, MailException {
         MimeMessage message = emailSender.createMimeMessage();
         MimeMessageHelper helper = new MimeMessageHelper(message);
         helper.setFrom(String.format("%s %s <%s>", mail.name(), mail.surname(), ((JavaMailSenderImpl)emailSender).getHost()));

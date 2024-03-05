@@ -13,4 +13,9 @@ public final class ValidationException extends RuntimeException {
     public List<Violation> getViolationList() {
         return violationList;
     }
+
+    @Override
+    public String getMessage() {
+        return violationList.toString();
+    }
 }

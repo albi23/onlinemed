@@ -96,7 +96,7 @@ public class NotificationsServiceImpl extends BaseObjectServiceImpl<Notification
 
     private boolean sendMail(Mail mail, Locale languageLocale) {
         try {
-            return this.emailSendService.sendMessageMail(mail, languageLocale);
+            return this.emailSendService.sendMessageMail(mail, languageLocale).get();
         } catch (Exception ex) {
             logger.error(ex.getMessage());
             return false;
