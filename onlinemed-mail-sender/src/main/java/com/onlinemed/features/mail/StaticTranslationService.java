@@ -15,8 +15,8 @@ public class StaticTranslationService {
     }
 
     public List<String> getTranslations(Locale languageLocale,
-                                 String moduleName,
-                                 List<String> uiKeys) {
+                                        String moduleName,
+                                        List<String> uiKeys) {
         return staticTranslationRepository.getTranslations(languageLocale, moduleName, uiKeys);
     }
 }

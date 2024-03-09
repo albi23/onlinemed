@@ -31,6 +31,7 @@ services:
     deploy:
       mode: global
       restart_policy:
+        condition: on-failure
         delay: 2s
         max_attempts: 5
         window: 20s
@@ -52,6 +53,7 @@ services:
     deploy:
       mode: global
       restart_policy:
+        condition: on-failure
         delay: 2s
         max_attempts: 5
         window: 20s
@@ -80,6 +82,7 @@ services:
     deploy:
       mode: global
       restart_policy:
+        condition: on-failure
         delay: 2s
         max_attempts: 5
         window: 20s
@@ -101,7 +104,8 @@ services:
     image: confluentinc/cp-kafka:7.3.0
     deploy:
       restart_policy:
-        delay: 1s
+        condition: on-failure
+        delay: 5s
         max_attempts: 3
         window: 20s
     hostname: kafka

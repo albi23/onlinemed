@@ -1,46 +1,50 @@
-package com.onlinemed.features.mail.cfg;
+package com.onlinemed.config;
 
-import com.onlinemed.features.mail.dto.MailPayload;
+import com.onlinemed.model.dto.NotificationDto;
+import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.common.TopicPartition;
 import org.apache.kafka.common.errors.SerializationException;
+import org.apache.kafka.common.serialization.ByteArrayDeserializer;
+import org.apache.kafka.common.serialization.UUIDDeserializer;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.kafka.ConcurrentKafkaListenerContainerFactoryConfigurer;
-import org.springframework.boot.autoconfigure.kafka.KafkaProperties;
-import org.springframework.boot.ssl.SslBundles;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.kafka.config.ConcurrentKafkaListenerContainerFactory;
-import org.springframework.kafka.config.KafkaListenerContainerFactory;
 import org.springframework.kafka.core.ConsumerFactory;
 import org.springframework.kafka.core.DefaultKafkaConsumerFactory;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.listener.CommonErrorHandler;
-import org.springframework.kafka.listener.ConcurrentMessageListenerContainer;
 import org.springframework.kafka.listener.DeadLetterPublishingRecoverer;
 import org.springframework.kafka.listener.DefaultErrorHandler;
 import org.springframework.util.backoff.FixedBackOff;
 
+import java.util.Map;
+import java.util.Objects;
 import java.util.UUID;
 
-import static com.onlinemed.features.mail.KafkaTopicsDefs.GENERAL_DEAD;
+import static com.onlinemed.config.KafkaTopicsDefs.GENERAL_DEAD;
 
 @Configuration
-class KafkaErrorhandler {
+public class KafkaConsumerConfig {
 
+    private record ConsumerConfigProps(String CLIENT_ID, String GROUP_ID_CONFIG){}
 
-    private final KafkaProperties kafkaProperties;
+    private static final ConsumerConfigProps props = new ConsumerConfigProps(
+            "onlinemed-service-receiver",
+            "onlinemed-service-receive-group"
+    );
 
-    KafkaErrorhandler(KafkaProperties kafkaProperties) {
-        this.kafkaProperties = kafkaProperties;
-    }
+    @Value("${spring.kafka.bootstrap-servers}")
+    private String bootstrapServers;
 
 
     @Bean
     public ConsumerFactory<Object, Object> consumerFactory() {
-        var properties = kafkaProperties.buildConsumerProperties((SslBundles)null);
-        return new DefaultKafkaConsumerFactory<>(properties);
+        return new DefaultKafkaConsumerFactory<>(consumerConfigs());
     }
 
-    @Bean(name = "kafkaMailListenerContainerFactory")
+    @Bean(name = "kafkaNotificationListener")
     public ConcurrentKafkaListenerContainerFactory<Object, Object>
     kafkaMailListenerContainerFactory(ConcurrentKafkaListenerContainerFactoryConfigurer configurer, KafkaTemplate<UUID, Object> kafkaTemplate) {
         var factory = new ConcurrentKafkaListenerContainerFactory<>();
@@ -60,12 +64,22 @@ class KafkaErrorhandler {
     static DeadLetterPublishingRecoverer getDeadLetterPublishingRecoverer(KafkaTemplate<UUID, Object> kafkaTemplate) {
         return new DeadLetterPublishingRecoverer(kafkaTemplate,
                 (record, ex) -> {
-                    switch (record.value()) {
-                        case MailPayload _ -> new TopicPartition(STR."\{record.topic()}-dead", record.partition());
-                        default -> throw new IllegalStateException(STR."Unexpected value: \{record.value()}");
+                    if (Objects.requireNonNull(record.value()) instanceof NotificationDto) {
+                        new TopicPartition(record.topic()+"-dead", record.partition());
+                    } else {
+                        throw new IllegalStateException("Unexpected value: " + record.value());
                     }
                     return new TopicPartition(GENERAL_DEAD, record.partition());
                 }
+        );
+    }
+    private Map<String, Object> consumerConfigs() {
+        return Map.ofEntries(
+                Map.entry(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers),
+                Map.entry(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, UUIDDeserializer.class),
+                Map.entry(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, ByteArrayDeserializer.class),
+                Map.entry(ConsumerConfig.CLIENT_ID_CONFIG, props.CLIENT_ID),
+                Map.entry(ConsumerConfig.GROUP_ID_CONFIG, props.GROUP_ID_CONFIG)
         );
     }
 }

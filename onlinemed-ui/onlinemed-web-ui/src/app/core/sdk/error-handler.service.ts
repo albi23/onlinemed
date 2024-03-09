@@ -51,7 +51,7 @@ export class ErrorHandlerService {
         (_) => {
           console.error('504 error is detected');
           const message = 'Server temporarily unavailable';
-          this.googleTranslateService.translate('en', Utility.getLocaleId(navigator.language), message).subscribe( res => {
+          this.googleTranslateService.translate('en', Utility.getLocaleId(navigator.language), message).subscribe(res => {
             const reElement = ((res[0])[0])[1];
             NotificationWrapComponent.sendAlert(new Alert(AlertType.DANGER, reElement));
           });
@@ -71,9 +71,17 @@ export class ErrorHandlerService {
   }
 
   protected showMessage(response: HttpErrorResponse): void {
-    const errorMessage: ErrorMessage = JSON.parse(response.error) as ErrorMessage;
-    this.errorMessageService.setErrorData(errorMessage, response?.status);
-    this.router.navigate(['/om/error-message']);
+    try {
+      const errorMessage: ErrorMessage = JSON.parse(response.error) as ErrorMessage;
+      this.errorMessageService.setErrorData(errorMessage, response?.status);
+      this.router.navigate(['/om/error-message']);
+    } catch (exception) {
+      console.error('Handled exception. Applying default procedure: ', exception)
+      const errorMessage: ErrorMessage = response.error as ErrorMessage;
+      this.errorMessageService.setErrorData(errorMessage, response?.status);
+      this.router.navigate(['/om/error-message']);
+    }
+
   }
 }
 

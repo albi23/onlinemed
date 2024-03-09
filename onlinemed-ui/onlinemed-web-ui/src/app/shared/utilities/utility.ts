@@ -100,7 +100,7 @@ export class Utility {
       const parse = JSON.parse(errResponse.error);
       return (parse && parse.length > 0 && parse[0].errorUIkey) ? parse : (parse.message) ? parse.message : false;
     } catch (exception) {
-      return errResponse.error && errResponse.error[0].errorUIkey ? errResponse.error[0].errorUIkey : false;
+      return errResponse.error && errResponse.error[0] && errResponse.error[0].errorUIkey ? errResponse.error[0]?.errorUIkey : false;
     }
   }
 

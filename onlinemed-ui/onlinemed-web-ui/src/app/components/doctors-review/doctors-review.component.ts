@@ -10,6 +10,7 @@ import {Mail} from '../../core/sdk/model-dto';
 import {AuthService} from '../../core/auth/auth.service';
 import {TranslateService} from '../../core/translations/translate.service';
 import {NotificationType} from '../../core/sdk/model-enums';
+import {BehaviorSubject} from 'rxjs';
 
 @Component({
   selector: 'app-doctors-review',
@@ -17,7 +18,7 @@ import {NotificationType} from '../../core/sdk/model-enums';
   styles: []
 })
 export class DoctorsReviewComponent implements OnInit {
-  isActiveSpinner = false;
+  isActiveSpinner$ = new BehaviorSubject<boolean>(false);
   isSendMessageFrameOpen = false;
   isNewVisitFrameOpen = false;
   doctorInfoArr: DoctorInfo[] = [];
@@ -35,12 +36,12 @@ export class DoctorsReviewComponent implements OnInit {
   ngOnInit(): void {
     this.translateService.loadTranslationModule('doctors-review');
     this.translateService.loadTranslationModule('profile');
-    this.isActiveSpinner = true;
+    this.isActiveSpinner$.next(true);
     this.doctorInfoCtrl.findAll().subscribe((res: DoctorInfo[]) => {
       this.doctorInfoArr = res;
-      this.isActiveSpinner = false;
+      this.isActiveSpinner$.next(false);
     }, error => {
-      this.isActiveSpinner = false;
+      this.isActiveSpinner$.next(false);
       Utility.showViolationsIfOccurs(error);
     });
   }
@@ -75,16 +76,18 @@ export class DoctorsReviewComponent implements OnInit {
       name: logged.name, surname: logged.surname, senderMail: logged.email,
       receiverMail: this.toSendPerson.email, body: message.message, subject: message.subject
     };
-    this.isActiveSpinner = true;
+    this.isActiveSpinner$.next(true);
     const locale = this.translateService.currentLanguage.locale;
     this.emailSendCtrl.sendMessageMail(mail, locale, Utility.getIdFromObject(logged), Utility.getIdFromObject(this.toSendPerson))
       .subscribe((res) => {
         NotificationWrapComponent.sendAlert(new Alert(AlertType.SUCCESS, 'doctors-review.message-send'));
-        this.isActiveSpinner = false;
+        this.isActiveSpinner$.next(false);
         this.isSendMessageFrameOpen = false;
       }, error => {
-        Utility.showViolationsIfOccurs(error);
-        this.isActiveSpinner = false;
+        if (!Utility.showViolationsIfOccurs(error)) {
+          NotificationWrapComponent.sendAlert(new Alert(AlertType.DANGER, 'Internal error'));
+        }
+        this.isActiveSpinner$.next(false);
         this.isSendMessageFrameOpen = false;
       });
   }

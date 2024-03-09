@@ -23,7 +23,7 @@ import java.util.UUID;
 @Configuration
 public class KafkaProducerConfig {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(MailSenderConfig.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(KafkaProducerConfig.class);
 
     @Value("${spring.kafka.bootstrap-servers}")
     private String bootstrapServers;

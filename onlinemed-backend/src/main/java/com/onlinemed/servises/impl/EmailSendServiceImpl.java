@@ -53,7 +53,8 @@ public class EmailSendServiceImpl implements EmailSendService {
         logger.info("Sending {}", mailPayload);
         ListenableFuture<SendResult<UUID, Object>> sent = kafkaTemplate.send(KafkaTopicsDefs.MAIL_TOPIC, UUID.randomUUID(), mailPayload);
         return sent.completable()
-                .thenApply((SendResult<UUID, Object> resp) -> true).exceptionally((ex) -> {
+                .thenApply((SendResult<UUID, Object> resp) -> true)
+                .exceptionally((ex) -> {
                     logger.error("Error during sending message ", ex);
                     return false;
                 });

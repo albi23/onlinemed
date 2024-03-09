@@ -9,7 +9,7 @@ import {BehaviorSubject} from 'rxjs';
 })
 export class SpinnerComponent implements OnInit{
 
-  @Input() isActive = false;
+  @Input() isActive: boolean | null = false;
   menuOpen = false;
   private menuStatus = new BehaviorSubject<boolean>(true);
 

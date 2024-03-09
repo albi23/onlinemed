@@ -18,8 +18,11 @@ class KafkaMailListenerService {
         this.emailSender = emailSender;
     }
 
-    @KafkaListener(id = "mail-receive-listener", topics = KafkaTopicsDefs.MAIL_RECEIVE)
-        public void listenOnNewMail(@Payload MailPayload mailBody, Acknowledgment ack) {
+    @KafkaListener(
+            id = "mail-receive-listener",
+            topics = KafkaTopicsDefs.MAIL_RECEIVE,
+            containerFactory = "kafkaMailListenerContainerFactory")
+    public void listenOnNewMail(@Payload MailPayload mailBody, Acknowledgment ack) {
         log.info(String.valueOf(mailBody));
         emailSender.sendMessageMail(mailBody);
         ack.acknowledge();

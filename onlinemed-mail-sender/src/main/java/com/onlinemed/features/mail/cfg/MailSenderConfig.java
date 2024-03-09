@@ -10,6 +10,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 import org.springframework.mail.MailException;
 import org.springframework.mail.javamail.ConfigurableMimeFileTypeMap;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.util.function.ThrowingSupplier;
 
@@ -27,7 +28,7 @@ class MailSenderConfig {
 
     @Bean
     @Profile("!dev")
-    JavaMailSenderImpl mailSender() {
+    JavaMailSender emailSender() {
         var mailSender = new JavaMailSenderImpl();
         var fileTypeMap = new ConfigurableMimeFileTypeMap();
         fileTypeMap.afterPropertiesSet();
@@ -62,7 +63,7 @@ class MailSenderConfig {
 
     @Bean
     @Profile("dev")
-    JavaMailSenderImpl mailSenderDev() {
+    JavaMailSender mailSenderDev() {
         return new DummyMailSender();
     }
 

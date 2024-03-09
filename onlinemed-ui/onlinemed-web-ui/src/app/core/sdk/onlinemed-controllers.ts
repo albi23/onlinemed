@@ -240,7 +240,7 @@ export class EmailSendCtrl {
     this.httpService.post<boolean>(environment.BASE_URL + '/api/email/' + arg1 + '/send', arg0 , {headers, params})
       .pipe(take(1))
       .subscribe(res => subject.next(res), error => {
-        this.errorHandlerService.handleErrors(error);
+        // this.errorHandlerService.handleErrors(error); // On purpose -> angular 12 context would be helpfull
         subject.error(error);
       });
     return subject.asObservable();

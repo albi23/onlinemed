@@ -1,5 +1,6 @@
 package com.onlinemed.servises.impl;
 
+import com.onlinemed.config.KafkaTopicsDefs;
 import com.onlinemed.model.Notification;
 import com.onlinemed.model.Person;
 import com.onlinemed.model.Visit;
@@ -10,6 +11,8 @@ import com.onlinemed.servises.api.NotificationsService;
 import com.onlinemed.servises.api.PersonService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.kafka.annotation.KafkaListener;
+import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -24,27 +27,35 @@ public class NotificationsServiceImpl extends BaseObjectServiceImpl<Notification
 
     private final PersonService personService;
     private final EmailSendService emailSendService;
+    private final TransactionHandler transactionHandler;
     private final Logger logger = LoggerFactory.getLogger(NotificationsServiceImpl.class);
 
-    public NotificationsServiceImpl(PersonService personService,
-                                    EmailSendService emailSendService,
-                                    SendMailObserver sendMailObserver) {
+    NotificationsServiceImpl(PersonService personService,
+                             EmailSendService emailSendService,
+                             SendMailObserver sendMailObserver,
+                             TransactionHandler transactionHandler) {
         this.personService = personService;
         this.emailSendService = emailSendService;
+        this.transactionHandler = transactionHandler;
         sendMailObserver.addObserver(this);
     }
 
+    @KafkaListener(
+            id = "mail-receive-listener",
+            topics = KafkaTopicsDefs.MAIL_NOTIFICATION,
+            containerFactory = "kafkaNotificationListener")
     @Override
-    @Transactional
-    public void notificationToPerson(NotificationDto notification) {
-        final Person person = this.personService.find(notification.receiverId());
-        if (person == null) {
-            logger.error(String.format("[%s] Attempt to assign notification for non existing user ID: %s"
-                    , new Timestamp(new Date().getTime()), notification.receiverId()));
-            return;
-        }
-        person.getNotifications().add(new Notification(notification.senderId(), person, notification.name(), notification.surname()));
-        this.getEntityManager().merge(person);
+    public void notificationToPerson(@Payload NotificationDto notification) {
+        transactionHandler.runInTransaction(() -> {
+            final Person person = this.personService.find(notification.receiverId());
+            if (person == null) {
+                logger.error(String.format("[%s] Attempt to assign notification for non existing user ID: %s"
+                        , new Timestamp(new Date().getTime()), notification.receiverId()));
+                return;
+            }
+            person.getNotifications().add(new Notification(notification.senderId(), person, notification.name(), notification.surname()));
+            this.getEntityManager().merge(person);
+        });
     }
 
     @Override
