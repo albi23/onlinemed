@@ -8,6 +8,7 @@ Stack
 <li>Prometheus</li>
 <li>Grafana</li>
 <li>Nginx</li>
+<li>Kafka</li>
 <li>Docker</li>
 
 ### Build project via maven command:
